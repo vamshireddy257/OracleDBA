@@ -1,0 +1,20 @@
+edit spfile/pfile
+shut down instance
+copy physical ctrl file to new location
+startup
+
+alter system set <parameter_name> = <value> scope = both/spfile/memory;
+
+alter controlfiles parameter;
+alter SYSTEM set control_files = '/u01/app/oracle/oradata/PRODDB/controlfile/o1_mf_krlzjxt8_.ctl', '/u01/app/oracle/fast_recovery_area/PRODDB/controlfile/o1_mf_krlzjxtz_.ctl', '/u01/multiplex/control_file/control003.ctl' scope = spfile;
+
+
+shut down instance;
+shut immediate;
+
+mkdir -p /u01/multiplex/control_file
+in OS level cp any existing control file to the new location in parameter.
+cp /u01/app/oracle/oradata/PRODDB/controlfile/o1_mf_krlzjxt8_.ctl /u01/multiplex/control_file/control003.ctl
+
+startup;
+
