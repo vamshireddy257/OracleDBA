@@ -187,4 +187,14 @@ a.username,a.osuser, a.status
 FROM v$session a,v$sort_usage b
 WHERE a.saddr = b.session_addr;
 
+get DDL of tablespace
+
+set heading off;
+set echo off;
+Set pages 999;
+set long 90000;
+spool ddl_tablespace.sql
+select dbms_metadata.get_ddl('TABLESPACE',tb.tablespace_name) from dba_tablespaces tb;
+spool off
+
 
