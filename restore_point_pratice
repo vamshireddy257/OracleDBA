@@ -1,0 +1,902 @@
+[oracle@oracle ~]$ . oraenv
+ORACLE_SID = [hrms] ? hrms
+The Oracle base has been set to /u01/app/oracle
+[oracle@oracle ~]$ 
+[oracle@oracle ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Jul 12 09:31:24 2023
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Connected to an idle instance.
+
+SQL> startup;
+ORACLE instance started.
+
+Total System Global Area 1560277408 bytes
+Fixed Size		    8896928 bytes
+Variable Size		 1006632960 bytes
+Database Buffers	  536870912 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+Database opened.
+SQL> 
+SQL> 
+SQL> 
+SQL> desc v$database;
+ Name					   Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DBID						    NUMBER
+ NAME						    VARCHAR2(9)
+ CREATED					    DATE
+ RESETLOGS_CHANGE#				    NUMBER
+ RESETLOGS_TIME 				    DATE
+ PRIOR_RESETLOGS_CHANGE#			    NUMBER
+ PRIOR_RESETLOGS_TIME				    DATE
+ LOG_MODE					    VARCHAR2(12)
+ CHECKPOINT_CHANGE#				    NUMBER
+ ARCHIVE_CHANGE#				    NUMBER
+ CONTROLFILE_TYPE				    VARCHAR2(7)
+ CONTROLFILE_CREATED				    DATE
+ CONTROLFILE_SEQUENCE#				    NUMBER
+ CONTROLFILE_CHANGE#				    NUMBER
+ CONTROLFILE_TIME				    DATE
+ OPEN_RESETLOGS 				    VARCHAR2(11)
+ VERSION_TIME					    DATE
+ OPEN_MODE					    VARCHAR2(20)
+ PROTECTION_MODE				    VARCHAR2(20)
+ PROTECTION_LEVEL				    VARCHAR2(20)
+ REMOTE_ARCHIVE 				    VARCHAR2(8)
+ ACTIVATION#					    NUMBER
+ SWITCHOVER#					    NUMBER
+ DATABASE_ROLE					    VARCHAR2(16)
+ ARCHIVELOG_CHANGE#				    NUMBER
+ ARCHIVELOG_COMPRESSION 			    VARCHAR2(8)
+ SWITCHOVER_STATUS				    VARCHAR2(20)
+ DATAGUARD_BROKER				    VARCHAR2(8)
+ GUARD_STATUS					    VARCHAR2(7)
+ SUPPLEMENTAL_LOG_DATA_MIN			    VARCHAR2(8)
+ SUPPLEMENTAL_LOG_DATA_PK			    VARCHAR2(3)
+ SUPPLEMENTAL_LOG_DATA_UI			    VARCHAR2(3)
+ FORCE_LOGGING					    VARCHAR2(39)
+ PLATFORM_ID					    NUMBER
+ PLATFORM_NAME					    VARCHAR2(101)
+ RECOVERY_TARGET_INCARNATION#			    NUMBER
+ LAST_OPEN_INCARNATION# 			    NUMBER
+ CURRENT_SCN					    NUMBER
+ FLASHBACK_ON					    VARCHAR2(18)
+ SUPPLEMENTAL_LOG_DATA_FK			    VARCHAR2(3)
+ SUPPLEMENTAL_LOG_DATA_ALL			    VARCHAR2(3)
+ DB_UNIQUE_NAME 				    VARCHAR2(30)
+ STANDBY_BECAME_PRIMARY_SCN			    NUMBER
+ FS_FAILOVER_MODE				    VARCHAR2(19)
+ FS_FAILOVER_STATUS				    VARCHAR2(22)
+ FS_FAILOVER_CURRENT_TARGET			    VARCHAR2(30)
+ FS_FAILOVER_THRESHOLD				    NUMBER
+ FS_FAILOVER_OBSERVER_PRESENT			    VARCHAR2(7)
+ FS_FAILOVER_OBSERVER_HOST			    VARCHAR2(512)
+ CONTROLFILE_CONVERTED				    VARCHAR2(3)
+ PRIMARY_DB_UNIQUE_NAME 			    VARCHAR2(30)
+ SUPPLEMENTAL_LOG_DATA_PL			    VARCHAR2(3)
+ MIN_REQUIRED_CAPTURE_CHANGE#			    NUMBER
+ CDB						    VARCHAR2(3)
+ CON_ID 					    NUMBER
+ PENDING_ROLE_CHANGE_TASKS			    VARCHAR2(512)
+ CON_DBID					    NUMBER
+ FORCE_FULL_DB_CACHING				    VARCHAR2(3)
+ SUPPLEMENTAL_LOG_DATA_SR			    VARCHAR2(3)
+
+SQL> 
+SQL> 
+SQL> desc v$restore_point;
+ Name					   Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SCN						    NUMBER
+ DATABASE_INCARNATION#				    NUMBER
+ GUARANTEE_FLASHBACK_DATABASE			    VARCHAR2(3)
+ STORAGE_SIZE					    NUMBER
+ TIME						    TIMESTAMP(9)
+ RESTORE_POINT_TIME				    TIMESTAMP(9)
+ PRESERVED					    VARCHAR2(3)
+ NAME						    VARCHAR2(128)
+ PDB_RESTORE_POINT				    VARCHAR2(3)
+ CLEAN_PDB_RESTORE_POINT			    VARCHAR2(3)
+ PDB_INCARNATION#				    NUMBER
+ REPLICATED					    VARCHAR2(3)
+ CON_ID 					    NUMBER
+
+SQL> select * from v$restore_point;
+
+no rows selected
+
+SQL> 
+SQL> 
+SQL> create restore point rp_normal ;
+
+Restore point created.
+
+SQL> set lines 200
+col NAME for a32
+col TIME for a32
+SELECT NAME, SCN, TIME, DATABASE_INCARNATION#,GUARANTEE_FLASHBACK_DATABASE,STORAGE_SIZE FROM V$RESTORE_POINT;SQL> SQL> SQL> 
+
+NAME					SCN TIME			     DATABASE_INCARNATION# GUA STORAGE_SIZE
+-------------------------------- ---------- -------------------------------- --------------------- --- ------------
+RP_NORMAL			    3746697 12-JUL-23 09.38.13.000000000 AM			 2 NO		  0
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> select flashback_on from v$databse;
+select flashback_on from v$databse
+                         *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> select flashback_on from v$database;
+
+FLASHBACK_ON
+------------------
+YES
+
+SQL> 
+SQL> 
+SQL> drop restore point rp_normal;
+
+Restore point dropped.
+
+SQL> shut immediate;
+Database closed.
+Database dismounted.
+
+s's
+ORACLE instance shut down.
+SQL> SQL> SP2-0042: unknown command "s's" - rest of line ignored.
+SQL> 
+SQL> 
+SQL> 
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 1560277408 bytes
+Fixed Size		    8896928 bytes
+Variable Size		 1006632960 bytes
+Database Buffers	  536870912 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+SQL> 
+SQL> 
+SQL> alter database flashback off;
+
+Database altered.
+
+SQL> 
+SQL> alter database open;
+
+Database altered.
+
+SQL> 
+SQL> 
+SQL> show parameter db_recovery_dest
+SQL> 
+SQL> 
+SQL> 
+SQL> show parameter recovery
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+db_recovery_file_dest		     string	 /u03/fra
+db_recovery_file_dest_size	     big integer 8G
+recovery_parallelism		     integer	 0
+remote_recovery_file_dest	     string
+SQL> 
+SQL> 
+SQL> 
+SQL> create restore point rp_normal;
+
+Restore point created.
+
+SQL> set lines 200
+col NAME for a32
+col TIME for a32
+SELECT NAME, SCN, TIME, DATABASE_INCARNATION#,GUARANTEE_FLASHBACK_DATABASE,STORAGE_SIZE FROM V$RESTORE_POINT;SQL> SQL> SQL> 
+
+NAME					SCN TIME			     DATABASE_INCARNATION# GUA STORAGE_SIZE
+-------------------------------- ---------- -------------------------------- --------------------- --- ------------
+RP_NORMAL			    3747912 12-JUL-23 09.42.11.000000000 AM			 2 NO		  0
+
+SQL> 
+SQL> 
+SQL> alter system switch logfile;
+
+System altered.
+
+SQL> 
+SQL> /
+
+System altered.
+
+SQL> 
+SQL> 
+SQL> archive log list
+Database log mode	       Archive Mode
+Automatic archival	       Enabled
+Archive destination	       /u02/archives
+Oldest online log sequence     39
+Next log sequence to archive   41
+Current log sequence	       41
+SQL> 
+SQL> alter system switch logfile;
+
+System altered.
+
+SQL> archive log list
+Database log mode	       Archive Mode
+Automatic archival	       Enabled
+Archive destination	       /u02/archives
+Oldest online log sequence     40
+Next log sequence to archive   42
+Current log sequence	       42
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> create restore point grp_1207 flashback database guarantee;
+create restore point grp_1207 flashback database guarantee
+                              *
+ERROR at line 1:
+ORA-00933: SQL command not properly ended
+
+
+SQL> create restore point grp_1207 guarantee flashback database;
+
+Restore point created.
+
+SQL> SELECT NAME, SCN, TIME, DATABASE_INCARNATION#,GUARANTEE_FLASHBACK_DATABASE,STORAGE_SIZE FROM V$RESTORE_POINT;
+
+NAME					SCN TIME			     DATABASE_INCARNATION# GUA STORAGE_SIZE
+-------------------------------- ---------- -------------------------------- --------------------- --- ------------
+GRP_1207			    3748020 12-JUL-23 09.45.10.000000000 AM			 2 YES	  209715200
+RP_NORMAL			    3747912 12-JUL-23 09.42.11.000000000 AM			 2 NO		  0
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> select flashback_on from v$database;
+
+FLASHBACK_ON
+------------------
+RESTORE POINT ONLY
+
+SQL> 
+SQL> 
+SQL> !ps -ef|grep rvwr
+oracle    5974     1  0 09:45 ?        00:00:00 ora_rvwr_hrms
+oracle    6078  4296  0 09:46 pts/0    00:00:00 /bin/bash -c ps -ef|grep rvwr
+oracle    6080  6078  0 09:46 pts/0    00:00:00 grep rvwr
+
+SQL> 
+SQL> 
+SQL> 
+SQL> select member from v$logfile;
+
+MEMBER
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/u01/app/oracle/oradata/HRMS/onlinelog/o1_mf_3_l9hxcy4t_.log
+/u01/app/oracle/fast_recovery_area/HRMS/onlinelog/o1_mf_3_l9hxcyoh_.log
+/u01/app/oracle/oradata/HRMS/onlinelog/o1_mf_2_l9hxcy49_.log
+/u01/app/oracle/fast_recovery_area/HRMS/onlinelog/o1_mf_2_l9hxcyq9_.log
+/u01/app/oracle/oradata/HRMS/onlinelog/o1_mf_1_l9hxcy3o_.log
+/u01/app/oracle/fast_recovery_area/HRMS/onlinelog/o1_mf_1_l9hxcyb4_.log
+
+6 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> create table before_rp as select * from dba_data_files;
+
+Table created.
+
+SQL> 
+SQL> select count(*) from before_rp;
+
+  COUNT(*)
+----------
+	 9
+
+SQL> 
+SQL> 
+SQL> shut immediate;
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> 
+SQL> 
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 1560277408 bytes
+Fixed Size		    8896928 bytes
+Variable Size		 1006632960 bytes
+Database Buffers	  536870912 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+SQL> 
+SQL> 
+SQL> 
+SQL> flashbask database to restore point GRP_1207;
+SP2-0734: unknown command beginning "flashbask ..." - rest of line ignored.
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> flashback database to restore point GRP_1207;
+
+Flashback complete.
+
+SQL> 
+SQL> 
+SQL> alter database open;
+alter database open
+*
+ERROR at line 1:
+ORA-01589: must use RESETLOGS or NORESETLOGS option for database open
+
+
+SQL> alter database open resetlogs;
+
+Database altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> select count(*) from before_rp;
+select count(*) from before_rp
+                     *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> 
+SQL> 
+SQL> 
+SQL> set lines 200
+col NAME for a32
+col TIME for a32
+SELECT NAME, SCN, TIME, DATABASE_INCARNATION#,GUARANTEE_FLASHBACK_DATABASE,STORAGE_SIZE FROM V$RESTORE_POINT;SQL> SQL> SQL> 
+
+NAME					SCN TIME			     DATABASE_INCARNATION# GUA STORAGE_SIZE
+-------------------------------- ---------- -------------------------------- --------------------- --- ------------
+GRP_1207			    3748020 12-JUL-23 09.45.10.000000000 AM			 2 YES	  209715200
+RP_NORMAL			    3747912 12-JUL-23 09.42.11.000000000 AM			 2 NO		  0
+
+SQL> 
+SQL> 
+SQL> 
+SQL> select * from v$database_incarnation;
+
+INCARNATION# RESETLOGS_CHANGE# RESETLOGS PRIOR_RESETLOGS_CHANGE# PRIOR_RES STATUS  RESETLOGS_ID PRIOR_INCARNATION# FLASHBACK_DATABASE_ALLOWED	  CON_ID
+------------ ----------------- --------- ----------------------- --------- ------- ------------ ------------------ -------------------------- ----------
+	   1		     1 17-APR-19		       0	   PARENT    1005785759 		 0 NO				       0
+	   2	       1920977 25-JUN-23		       1 17-APR-19 PARENT    1140442582 		 1 YES				       0
+	   3	       3748022 12-JUL-23		 1920977 25-JUN-23 CURRENT   1141984491 		 2 YES				       0
+
+SQL> 
+SQL> 
+SQL> select member from v$logfile;
+
+MEMBER
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/u01/app/oracle/oradata/HRMS/onlinelog/o1_mf_3_l9hxcy4t_.log
+/u01/app/oracle/fast_recovery_area/HRMS/onlinelog/o1_mf_3_l9hxcyoh_.log
+/u01/app/oracle/oradata/HRMS/onlinelog/o1_mf_2_l9hxcy49_.log
+/u01/app/oracle/fast_recovery_area/HRMS/onlinelog/o1_mf_2_l9hxcyq9_.log
+/u01/app/oracle/oradata/HRMS/onlinelog/o1_mf_1_l9hxcy3o_.log
+/u01/app/oracle/fast_recovery_area/HRMS/onlinelog/o1_mf_1_l9hxcyb4_.log
+
+6 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> alter database switch logfile;
+alter database switch logfile
+                      *
+ERROR at line 1:
+ORA-02000: missing ALL keyword
+
+
+SQL> alter system switch logfile;
+
+System altered.
+
+SQL> /
+
+System altered.
+
+SQL> /
+/
+/
+
+System altered.
+
+SQL> 
+System altered.
+
+SQL> 
+System altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> drop restore point grp_1207;
+
+Restore point dropped.
+
+SQL> 
+SQL> 
+SQL> show parameter control
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+control_file_record_keep_time	     integer	 7
+control_files			     string	 /u01/app/oracle/oradata/HRMS/c
+						 ontrolfile/o1_mf_l9hxctx8_.ctl
+						 , /u01/app/oracle/fast_recover
+						 y_area/HRMS/controlfile/o1_mf_
+						 l9hxctxm_.ctl, /u02/controlfil
+						 e/ctrlfile1.ctl, /u03/controlf
+						 ile/ctrlfile2.ctl
+control_management_pack_access	     string	 DIAGNOSTIC+TUNING
+SQL> 
+SQL> 
+SQL> 
+SQL> show parameter flashback
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+db_flashback_retention_target	     integer	 1440
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> show parameter format 
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+log_archive_format		     string	 %t_%s_%r.dbf
+nls_date_format 		     string
+nls_time_format 		     string
+nls_time_tz_format		     string
+nls_timestamp_format		     string
+nls_timestamp_tz_format 	     string
+permit_92_wrap_format		     boolean	 TRUE
+star_transformation_enabled	     string	 FALSE
+uniform_log_timestamp_format	     boolean	 TRUE
+SQL> alter system set log_archive_format='%t_%s_%r.arc' scope=both;
+alter system set log_archive_format='%t_%s_%r.arc' scope=both
+                 *
+ERROR at line 1:
+ORA-02095: specified initialization parameter cannot be modified
+
+
+SQL>  alter system set log_archive_format='%t_%s_%r.arc' scope=spfile;
+
+System altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> startup force
+
+
+
+
+
+
+ORACLE instance started.
+
+Total System Global Area 1560277408 bytes
+Fixed Size		    8896928 bytes
+Variable Size		 1006632960 bytes
+Database Buffers	  536870912 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+Database opened.
+SQL> SQL> SQL> SQL> SQL> SQL> SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> alter system switch logfile;
+
+System altered.
+
+SQL> /
+
+System altered.
+
+SQL> / 
+/
+
+System altered.
+
+SQL> 
+System altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> drop restore point rp_normal;
+
+Restore point dropped.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> create restore point rp_normal;
+
+Restore point created.
+
+SQL> 
+SQL> 
+SQL> alter system switch logfile;
+
+
+System altered.
+
+SQL> SQL> 
+SQL> 
+SQL> 
+SQL> select current_scn from v$databaase;
+select current_scn from v$databaase
+                        *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> select current_scn from v$database;
+
+CURRENT_SCN
+-----------
+    3849896
+
+SQL> 
+SQL> 
+SQL> /
+
+CURRENT_SCN
+-----------
+    3849898
+
+SQL> shut immediate;
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> 
+SQL> 
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 1560277408 bytes
+Fixed Size		    8896928 bytes
+Variable Size		 1006632960 bytes
+Database Buffers	  536870912 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+SQL> 
+SQL> 
+SQL> 
+SQL> flashback database to restore point rp_normal;
+flashback database to restore point rp_normal
+*
+ERROR at line 1:
+ORA-38726: Flashback database logging is not on.
+
+
+SQL> 
+SQL> 
+SQL> alter databas eopen;
+alter databas eopen
+      *
+ERROR at line 1:
+ORA-00940: invalid ALTER command
+
+
+SQL> 
+SQL> alter database open;
+
+Database altered.
+
+SQL> 
+SQL> 
+SQL> alter database flashback on;
+
+Database altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> create restore point rp_normal_1207 ;
+
+Restore point created.
+
+SQL> 
+SQL> 
+SQL> alter system switch logfile;
+
+System altered.
+
+SQL> /
+
+System altered.
+
+SQL> /
+/
+/
+
+System altered.
+
+SQL> 
+System altered.
+
+SQL> 
+System altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> create table after_rp as select * from dba_data_files;
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> shut immediate;
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> 
+SQL> 
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 1560277408 bytes
+Fixed Size		    8896928 bytes
+Variable Size		 1006632960 bytes
+Database Buffers	  536870912 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+SQL> 
+SQL> 
+SQL> flashback database to restore point rp_normal_1207;
+
+Flashback complete.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> alter database open resetlogs;
+
+Database altered.
+
+SQL> 
+SQL> 
+SQL> select * from v$database_incarrination;
+select * from v$database_incarrination
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> select * from v$database_incarination;
+select * from v$database_incarination
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL>  select * from v$database_incarnation;
+
+INCARNATION# RESETLOGS_CHANGE# RESETLOGS PRIOR_RESETLOGS_CHANGE# PRIOR_RES STATUS  RESETLOGS_ID PRIOR_INCARNATION# FLASHBACK_DATABASE_ALLOWED	  CON_ID
+------------ ----------------- --------- ----------------------- --------- ------- ------------ ------------------ -------------------------- ----------
+	   1		     1 17-APR-19		       0	   PARENT    1005785759 		 0 NO				       0
+	   2	       1920977 25-JUN-23		       1 17-APR-19 PARENT    1140442582 		 1 NO				       0
+	   3	       3748022 12-JUL-23		 1920977 25-JUN-23 PARENT    1141984491 		 2 YES				       0
+	   4	       3850199 12-JUL-23		 3748022 12-JUL-23 CURRENT   1141985790 		 3 YES				       0
+
+SQL> alter system switch logfile;
+
+System altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL>   
+SQL> 
+SQL> 
+SQL> alter system switch logfile;
+
+System altered.
+
+SQL> /
+/
+System altered.
+
+SQL> 
+/
+?
+
+
+/
+/
+
+System altered.
+
+SQL> 
+System altered.
+
+SQL> 
+ HELP
+ ----
+
+ Accesses this command line help system. Enter HELP INDEX or ? INDEX
+ for a list of topics.
+
+ You can view SQL*Plus resources at
+     http://www.oracle.com/technology/documentation/
+
+ ******************************************************************************
+ **  Top 12.2 features:                                                      **
+ **    - Fast retrieval of data as CSV for use in applications like          **
+ **      SQL*Loader. Use SQLPLUS -M "CSV ON" or SET MARKUP CSV ON            **
+ **    - Improved defaults and optimizations for reports. Use SQLPLUS -F     **
+ **    - Command recall. Use SET HISTORY ON and HISTORY to list previous     **
+ **      commands.                                                           **
+ ******************************************************************************
+
+ HELP|? [topic]
+
+
+SQL> SQL> SQL> 
+System altered.
+
+SQL> 
+System altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> create table emp as select * from dba_tables;
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> drop table emp;
+
+Table dropped.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> flashback table emp to before drop;
+flashback table emp to before drop
+*
+ERROR at line 1:
+ORA-38305: object not in RECYCLE BIN
+
+
+SQL> 
+SQL> 
+SQL> 
+SQL> show parameter recycle
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+buffer_pool_recycle		     string
+db_recycle_cache_size		     big integer 0
+recyclebin			     string	 on
+SQL> 
+SQL> 
+SQL> 
+SQL> show recycle  
+SQL> 
+SQL> 
+SQL> 
+SQL> select * from recycle_bin;
+select * from recycle_bin
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> 
+SQL> show recyclebin;
+SQL> 
+SQL> 
+SQL> select
+ object_name, original_name, operation, type, droptime
+from
+ user_recyclebin;  2    3    4  
+
+no rows selected
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> create table emp1 tablespace users as select * from emp;
+create table emp1 tablespace users as select * from emp
+                                                    *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> 
+SQL> create table emp1 tablespace users as select * from dba_users;
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> drop table rmp1;
+drop table rmp1
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> drop table emp1;
+
+Table dropped.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> show recycle 
+ORIGINAL NAME	 RECYCLEBIN NAME		OBJECT TYPE  DROP TIME
+---------------- ------------------------------ ------------ -------------------
+EMP1		 BIN$AEQPa1U/I/HgZSk7wlbVXg==$0 TABLE	     2023-07-12:10:28:14
+SQL> 
+SQL> 
+SQL> 
+SQL> flashback table emp1 to before drop;
+
+Flashback complete.
+
+SQL> 
