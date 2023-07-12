@@ -1,0 +1,19 @@
+where CLEAN_DB is the name given to the guaranteed restore point.
+
+create restore point CLEAN_DB guarantee flashback database;
+
+
+set lines 200
+col NAME for a32
+col TIME for a32
+SELECT NAME, SCN, TIME, DATABASE_INCARNATION#,GUARANTEE_FLASHBACK_DATABASE,STORAGE_SIZE FROM V$RESTORE_POINT;
+
+create restore point clean_db_g guarantee flashback database;
+
+shut immediate;
+startup mount;
+flashback database to restore point clean_db_g;
+
+alter database open resetlogs;
+
+
