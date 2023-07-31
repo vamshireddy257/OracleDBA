@@ -1,0 +1,40 @@
+-rman shell
+vi /u01/rman/full_backup.sh
+#!/bin/bash
+
+export ORACLE_SID=hdfc
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
+export DATE=$(date +%y-%m-%d_%H%M%S)
+export PATH=$PATH:$ORACLE_HOME/bin
+
+rman target / log=/u01/rman_bkp/RMAN_${DATE}.log << EOF
+run
+{
+crosscheck archivelog all;
+crosscheck backup;
+delete noprompt expired backup;
+delete noprompt expired archivelog all;
+backup database;
+backup archivelog all delete input;
+delete noprompt obsolete;
+}
+EOF
+
+
+
+nohup /u01/dir1/rman_FDB_bkp.sh &
+
+
+expdp shell
+
+#!/bin/bash
+
+. /home/oracle/.bash_profile
+
+export ORACLE_SID=hrms
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
+export DATE=$(date +%y-%m-%d_%H%M%S)
+export TIMESTAMP=`date +%a%d%b%Y`
+$ORACLE_HOME/bin/expdp \'/ as sysdba\' directory=dp_pump dumpfile=expdp_tab_${TIMESTAMP}_%U.dmp logfile=expdp_log_${TIMESTAMP}.log full=y
+
+
