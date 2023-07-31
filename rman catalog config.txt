@@ -1,0 +1,27 @@
+
+create new database for catalog.
+listener and tnsconfig
+networking between db server and catdb.
+
+
+catdb:
+create user rman_user identified by rman_user account unlock;
+grant create session,connect,resource to rman_user;
+grant recovery_catalog_owner to rman_user;
+
+
+rman
+connect catalog rman_user/rman_user@to_catdb
+create catalog;
+
+rman catalog rman_user/rman_user@to_catdb target sys/Clone_789@to_proddb
+
+RMAN> connect target sys/Proddb_789@to_proddb
+connected to target database: PRODDB (DBID=830971785)
+RMAN> connect catalog rman_user/rman_user@to_catdb
+connected to recovery catalog database
+rman
+register database;
+
+
+

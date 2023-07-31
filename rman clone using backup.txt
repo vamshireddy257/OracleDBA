@@ -1,0 +1,98 @@
+https://doyensys.com/blogs/rman-backup-based-cloning-database-using-oracle-12c/
+
+
+orapwd file=$ORACLE_HOME/dbs/orapwpr password=prodDB_789 entries=3;
+
+edit parameter file
+*.audit_file_dest='/u01/app/oracle/admin/proddb/adump'
+*.audit_trail='db'
+*.compatible='19.0.0'
+*.control_files='/u01/app/oracle/oradata/PRODDB/controlfile/o1_mf_k2tzlpys_.ctl','/u01/app/oracle/fast_recovery_area/PRODDB/controlfile/o1_mf_k2tzlq0c_.ctl'
+*.db_block_size=8192
+*.db_create_file_dest='/u01/app/oracle/oradata'
+*.db_name='proddb'
+*.db_recovery_file_dest='/u01/app/oracle/fast_recovery_area'
+*.db_recovery_file_dest_size=12732m
+*.diagnostic_dest='/u01/app/oracle'
+*.dispatchers='(PROTOCOL=TCP) (SERVICE=proddbXDB)'
+*.enable_pluggable_database=true
+*.memory_target=1457m
+*.open_cursors=300
+*.processes=300
+*.remote_login_passwordfile='EXCLUSIVE'
+*.undo_tablespace='UNDOTBS1'
+
+
+to...
+
+*.audit_file_dest='/u01/app/oracle/admin/clone/adump'
+*.audit_trail='db'
+*.compatible='19.0.0'
+*.control_files='/u01/app/oracle/oradata/CLONE/controlfile/o1_mf_k2tzlpys_.ctl','/u01/app/oracle/fast_recovery_area/CLONE/controlfile/o1_mf_k2tzlq0c_.ctl'
+*.db_block_size=8192
+*.db_create_file_dest='/u01/app/oracle/oradata'
+*.db_name='clone'
+*.db_recovery_file_dest='/u01/app/oracle/fast_recovery_area'
+*.db_recovery_file_dest_size=12732m
+*.diagnostic_dest='/u01/app/oracle'
+*.dispatchers='(PROTOCOL=TCP) (SERVICE=cloneXDB)'
+*.enable_pluggable_database=true
+*.memory_target=1457m
+*.open_cursors=300
+*.processes=300
+*.remote_login_passwordfile='EXCLUSIVE'
+*.undo_tablespace='UNDOTBS1'
+
+You need also to create the following directories on the auxiliary server and add them to the parameter file:
+
+adump
+
+bdump
+
+udump
+
+cdump
+
+Flash Recovery Area
+
+$ cd $ORACLE_BASE
+$ mkdir admin
+$ cd admin/
+$ mkdir clone
+$ cd clone/
+$ mkdir adump bdump cdump udump
+$ cd ..
+$ mkdir flash_recovery_area
+
+cd /u01/app/oracle
+mkdir admin
+cd admin
+mkdir clone
+cd clone
+mkdir adump bdump cdump udump
+cd ..
+mkdir flash_recovery_area
+
+modify pfile entries with new database name.
+
+create spfile from pfile in new environment.
+
+startup nomount;
+
+duplicate database to 'clone' backup location '/u01/rman_bkp' nofilenamecheck;
+
+source
+backup database plus archivelog;
+scp initclone.ora oracle@clone2.com:$ORACLE_HOME/dbs/
+scp -r rman_bkp/ oracle@clone2.com:/u01/
+
+
+target:
+edit parameter to new db name:
+
+mkdir -p /u01/app/oracle/oradata/CLONE/controlfile/ /u01/app/oracle/fast_recovery_area/CLONE/controlfile/ /u01/app/oracle/fast_recovery_area
+
+
+########restore controlfile from '/u01/rman_bkp/c-839267374-20220313-07';
+
+duplicate database to 'clone' backup location '/u01/rman_bkp' nofilenamecheck;

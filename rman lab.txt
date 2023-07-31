@@ -1,0 +1,64 @@
+desc v$rman_backup_job_details;
+-- to check the progress;
+
+select SESSION_KEY,SESSION_RECID,to_char(start_time,'DD-MON HH24:MI') Start_At,
+to_char(end_time,'DD-MON HH24:MI') End_At,
+input_bytes/1048576 Input_MB, output_bytes/1048576 Output_MB,
+input_type, status
+from v$rman_backup_job_details
+where start_time > trunc(sysdate)
+order by start_time;
+
+
+desc v$rman_backup_job_details
+
+col OUTPUT for a135 trunc
+set pages 300;
+select output from v$rman_output where session_recid = 53   order by recid ;
+
+
+select max(first_change#) chng from v$archived_log
+
+
+crosscheck archivelog all;
+
+backup incremental from scn 2639691 until scn 2640272 database format '/u01/scn_inc_backup_%U';
+
+
+backup incremental from scn 2639691  database format '/u01/scn_inc_backup_%U';
+
+
+
+backup incremental from scn 2639691  database format '/u01/scn_inc_backup_%U';
+
+restore archivelog sequence between 123 and 125;
+
+entire database;
+backup database;
+
+backup only CDB
+BACKUP DATABASE ROOT;
+
+export ORACLE_PDB_SID=pdb4
+
+BACKUP PLUGGABLE DATABASE pdb3, pdb4;
+
+export ORACLE_PDB_SID=pdb4
+rnamn target /
+backup database;
+
+
+
+--enable block change tracking 
+
+
+
+alter database enable block change tracking using file '/u01/blockfile.log';
+
+Select filename,status from V$block_change_tracking;
+
+select * from v$sgastat where name like '%CTWR%';
+
+select sid,program,status from v$session where program like '%CTWR%';
+
+alter database disable block change tracking;
