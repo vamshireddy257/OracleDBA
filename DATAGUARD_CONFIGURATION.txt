@@ -1,0 +1,114 @@
+hostnamectl set-hostname oracles.com
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
+export PATH=$ORACLE_HOME/bin:$PATH
+
+ALTER DATABASE FORCE LOGGING;
+
+set lines 180
+col MEMBER for a80
+select b.thread#, a.group#, a.member, b.bytes/1024/1024 MB FROM v$logfile a, v$log b WHERE a.group# = b.group#;
+
+/u01/app/oracle/oradata/HDFC/onlinelog/
+
+ALTER DATABASE ADD STANDBY LOGFILE GROUP 8 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo08.log') SIZE 200M;
+ALTER DATABASE ADD STANDBY LOGFILE GROUP 9 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo09.log') SIZE 200M;
+ALTER DATABASE ADD STANDBY LOGFILE GROUP 10 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo10.log') SIZE 200M;
+ALTER DATABASE ADD STANDBY LOGFILE GROUP 11 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo11.log') SIZE 200M;
+
+alter system set db_unique_name='proddb' scope=spfile;
+
+ALTER SYSTEM SET LOG_ARCHIVE_CONFIG='DG_CONFIG=(proddb,proddbs)' scope=both;
+
+ALTER SYSTEM SET LOG_ARCHIVE_DEST_2='SERVICE=to_proddbs LGWR ASYNC VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=proddbs' scope=both;
+
+--ALTER SYSTEM SET LOG_ARCHIVE_DEST_STATE_1=ENABLE scope=both;
+
+ALTER SYSTEM SET LOG_ARCHIVE_DEST_STATE_2=ENABLE scope=both;
+
+ALTER SYSTEM SET fal_server=proddbs scope=both;
+
+ALTER SYSTEM SET STANDBY_FILE_MANAGEMENT=AUTO;
+
+create pfile from spfile;
+alter pluggable database all open;
+exit;
+
+mkdir -p /u01/rman_bkp/
+
+rman target /
+
+CONFIGURE RETENTION POLICY TO REDUNDANCY 2; # default
+CONFIGURE BACKUP OPTIMIZATION ON; # default
+CONFIGURE DEFAULT DEVICE TYPE TO DISK; # default
+CONFIGURE CONTROLFILE AUTOBACKUP ON; # default
+CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '/u01/rman_bkp/%F'; # default
+CONFIGURE DEVICE TYPE DISK PARALLELISM 2 BACKUP TYPE TO BACKUPSET; # default
+CONFIGURE DATAFILE BACKUP COPIES FOR DEVICE TYPE DISK TO 1; # default
+CONFIGURE ARCHIVELOG BACKUP COPIES FOR DEVICE TYPE DISK TO 1; # default
+CONFIGURE MAXSETSIZE TO UNLIMITED; # default
+CONFIGURE ENCRYPTION FOR DATABASE OFF; # default
+CONFIGURE ENCRYPTION ALGORITHM 'AES128'; # default
+CONFIGURE COMPRESSION ALGORITHM 'BASIC' AS OF RELEASE 'DEFAULT' OPTIMIZE FOR LOAD TRUE ; # default
+CONFIGURE RMAN OUTPUT TO KEEP FOR 7 DAYS; # default
+CONFIGURE ARCHIVELOG DELETION POLICY TO NONE; # default
+CONFIGURE SNAPSHOT CONTROLFILE NAME TO '/u01/rman_bkp/snapcf_DB.f'; # default
+CONFIGURE CHANNEL 1 DEVICE TYPE DISK FORMAT '/u01/rman_bkp/%U';
+CONFIGURE CHANNEL 2 DEVICE TYPE DISK FORMAT '/u01/rman_bkp/%U';
+
+
+	backup database plus archivelog;
+exit;
+lsnrctl start
+
+cd  /u01/app/oracle/product/19.0.0.0/dbhome_1/dbs/
+
+/u01/app/oracle/product/19.0.0.0/dbhome_1/dbs
+
+scp initproddb.ora orapwproddb oracle@oracles.com:/u01/app/oracle/product/19.0.0.0/dbhome_1/dbs
+cd ../network/admin/
+scp listener.ora tnsnames.ora oracle@oracles.com:/u01/app/oracle/product/19.0.0.0/dbhome_1/network/admin/
+scp -r /u01/rman_bkp/ oracle@oracles.com:/u01/
+scp -r /u01/rman_bkp/ oracle@oracles.com:/u01/
+
+
+standby
+cd $ORACLE_HOME
+cd dbs
+mv orapwproddb orapwproddbs
+
+edit pfile
+
+mkdir -p /u01/app/oracle/admin/proddb/adump /u01/app/oracle/oradata/PRODDB/controlfile/ /u01/app/oracle/fast_recovery_area/PRODDB/controlfile/ /u01/app/oracle/oradata /u01/app/oracle/fast_recovery_area
+
+
+sqlplus / as sysdba
+create spfile from pfile;
+
+edit listener file
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1/network/admin/
+
+lsnrctl start
+
+
+rman auxiliary /
+
+run {
+allocate auxiliary channel t1 type disk;
+duplicate target database for standby backup location '/u01/rman_bkp' nofilenamecheck;
+}
+
+
+exit
+
+sqlplus / as sysdba
+
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE disconnect from session;
+
+primary
+
+alter system set log_archive_dest_state_2=DEFER scope=both sid='*';
+alter system set log_archive_dest_state_2=enable scope=both sid='*';
+
+
+set lines 300 pages 300;
+SELECT sequence#, first_time, next_time, applied FROM v$archived_log ORDER BY sequence#;
