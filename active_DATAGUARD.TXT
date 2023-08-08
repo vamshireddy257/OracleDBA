@@ -1,0 +1,6 @@
+active DG
+
+on standby :
+stop mrp
+alter database open;
+start mrp
