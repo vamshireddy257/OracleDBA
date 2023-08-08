@@ -1,0 +1,59 @@
+convert stand by to snapshot and viceversa
+
+SQL@STANDBY> 
+select open_mode,database_role from v$database;
+
+SYS@STANDBY> 
+alter database recover managed standby database cancel;
+
+SYS@STANDBY> 
+shut immediate
+
+SYS@STANDBY> 
+startup mount;
+
+SYS@TESTER1 SQL> 
+select flashback_on from v$database;
+alter database flashback on;
+
+select GUARANTEE_FLASHBACK_DATABASE,RESTORE_POINT_TIME,name from v$restore_point;
+
+SYS@TESTER1 SQL> 
+select status from v$instance;
+
+SYS@TESTER1 SQL> 
+alter database convert to snapshot standby;
+
+SYS@TESTER1 SQL> 
+alter database open;
+
+SYS@TESTER1 SQL> 
+select open_mode,database_role from v$database;
+
+
+
+SQL> 
+select NAME,GUARANTEE_FLASHBACK_DATABASE from v$restore_point;
+
+
+
+convert it again to physical standby again.
+
+shut immediate;
+
+startup mount;
+
+alter database convert to physical standby;
+
+select status from v$instance;
+
+ shut immediate;
+ 
+ startup;
+ 
+ SYS@TESTER1 SQL>alter database recover managed standby database using current logfile disconnect;
+ 
+ 
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;

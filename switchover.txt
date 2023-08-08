@@ -1,0 +1,48 @@
+switchover:
+
+
+on primary:
+first we should know the database name, role,db unique name,mode.
+
+primary>
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
+
+
+to know the gap status.
+
+primary>
+select STATUS, GAP_STATUS from V$ARCHIVE_DEST_STATUS where DEST_ID = 2;
+
+standby>
+select NAME, VALUE, DATUM_TIME from V$DATAGUARD_STATS;
+
+to know the switch over status.
+primary>
+select SWITCHOVER_STATUS from V$DATABASE;
+
+convert primary to standby
+primary>
+
+alter database commit to switchover to physical standby with session shutdown;
+
+primary>startup mount;
+
+check the status
+primary>
+select name, open_mode, db_unique_name, database_role from v$database;
+
+to know the status
+old standby>
+select SWITCHOVER_STATUS from V$DATABASE;
+
+converting the standby to primary
+old standby>
+alter database commit to switchover to primary with session shutdown;
+
+new primary>alter database open;
+
+stand by> alter database open;
+enable MRP :
+alter database recover managed standby database using current logfile disconnect;

@@ -1,0 +1,230 @@
+set pages 500
+col owner for a20
+col directory_name for a20
+col directory_path for a50
+
+select owner, DIRECTORY_NAME,DIRECTORY_PATH from dba_directories;
+
+mkdir -p /u01/datapump
+
+create directory datapump_dir as '/u01/datapump';
+
+=========
+ESTIMATE
+=========
+
+expdp directory=datapump_dir  logfile=Full_oradb_2711.log full=y estimate_only=y
+
+====================
+Full Dtabase backup
+====================
+expdp directory=datapump_dir dumpfile=Full_oradb_2711.dmp logfile=Full_oradb_2711.log full=y 
+
+==============
+schema backup
+==============
+expdp directory=datapump_dir dumpfile=ORADB_SOE_2711.dmp logfile=ORADB_SOE_2711.log schemas=soe
+expdp directory=datapump_dir dumpfile=ORADB_SOE_2711.dmp logfile=ORADB_SOE_2711.log schemas=soe,schema2,schema3..
+
+=============
+table backup
+=============
+
+expdp directory=datapump_dir dumpfile=ORADB_SOE_ORDER_ITEMS_2711.dmp logfile=ORADB_SOE_ORDER_ITEMS_2711.log tables=soe.ORDER_ITEMS,schema.table2,schema.table3...
+
+expdp \"/ as sysdba\" directory=datapump_dir dumpfile=ORADB_SOE_CUSTOMERS_2711.dmp logfile=ORADB_SOE_CUSTOMERS_2711.log tables=soe.CUSTOMERS
+
+==============
+using parfile:
+==============
+
+[oracle@srv1 datapump]$ cat expdp_soe.par 
+userid="sys/oracle as sysdba" directory=datapump_dir dumpfile=ORADB_SOE_2711_%U.dmp logfile=ORADB_SOE_271101.log schemas=soe
+
+[oracle@srv1 datapump]$ expdp parfile=expdp_soe.par
+
+
+expdp directory=datapump_dir dumpfile=ORADB_SOE_2711_12C.dmp logfile=ORADB_SOE_2711_12C.log schemas=soe version=12.2.0.1.0
+
+impdp \"sys/oracle@to_hrms as sysdba\" directory=datapump_dir dumpfile=ORADB_SOE_2711_12C.dmp logfile=impdp_ORADB_SOE_2711_01.dmp remap_tablespace=SOETBS:users
+
+impdp \"sys/oracle@to_hrms as sysdba\" directory=datapump_dir dumpfile=ORADB_SOE_2711_12C.dmp logfile=impdp_ORADB_SOE_2711_01.dmp remap_tablespace=SOETBS:users remap_schema=soe:scott
+
+expdp directory=datapump_dir dumpfile=Full_oradb_2711_12C_%U.dmp logfile=Full_oradb_2711.log full=y  version=12.2.0.1.0 parallel=4
+
+
+impdp \"sys/oracle@to_hrms as sysdba\" directory=datapump_dir dumpfile=Full_oradb_2711_12C_%U.dmp logfile=impdp_soe.log schemas=soe remap_tablespace=soetbs:users remap_schema=soe:test 
+
+=================================
+HIGHER VERSION TO LOWER VERSION
+=================================
+
+expdp directory=datapump_dir dumpfile=Full_oradb_2711_12C_02%U.dmp logfile=Full_oradb_2711.log full=y  version=12.2.0.1.0  filesize=50M
+
+expdp directory=datapump_dir dumpfile=datapump_dir:full_oradb_271122%U.dmp,dump_dir:full_oradb_271122%U.dmp parallel=2 full=y logfile=full_oradb_271122.log
+
+============
+COMPRESSION
+============
+
+expdp directory=datapump_dir dumpfile=Full_oradb_2711_COMPRESSED%U.dmp logfile=Full_oradb_2711COMPRESSED.log full=y COMPRESSION=ALL
+
+================================================
+TABLE_EXISTS_ACTION=skip/truncate/append/replace
+================================================
+
+impdp \"sys/oracle@to_hrms as sysdba\" directory=datapump_dir dumpfile=Full_oradb_2711_12C_%U.dmp logfile=impdp_soe.log schemas=soe remap_tablespace=soetbs:users remap_schema=soe:test  TABLE_EXISTS_ACTION=REPLACE
+
+==========================
+WITHOUT DATA,METADATA_ONLY
+==========================
+
+expdp directory=datapump_dir dumpfile=Full_oradb_2711_soe%U.dmp logfile=Full_oradb_2711COMPRESSED.log schemas=soe content=metadata_only
+
+
+==========================
+QUERY,DATA,WHERE,CONDITION
+==========================
+
+expdp directory=datapump_dir dumpfile=Full_oradb_2711_QUERY%U.dmp logfile=Full_oradb_2711QUERY.log tables=soe.emp  QUERY=SOE.EMP:\"WHERE DEPT_NO=10\"
+
+=============
+FLASHBACK_SCN
+=============
+
+expdp directory=datapump_dir dumpfile=soe_emp2_271101.dmp logfile=soe_emp2_2711.log tables=soe.emp2 flashback_scn=2467951
+
+==============
+FLASHBACK_TIME
+==============
+
+[oracle@srv1 datapump]$ cat fb_time.par
+directory=datapump_dir dumpfile=soe_emp2_271102.dmp logfile=soe_emp2_271102.log tables=soe.emp2 flashback_time="to_timestamp('27-11-22 12:51:00','DD-MM-YY HH24:MI:SS')"
+
+
+======================================
+KILL,STOP,RESUME,START,PAUSE EXPDP JOB
+====================================== 
+
+
+
+[oracle@srv1 datapump]$ expdp directory=datapump_dir dumpfile=Full_oradb_2711.dmp logfile=Full_oradb_2711.log full=y 
+
+Export: Release 19.0.0.0.0 - Production on Sun Nov 27 13:10:15 2022
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Username: / as sysdba
+Password: 
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_FULL_01":  /******** AS SYSDBA directory=datapump_dir dumpfile=Full_oradb_2711.dmp logfile=Full_oradb_2711.log full=y 
+Processing object type DATABASE_EXPORT/EARLY_OPTIONS/VIEWS_AS_TABLES/TABLE_DATA
+Processing object type DATABASE_EXPORT/NORMAL_OPTIONS/TABLE_DATA
+Processing object type DATABASE_EXPORT/NORMAL_OPTIONS/VIEWS_AS_TABLES/TABLE_DATA
+Processing object type DATABASE_EXPORT/SCHEMA/TABLE/TABLE_DATA
+Processing object type DATABASE_EXPORT/SCHEMA/PACKAGE_BODIES/PACKAGE/PACKAGE_BODY
+Processing object type DATABASE_EXPORT/SCHEMA/TABLE/INDEX/STATISTICS/INDEX_STATISTICS
+Processing object type DATABASE_EXPORT/SCHEMA/TABLE/INDEX/STATISTICS/FUNCTIONAL_INDEX/INDEX_STATISTICS
+Processing object type DATABASE_EXPORT/SCHEMA/TABLE/INDEX/STATISTICS/BITMAP_INDEX/INDEX_STATISTICS
+Processing object type DATABASE_EXPORT/SCHEMA/TABLE/STATISTICS/TABLE_STATISTICS
+^C
+Export> stop
+Are you sure you wish to stop this job ([yes]/no): yes
+
+[oracle@srv1 datapump]$ expdp attach=SYS_EXPORT_FULL_01
+
+Export: Release 19.0.0.0.0 - Production on Sun Nov 27 13:11:02 2022
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Username: / as sysdba
+Password: 
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+
+Job: SYS_EXPORT_FULL_01
+  Owner: SYS                            
+  Operation: EXPORT                         
+  Creator Privs: TRUE                           
+  GUID: EE6FDE2327B73CBCE053A164A8C07C6E
+  Start Time: Sunday, 27 November, 2022 13:11:07
+  Mode: FULL                           
+  Instance: ORADB
+  Max Parallelism: 1
+  Timezone: +00:00
+  Timezone version: 32
+  Endianness: LITTLE
+  NLS character set: AL32UTF8
+  NLS NCHAR character set: AL16UTF16
+  EXPORT Job Parameters:
+  Parameter Name      Parameter Value:
+     CLIENT_COMMAND        /******** AS SYSDBA directory=datapump_dir dumpfile=Full_oradb_2711.dmp logfile=Full_oradb_2711.log full=y 
+     TRACE                 0
+  State: IDLING                         
+  Bytes Processed: 0
+  Current Parallelism: 1
+  Job Error Count: 0
+  Job heartbeat: 1
+  Dump File: /u01/datapump/Full_oradb_2711.dmp
+    bytes written: 188,416
+  
+Worker 1 Status:
+  Instance ID: 1
+  Instance name: ORADB
+  Host name: srv1.com
+  Object start time: Sunday, 27 November, 2022 13:10:42
+  Object status at: Sunday, 27 November, 2022 13:10:45
+  Process Name: DW00
+  State: UNDEFINED                      
+
+Export> start
+
+Export> status
+
+Job: SYS_EXPORT_FULL_01
+  Operation: EXPORT                         
+  Mode: FULL                           
+  State: EXECUTING                      
+  Bytes Processed: 0
+  Current Parallelism: 1
+  Job Error Count: 0
+  Job heartbeat: 1
+  Dump File: /u01/datapump/Full_oradb_2711.dmp
+    bytes written: 204,800
+  
+Worker 1 Status:
+  Instance ID: 1
+  Instance name: ORADB
+  Host name: srv1.com
+  Object start time: Sunday, 27 November, 2022 13:11:16
+  Object status at: Sunday, 27 November, 2022 13:11:16
+  Process Name: DW00
+  State: EXECUTING                      
+
+Export> status
+
+Job: SYS_EXPORT_FULL_01
+  Operation: EXPORT                         
+  Mode: FULL                           
+  State: EXECUTING                      
+  Bytes Processed: 0
+  Current Parallelism: 1
+  Job Error Count: 0
+  Job heartbeat: 1
+  Dump File: /u01/datapump/Full_oradb_2711.dmp
+    bytes written: 212,992
+  
+Worker 1 Status:
+  Instance ID: 1
+  Instance name: ORADB
+  Host name: srv1.com
+  Object start time: Sunday, 27 November, 2022 13:11:22
+  Object status at: Sunday, 27 November, 2022 13:11:24
+  Process Name: DW00
+  State: EXECUTING                      
+
+Export> kill
+Are you sure you wish to stop this job ([yes]/no): yes
