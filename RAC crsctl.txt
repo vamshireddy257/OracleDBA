@@ -1,0 +1,72 @@
+Check all the resources of cluster.
+
+/u01/app/19.0.0/grid/bin/crsctl stat res -t
+
+/u01/app/19.0.0/grid/bin/crsctl check crs
+
+/u01/app/19.0.0/grid/bin/crsctl check cssd
+
+/u01/app/19.0.0/grid/bin/crsctl check crsd
+
+/u01/app/19.0.0/grid/bin/crsctl check evmd
+
+
+clusterware version.
+/u01/app/19.0.0/grid/bin/crsctl query crs softwareversion rac1
+
+voting disk location
+/u01/app/19.0.0/grid/bin/crsctl query css votedisk
+
+Find OCR location:
+/u01/app/19.0.0/grid/bin/ocrcheck
+
+Find cluster interconnect details
+/u01/app/19.0.0/grid/bin/oifcfg getif
+
+Check CRS status of local node 
+/u01/app/19.0.0/grid/bin/crsctl check crs
+
+Check status of all crs resourcs
+
+/u01/app/19.0.0/grid/bin/crsctl stat res -t
+/u01/app/19.0.0/grid/bin/crsctl stat res -t -init
+
+Check CRS status of remote nodes
+/u01/app/19.0.0/grid/bin/crsctl check cluster -all
+
+Disk timeout from node to voting disk(disktimeout)
+/u01/app/19.0.0/grid/bin/crsctl get css disktimeout
+
+
+Network latency in the node interconnect (Misscount)
+/u01/app/19.0.0/grid/bin/crsctl get css misscount
+
+ocr disk backup details
+/u01/app/19.0.0/grid/bin/ocrconfig -showbackup
+/u01/app/19.0.0/grid/bin/ocrconfig -manualbackup
+
+check crs configuration
+
+/u01/app/19.0.0/grid/bin/crsctl config crs
+
+
+find all nodes in a cluster
+/u01/app/19.0.0/grid/bin/crsctl get node role status -all
+
+
+
+
+/u01/app/19.0.0/grid/bin/crsctl check has
+/u01/app/19.0.0/grid/bin/crsctl stop crs
+
+/u01/app/19.0.0/grid/bin/crsctl stop cluster -all
+
+to shutdown (in all 3 nodes)
+$ srvctl stop database -d <db_unique_name>
+$ crsctl stop cluster -all
+$ crsctl stop crs -all
+
+to startup (in all 3 nodes)
+$ crsctl start crs -all
+$ crsctl start cluster -all
+$ srvctl start database -d <db_unique_name>
