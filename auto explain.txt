@@ -1,0 +1,40 @@
+AUTO TRACE;
+
+
+create plustrace role;
+
+from sys
+
+$ORACLE_HOME/sqlplus/admin/plustrce
+grant plustrace to scott;
+set autotrace on;
+set autotrace on explain;
+set autotrace on statistics;
+set autotrace traceonly;
+
+set autotrace off;
+
+
+explain plan:
+
+
+explain plan for statement;
+
+explain plan for select * from dept;
+
+select * from table(dbms_xplan.display);
+
+explain plan for select * from emp;
+select * from table(dbms_xplan.display);
+
+
+EXPLAIN PLAN SET STATEMENT_ID = 'dept' INTO plan_table for select * from dept;
+
+SELECT * FROM TABLE(dbms_xplan.display(statement_id=>'dept'));
+
+EXPLAIN PLAN SET STATEMENT_ID = 'emp' INTO plan_table for select * from emp;
+
+SELECT * FROM TABLE(dbms_xplan.display(statement_id=>'emp'));
+
+select * from table( DBMS_XPLAN.DISPLAY_CURSOR());
+select * from table( DBMS_XPLAN.DISPLAY_AWR());

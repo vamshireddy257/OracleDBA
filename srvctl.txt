@@ -1,0 +1,39 @@
+srvctl stop database -d PRODB -o normal
+srvctl stop database -d PRODB -o immediate
+srvctl stop database -d PRODB -o transactional
+srvctl stop database -d PRODB -o abort
+
+
+
+srvctl start database -d PRODB -o nomount
+srvctl start database -d PRODB -o mount
+srvctl start database -d PRODB -o open
+
+
+srvctl stop instance -d PRODB -i PRODB1
+
+
+srvctl start instance -d PRODB -i PRODB1
+
+
+srvctl enable instance -d DB_UNIQUE_NAME-i INSTANCE_NAME
+srvctl disable instance -d DB_UNIQUE_NAME-i INSTANCE_NAME
+
+srvctl enable database -d DB_UNIQUE_NAME
+srvctl disable database -d DB_UNIQUE_NAME
+
+srvctl config scan_listener
+
+
+
+
+
+srvctl modify scan_listener -p {new-SCAN-port}
+
+srvctl modify scan_listener -p 1523
+
+
+
+$GRID_HOME/bin/srvctl stop scan_listener
+$GRID_HOME/bin/srvctl start scan_listener
+Alter system set remote_listener='orcl-scan.stc.com.sa:1523' scope=both sid='*';
