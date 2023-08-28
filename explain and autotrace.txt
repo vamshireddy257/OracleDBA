@@ -1,0 +1,49 @@
+set autotrace on;
+
+SELECT * FROM WAREHOUSES;
+
+grant plustrace to soe;
+
+set autotrace on;
+
+select e.ename, d.dname from soe.emp e, soe.dept d where e.dept_no=d.dept_no and e.dept_no=50; 
+
+set autotrace traceonly;
+
+set autotrace on exp;
+
+set autotrace on stat;
+
+EXPLAIN PLAN FOR select e.ename, d.dname from emp e, dept d where e.dept_no=d.dept_no and e.dept_no=50;  2    3    4    5  
+
+select * from table(dbms_xplan.display());
+
+set autotrace off;
+
+desc plan_table
+
+explain plan set statement_id = 'query1' for SELECT * FROM WAREHOUSES;
+
+select * from table(dbms_xplan.display())
+
+explain plan for select * from dept;
+
+select * from table(dbms_xplan.display());
+
+select * from table(dbms_xplan.display(statement_id=>'query1'));
+
+alter system flush shared_pool;
+
+ALTER SYSTEM FLUSH BUFFER_CACHE; 
+
+select sid,username,sql_id from v$session;
+
+select sid,username,sql_id,PREV_SQL_ID from v$session;
+
+select SQL_TEXT from v$sqltext where sql_id='d1519txu2xcn3';
+
+SELECT * FROM table(DBMS_XPLAN.DISPLAY_CURSOR('d1519txu2xcn3'));
+
+SELECT * FROM table(DBMS_XPLAN.DISPLAY_AWR('d1519txu2xcn3'));
+
+select SNAP_INTERVAL , RETENTION from dba_hist_wr_control;
