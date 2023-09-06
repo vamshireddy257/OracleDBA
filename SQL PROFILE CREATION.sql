@@ -25,6 +25,26 @@ select  * from emp2 e,dept2 d where e.dept_no=d.dept_no order by e.dept_no;
 
 select * from table(dbms_xplan.display(null,null,'ADVANCED'));
 
+
+------------------------
+--TO CHECK PROFILES CREATED
+COLUMN category FORMAT a10
+COLUMN sql_text FORMAT a20
+SELECT NAME,type, SQL_TEXT, CATEGORY, STATUS FROM DBA_SQL_PROFILES;
+
+-- TO CHECK INTERNAL HINT FOR PROFILE
+SELECT
+a.name
+,b.comp_data
+FROM dba_sql_profiles a
+,dbmshsxp_sql_profile_attr b
+WHERE a.name = b.profile_name;
+--TO DROP PROFILE
+exec dbms_sqltune.drop_sql_profile('PROFILE_23yyk92xsubyq');
+
+-----------------------------
+
+
 -- run the query to generate sql_id
 select  * from emp2 e,dept2 d where e.dept_no=d.dept_no order by e.dept_no;
 
@@ -102,3 +122,4 @@ DBMS_SQLTUNE.IMPORT_SQL_PROFILE(
 );
 END;
 /
+
