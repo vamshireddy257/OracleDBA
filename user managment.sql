@@ -103,6 +103,12 @@ GRANT ALL ON TESTUSER1.EMPTABL on SCOTT;
 USER
 create user identified by password default tablespace users  temporary tablespace temp;
 
+select dbms_metadata.get_ddl('USER', u.username) AS ddl from dba_users u where u.username = 'USER1';
+
+alter user user1 identified by values 'S:3C030687D5FB49EFF32112FA5462C3D4E97E52F50E4CCCA72E009D822998;T:FBB3287F269FC426D3490C05827070CA8D289068F62EA736A0C632A448BC1FC515D359633A4CF79FB37A2CC74072C40F0C479F70C63F588B1C24A0BF0296336B24E2FCD1CE89C590A6AFE31A25504734';
+
+
+
 Eg:
 
 create user SCOTT identified by oracle#41234
