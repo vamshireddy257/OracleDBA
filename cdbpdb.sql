@@ -80,3 +80,27 @@ CREATE PLUGGABLE DATABASE CURRENT_A ADMIN USER pdb_adm IDENTIFIED BY Password1;
 CREATE PLUGGABLE DATABASE loans ADMIN USER pdb_adm IDENTIFIED BY Password1;
 CREATE PLUGGABLE DATABASE demats ADMIN USER pdb_adm IDENTIFIED BY Password1;
 CREATE PLUGGABLE DATABASE pdb6 ADMIN USER pdb_adm IDENTIFIED BY Password1;
+
+
+CREATE PLUGGABLE DATABASE imps ADMIN USER pdb_adm IDENTIFIED BY Password1;
+
+
+select username,  con_id from cdb_users ORDER BY 2;
+select name , con_id from v$tablespace order by 2;
+select TABLESPACE_NAME,con_id from cdb_tablespaces ORDER BY 2;
+
+
+select username,  con_id from cdb_users  WHERE USERNAME = 'SCOTT' ORDER BY 2;
+
+ALTER PLUGGABLE DATABASE loans UNPLUG INTO '/u01/loans.xml';
+
+create pluggable database loans using '/u01/loans.xml'
+
+alter pluggable database fd close;
+alter pluggable database fd open read only;
+
+
+!mkdir -p /home/oracle/oradata/FD_DUP
+
+CREATE PLUGGABLE DATABASE fd_dup FROM fd;
+--FILE_NAME_CONVERT=('/home/oracle/oradata/PDB1','/home/oracle/oradata/PDB2/');
