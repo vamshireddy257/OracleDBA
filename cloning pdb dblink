@@ -1,0 +1,25 @@
+sqlplus / as sysdba
+col name for a30
+select name,open_mode from v$pdbs;
+alter session set container = fd;
+
+create user clone_user identified by clone_user;
+grant create session,create pluggable database to clone_user;
+
+exit
+
+
+sqlplus / as sysdba
+alter pluggable database fd close;
+alter pluggable database fd open read only;
+
+
+
+connect to targer server (cdb$root)
+at make sure source database tns is added in target tnsname.ora
+
+create database link fd_dblink connect to clone_user identified by clone_user using 'to_fd';
+
+create pluggable database fd_d from  fd@fd_dblink;
+
+create pluggable database fd_d from  fd@fd_dblink;
