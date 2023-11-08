@@ -91,6 +91,8 @@ expdp directory=datapump_dir dumpfile=Full_oradb_2711_QUERY%U.dmp logfile=Full_o
 =============
 FLASHBACK_SCN
 =============
+select timestamp_to_scn(to_timestamp('05-09-2018 12:46:21','dd-mm-yyyy hh24:mi:ss')) scn from dual;
+select scn_to_timestamp(2011955) from dual;
 
 expdp directory=datapump_dir dumpfile=soe_emp2_271101.dmp logfile=soe_emp2_2711.log tables=soe.emp2 flashback_scn=2531067
 
