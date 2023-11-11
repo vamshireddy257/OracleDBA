@@ -9,7 +9,7 @@ exit;
 
 vi rman.log
 CONFIGURE RETENTION POLICY TO REDUNDANCY 2; # default
-CONFIGURE BACKUP OPTIMIZATION ON; # default
+CONFIGURE BACKUP OPTIMIZATION OFF; # default
 CONFIGURE DEFAULT DEVICE TYPE TO DISK; # default
 CONFIGURE CONTROLFILE AUTOBACKUP ON; # default
 CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '/u01/rman_bkp/%F'; # default
@@ -40,3 +40,15 @@ backup incremental level 1 cumulative database;
 
 
 report obsolete;
+
+list archivelog all;
+backup archivelog all;
+delete archivelog all backed up 1 times to disk;
+
+delete archivelog all completed before 'sysdate-1';
+
+delete archivelog until time 'sysdate -1';
+
+delete archivelog until sequence 25;
+
+delete archivelog from sequence 25 until sequence 35;
