@@ -1,0 +1,32 @@
+  #recover a datafile which is not in rman backup;
+
+
+1) Know the defination of that datafile like location of that datafile.
+select name from v$datafile where file# = 36;
+
+2)connect to rman (make sure you connect to the specific pdb incase the datafile belongs to a pdb)
+list backup of datafile 36;
+
+
+##########################
+if datafile exists the
+rman > restore datafile 36;
+recover datafile 36;
+
+stop;
+######################
+if the datafile is not in rman backup
+######################
+
+3) offline the datafile;
+
+alter database datafile 'path' offline;
+
+4) recreate datafile using alter database ;
+alter database create datafile '<path>' as '<path> size 32G reuse;
+
+5 ) recover the datafile , as you have the datafile in existance
+rman > recover datafile 36;
+
+6 ) online the datafile
+alter database datafile 36 online;
