@@ -96,6 +96,12 @@ allocate auxiliary channel t1 type disk;
 duplicate target database for standby backup location '/u01/rman_bkp' nofilenamecheck;
 }
 
+--- from active database or target database
+run {
+allocate auxiliary channel t1 type disk;
+allocate channel c1 type disk;
+duplicate target database for standby from active database nofilenamecheck;
+}
 
 exit
 
