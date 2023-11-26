@@ -1,0 +1,45 @@
+STEP 1: CHECK PRIMARY & STANDBY DATABASE STATUS:
+SQL> select db_unique_name,OPEN_MODE,DATABASE_ROLE from v$database;
+
+STEP 2 : CHECK ARCHIVE SEQUENCES on PRIMARY & STANDBY:
+
+SQL> archive log list
+SQL> ALTER SESSION SET nls_date_format='DD-MON-YYYY HH24:MI:SS';
+SQL> SELECT sequence#, first_time, next_time, applied FROM v$archived_log ORDER BY sequence#;
+
+
+STEP 3: CANCEL RECOVERY ON STANDBY:
+SQL> select db_unique_name,OPEN_MODE,DATABASE_ROLE from v$database;
+SQL> recover managed standby database cancel;
+
+STEP 4: MAKE SURE YOUR STANDBY DB IN MOUNT STATE( NEED TO SHUTDOWN IF IT IS ACTIVE DATAGUARD):
+SQL> shutdown immediate;
+SQL> startup mount;
+
+
+STEP 5: RECOVER STANDBY USING SERVICE:
+$rman target /
+RMAN>recover database from service to_proddb noredo using compressed backupset;
+
+
+STEP 6: RESTORE STANDBY CONTROLFILE IN NOMOUNT STAGE:
+RMAN>shutdown immediate;
+RMAN>startup nomount;
+RMAN> restore standby controlfile from service to_proddb;
+RMAN> alter database mount;
+
+
+
+STEP 7: Update the names of the data files and the temp files in the standby control file:
+RMAN>catalog start with '<path where the actual standby datafile existed>';
+For Example:
+RMAN>catalog start with '/u01/app/oracle/oradata/PRODDBS';
+RMAN>switch database to copy;
+
+STEP 8: RUN RECOVER DATABASE(IN STANDBY - NOT Mandatory):
+RMAN>RECOVER DATABASE;
+
+STEP 9: OPEN THE DATABASE and START  MEDIA RECOVERY:
+SQL> alter database open;
+SQL> ALTER DATABASE RECOVER MANAGED STANDBY DATABASE disconnect from session;
+
