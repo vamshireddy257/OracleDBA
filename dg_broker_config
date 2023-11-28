@@ -1,0 +1,104 @@
+primary:
+-------
+(SID_DESC =
+(GLOBAL_DBNAME = proddb_DGMGRL)
+(ORACLE_HOME = /u01/app/oracle/product/19.3.0/db_1)
+(SID_NAME = proddb)
+)
+
+
+standby:
+--------
+(SID_DESC =
+(GLOBAL_DBNAME = proddbs_DGMGRL)
+(ORACLE_HOME = /u01/app/oracle/product/19.3.0/db_1)
+(SID_NAME = proddbs)
+)
+
+
+primary: 
+--------
+
+ALTER SYSTEM SET dg_broker_start=true scope=both;
+
+
+ALTER SYSTEM SET local_listener='(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.0.139)(PORT = 1521))) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = proddb)))';
+
+
+standby:
+--------
+
+ALTER SYSTEM SET dg_broker_start=true scope=both;
+
+ALTER SYSTEM SET local_listener='(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.0.140)(PORT = 1521))) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = proddbs)))';
+
+
+Login in to the primary database through DGMGRL:
+
+export ORACLE_SID=proddb
+
+dgmgrl
+
+DGMGRL> 
+connect sys/oracle123@to_proddb
+Connected to "PRODDB"
+Connected as SYSDBA.
+
+#Configure Dataguard Broker for primary database:
+
+create configuration 'DG_BRK_BATCH9' as primary database is 'proddb' connect identifier is to_proddb;
+
+DGMGRL> show configuration;
+Configuration – hari
+Protection Mode: MaxAvailability
+Members:
+chennai – Primary database
+
+Fast-Start Failover: Disabled
+Configuration Status:
+DISABLED
+
+
+Configure Dataguard Broker for standby database:
+
+Add database 'proddbs' as connect identifier is to_proddbs maintained as physical;
+failed
+alter system set LOG_ARCHIVE_DEST_2= ''; -- (both Side)
+
+DGMGRL> Add database 'proddbs' as connect identifier is to_proddbs maintained as physical;
+
+DGMGRL> show configuration;
+Configuration – hari
+Protection Mode: MaxAvailability
+Members:
+chennai – Primary database
+delhi – Physical standby database
+
+Fast-Start Failover: Disabled
+Configuration Status:
+DISABLED
+
+DGMGRL> enable configuration;
+Enabled.
+
+DGMGRL> show configuration;
+
+
+DGMGRL> show configuration verbose;
+
+DGMGRL> enable database 'proddbs';
+
+        show database 'proddb';
+DGMGRL> show database verbose 'proddbs';
+ 
+        show database verbose 'proddb';
+
+
+switch over:
+it is mandatory to login with sys password instead of / as sysdba
+
+switchover to proddbs;
+
+to check if standby is in sysnc;
+show database verbose <stdby name>;
+
