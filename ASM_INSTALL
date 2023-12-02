@@ -1,0 +1,187 @@
+create virtual machine with 8GB ram
+120Gb of storage
+/biosboot 2000
+/boot 2000
+/swap 16000
+/ 10000
+/tmp 10000
+/u01 ALL
+
+add new hard disks to the VM:
+20
+40
+
+partition the disks
+
+fdisk /dev/sdb
+fdisk /dev/sdc
+
+power off virtual machine and add newly created disks.
+
+
+
+yum install oracle-database-preinstall-19c.x86_64
+
+
+su - oracle
+mv ~/.bash_profile ~/.bash_profile_bkp
+
+vi ~/.bash_profile
+
+# .bash_profile
+# OS User: oracle
+# Application: Oracle Database Software Owner
+# Version: Oracle 19c
+# ---------------------------------------------------
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+. ~/.bashrc
+fi
+ORACLE_BASE=/u01/app/oracle; export ORACLE_BASE
+ORACLE_SID=oradb; export ORACLE_SID
+ORACLE_HOME=$ORACLE_BASE/product/19.0.0/db_1; export ORACLE_HOME
+NLS_DATE_FORMAT="DD-MON-YYYY HH24:MI:SS"; export NLS_DATE_FORMAT
+TNS_ADMIN=$ORACLE_HOME/network/admin; export TNS_ADMIN
+PATH=$PATH:$HOME/.local/bin:$HOME/bin
+PATH=${PATH}:/usr/bin:/bin:/usr/local/bin
+PATH=.:${PATH}:$ORACLE_HOME/bin
+export PATH
+LD_LIBRARY_PATH=$ORACLE_HOME/lib
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$ORACLE_HOME/oracm/lib
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/lib:/usr/lib:/usr/local/lib
+export LD_LIBRARY_PATH
+CLASSPATH=$ORACLE_HOME/JRE
+CLASSPATH=${CLASSPATH}:$ORACLE_HOME/jlib
+CLASSPATH=${CLASSPATH}:$ORACLE_HOME/rdbms/jlib
+CLASSPATH=${CLASSPATH}:$ORACLE_HOME/network/jlib
+export CLASSPATH
+export TEMP=/tmp
+export TMPDIR=/tmp
+umask 022
+
+
+wq!
+
+su -
+groupadd asmadmin
+groupadd oinstall
+groupadd asmdba
+usermod -g oinstall oracle
+usermod -a -G asmdba oracle
+useradd -u 54323 -g oinstall -G asmadmin,asmdba grid
+passwd grid
+passwd oracle
+
+#usermod -a -G vboxsf oracle
+#usermod -a -G vboxsf grid
+
+
+mkdir -p /u01/app/oracle/product/19.0.0/db_1
+mkdir -p /u01/app/grid
+mkdir -p /u01/app/19.0.0/grid
+chown -R grid:oinstall /u01
+chown -R oracle:oinstall /u01/app/oracle
+chmod -R 775 /u01
+
+
+su - grid
+mv ~/.bash_profile ~/.bash_profile_bkp
+vi ~/.bash_profile
+
+# .bash_profile
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+. ~/.bashrc
+fi
+ORACLE_SID=+ASM; export ORACLE_SID
+ORACLE_BASE=/u01/app/grid; export ORACLE_BASE
+ORACLE_HOME=/u01/app/19.0.0/grid; export ORACLE_HOME
+ORACLE_TERM=xterm; export ORACLE_TERM
+TNS_ADMIN=$ORACLE_HOME/network/admin; export TNS_ADMIN
+PATH=.:${JAVA_HOME}/bin:${PATH}:$HOME/bin:$ORACLE_HOME/bin
+PATH=${PATH}:/usr/bin:/bin:/usr/local/bin
+export PATH
+export TEMP=/tmp
+export TMPDIR=/tmp
+umask 022
+
+
+
+yum install oracleasm-support -y
+yum install kmod-oracleasm -y
+
+
+configure oracle asm
+
+oracleasm configure -i
+
+Configuring the Oracle ASM library driver.
+
+This will configure the on-boot properties of the Oracle ASM library
+driver.  The following questions will determine whether the driver is
+loaded on boot and what permissions it will have.The current values
+will be shown in brackets ('[]').  Hitting <ENTER> without typing an
+answer will keep that current value.  Ctrl-C will abort.
+
+Default user to own the driver interface []: grid
+Default group to own the driver interface []: oinstall
+Start Oracle ASM library driver on boot (y/n) [n]: y
+Scan for Oracle ASM disks on boot (y/n) [y]: y
+Writing Oracle ASM library driver configuration: done
+
+
+[root@dbsrv1 ~]# /usr/sbin/oracleasm init
+Creating /dev/oracleasm mount point: /dev/oracleasm
+Loading module "oracleasm": oracleasm
+Configuring "oracleasm" to use device physical block size
+Mounting ASMlib driver filesystem: /dev/oracleasm
+
+
+lsblk
+
+oracleasm createdisk FRADISK1 /dev/sdb1
+oracleasm createdisk DATADISK1 /dev/sdc1
+oracleasm listdisks
+
+
+vi /etc/sysctl.d/97-oracle-database-sysctl.conf
+
+fs.aio-max-nr = 1048576
+fs.file-max = 6815744
+kernel.shmall = 2097152
+kernel.shmmax = 4294967295
+kernel.shmmni = 4096
+kernel.sem = 250 32000 100 128
+net.ipv4.ip_local_port_range = 9000 65500
+net.core.rmem_default = 262144
+net.core.rmem_max = 4194304
+net.core.wmem_default = 262144
+net.core.wmem_max = 1048576
+
+
+/sbin/sysctl --system
+
+
+reboot the server
+
+init 6
+
+copy software to /u01/grid_sw
+
+V982068-01_grid.zip
+
+
+unzip /u01/grid_sw/V982068-01_grid.zip -d $ORACLE_HOME
+cd $ORACLE_HOME
+
+./gridSetup.sh
+
+
+
+search path /dev/oracleasm/disks/*
+
+asmca -- create data disk groupadd
+
+INSTALL
+
+unzip /u01/db_sw/V982063-01_19c_db.zip -d $ORACLE_HOME
