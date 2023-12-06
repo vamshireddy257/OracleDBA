@@ -26,6 +26,11 @@ yum install oracle-database-preinstall-19c.x86_64
 su - oracle
 mv ~/.bash_profile ~/.bash_profile_bkp
 
+
+
+
+
+
 vi ~/.bash_profile
 
 # .bash_profile
@@ -185,5 +190,72 @@ asmca -- create data disk groupadd
 INSTALL
 
 unzip /u01/db_sw/V982063-01_19c_db.zip -d $ORACLE_HOME
+
+
+then connect with sqlplus / as sysasm
+and we need to create diskgroups:
+
+To know the diskgroup status:
+-----------------------------
+
+set lines 250 
+set pages 9999 
+column path format a35 
+ 
+select path, group_number group_#, disk_number disk_#, mount_status,      
+header_status, state, total_mb, free_mb 
+from v$asm_disk 
+order by group_number;
+
+CREATE DISKGROUP FRA EXTERNAL REDUNDANCY disk '/dev/oracleasm/disks/FRA_01' ATTRIBUTE 'compatible.asm' = '19.1';
+CREATE DISKGROUP DATA EXTERNAL REDUNDANCY disk '/dev/oracleasm/disks/DATA_01' ATTRIBUTE 'compatible.asm' = '19.1';
+ALTER DISKGROUP DATA ADD disk '/dev/oracleasm/disks/DATA_02' ;
+
+
+
+
+col PATH for a55
+select path, group_number group_#, disk_number disk_#, mount_status,header_status, state, total_mb, free_mb from v$asm_disk where header_status='CANDIDATE' or header_status='FORMER' order by 1 ;
+
+To know the all diskgroups information:
+--------------------------------------
+col PATH for a55
+col DG_NAME for a15
+col DG_STATE for a10
+col FAILGROUP for a20
+set lines 750 pages 9999
+
+select dg.name dg_name, dg.state dg_state, dg.type, d.disk_number dsk_no,
+d.path,d.total_mb,d.free_mb, d.mount_status, d.FAILGROUP, d.state 
+from v$asm_diskgroup dg, v$asm_disk d
+where dg.group_number=d.group_number
+order by dg_name, dsk_no;
+
+To know the diskgroup size:
+--------------------------
+select name, total_mb, free_mb, usable_file_mb,
+round(((total_mb-nvl(free_mb,0))/total_mb)*100,0) percent_used
+from V$ASM_DISKGROUP_STAT;
+
+incase we got the version error:
+ALTER DISKGROUP DATA SET ATTRIBUTE 'compatible.asm' = '12.1',
+
+
+
+col PATH for a55
+col DG_NAME for a15
+col DG_STATE for a10
+col FAILGROUP for a20
+set lines 750 pages 9999
+
+select dg.name dg_name, dg.state dg_state, dg.type, d.disk_number dsk_no,
+d.path,d.total_mb,d.free_mb, d.mount_status, d.FAILGROUP, d.state 
+from v$asm_diskgroup dg, v$asm_disk d
+where dg.group_number=d.group_number
+order by dg_name, dsk_no;
+
+dbca
+
+
 
 crsctl start res ora.cssd -init
