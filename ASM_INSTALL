@@ -185,3 +185,5 @@ asmca -- create data disk groupadd
 INSTALL
 
 unzip /u01/db_sw/V982063-01_19c_db.zip -d $ORACLE_HOME
+
+crsctl start res ora.cssd -init
