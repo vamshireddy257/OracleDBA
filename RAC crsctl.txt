@@ -20,6 +20,9 @@ voting disk location
 Find OCR location:
 /u01/app/19.0.0/grid/bin/ocrcheck
 
+Find OCR location:
+/u01/app/19.0.0/grid/bin/ocrcheck -local
+
 Find cluster interconnect details
 /u01/app/19.0.0/grid/bin/oifcfg getif
 
@@ -52,12 +55,22 @@ check crs configuration
 
 find all nodes in a cluster
 /u01/app/19.0.0/grid/bin/crsctl get node role status -all
-
+/u01/app/19.0.0/grid/bin/olsnodes 
 
 
 
 /u01/app/19.0.0/grid/bin/crsctl check has
 /u01/app/19.0.0/grid/bin/crsctl stop crs
+
+
+
+
+disable autostart crs
+/u01/app/19.0.0/grid/bin/crsctl disable crs
+/u01/app/19.0.0/grid/bin/crsctl enable crs
+
+
+
 
 /u01/app/19.0.0/grid/bin/crsctl stop cluster -all
 
