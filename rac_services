@@ -1,0 +1,46 @@
+srvctl status database -d oradb
+srvctl status service -d oradb
+
+srvctl stop service -d oradb
+srvctl status service -d oradb
+
+srvctl add service -d oradb -s oradbsvc -preferred oradb1 -available oradb2
+
+srvctl status service -d oradb
+
+srvctl start service -d oradb
+srvctl status service -d oradb
+srvctl config service -d oradb
+
+
+(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = rac-scan)(PORT = 1521)) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = oradbsvc)))
+sqlplus system/oracle@oradb_svc
+
+
+select host_name , instance_name from v$instance;
+srvctl status service -d oradb
+
+srvctl relocate service -d oradb -s oradbsvc -oldinst oradb2 -newinst oradb1
+
+srvctl stop service -d oradb
+srvctl remove service -d oradb -s oradbsvc
+srvctl add service -d oradb -s oradbsvc -preferred oradb1,oradb2
+
+
+TAF:
+srvctl add service -d oradb -s oradbsvc -preferred oradb1 -available oradb2
+srvctl start service -d oradb
+
+sqlplus system/oracle@oradb_svc
+
+
+srvctl add service -d oradb -s oradbsvc -preferred oradb1 -available oradb2
+
+srvctl modify service -d oradb -s oradbsvc -failovertype SELECT -failovermethod BASIC
+
+srvctl modify service -d oradb -s oradbsvc -failovertype SESSION -failovermethod BASIC
+
+srvctl modify service -d oradb -s oradbsvc -preferred oradb1 -available oradb2
+
+
+(failover_mode=(type=select)(method=basic))
