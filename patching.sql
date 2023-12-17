@@ -84,8 +84,7 @@ SQL> select PATCH_ID,to_char(ACTION_TIME,'DD-MON-YY'), action from dba_registry_
 
 $lsnrctl start listener;
 
-select owner,object_name,status from dba_objects where status='INVALID' Group by owner;
-
+select owner,object_type,status,count(*) from dba_objects where status='INVALID' Group by owner,object_type,status;
 alter view <> compile;
 alter procedure <proc> compile;
 alter package <pkgname> compile body;
