@@ -83,3 +83,12 @@ sqlplus / as sysdba
 SQL> select PATCH_ID,to_char(ACTION_TIME,'DD-MON-YY'), action from dba_registry_sqlpatch;
 
 $lsnrctl start listener;
+
+select owner,object_name,status from dba_objects where status='INVALID' Group by owner;
+
+alter view <> compile;
+alter procedure <proc> compile;
+alter package <pkgname> compile body;
+alter trigger <trig> compile;
+
+alter index <index> rebuild online;
