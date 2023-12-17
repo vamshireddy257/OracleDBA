@@ -1,4 +1,4 @@
--Check opatch version 
+--Check opatch version 
 cd $ORACLE_HOME/OPatch/
 ./optach version
 
