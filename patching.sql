@@ -81,3 +81,5 @@ cd $ORACLE_HOME
 sqlplus / as sysdba
 
 SQL> select PATCH_ID,to_char(ACTION_TIME,'DD-MON-YY'), action from dba_registry_sqlpatch;
+
+$lsnrctl start listener;
