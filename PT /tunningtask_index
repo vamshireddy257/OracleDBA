@@ -1,0 +1,34 @@
+select ename,salary from emp2 where emp_no = 445;
+
+
+DECLARE
+l_sql_tune_task_id VARCHAR2(100);
+BEGIN
+l_sql_tune_task_id := DBMS_SQLTUNE.create_tuning_task (
+sql_id => '5kmksqpzqk2dr',
+scope => DBMS_SQLTUNE.scope_comprehensive,
+time_limit => 50000,
+task_name => '5kmksqpzqk2dr_tuning_task11',
+description => 'Tuning task1 for statement 5kmksqpzqk2dr');
+DBMS_OUTPUT.put_line('l_sql_tune_task_id: ' || l_sql_tune_task_id);
+END;
+/
+
+EXEC DBMS_SQLTUNE.execute_tuning_task(task_name => '5kmksqpzqk2dr_tuning_task11');
+
+
+set long 65536
+set longchunksize 65536
+set linesize 100
+select dbms_sqltune.report_tuning_task('5kmksqpzqk2dr_tuning_task11') from dual;
+
+
+
+
+
+
+==================
+Recomendations
+==================
+create unique index SOE.IDX$$_00200001 on SOE.EMP2("EMP_NO");
+drop index SOE.IDX$$_00200001;
