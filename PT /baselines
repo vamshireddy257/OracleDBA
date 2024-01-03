@@ -1,0 +1,55 @@
+create table emp2 as select * from emp;
+
+set autotrace traceonly
+
+select * from emp2 where emp_no = 445;
+
+select * from v$sql where sql_text like '%emp2%'; -- 6vnbwu8j9wvnj
+
+select SQL_ID,HASH_VALUE,CHILD_NUMBER,PLAN_HASH_VALUE,
+EXECUTIONS,ELAPSED_TIME/EXECUTIONS/1000000 Sec_per_exec 
+from v$sql 
+where sql_id='6vnbwu8j9wvnj' 
+order by ELAPSED_TIME/EXECUTIONS/1000000;
+
+select SQL_ID,HASH_VALUE,CHILD_NUMBER,PLAN_HASH_VALUE,EXECUTIONS from v$sql where sql_id='6vnbwu8j9wvnj';
+
+
+---create baseline
+variable cnt number;
+execute :cnt := DBMS_SPM.LOAD_PLANS_FROM_CURSOR_CACHE(sql_id => '6vnbwu8j9wvnj', plan_hash_value =>'2941272003', fixed => 'YES', enabled => 'YES');
+
+
+
+create unique index emp2_emp_no on emp2(emp_no);
+
+select * from emp2 where emp_no = 445;
+--note : observe that the old FTS is being used to execute the query.
+-- in plan in displays that the baseline is being used.
+
+
+
+select address, hash_value,PLAN_HASH_VALUE, executions, loads, version_count, invalidations, parse_calls from v$sqlarea where sql_id='6vnbwu8j9wvnj';
+
+--flush shared pool and buffer_cache and run above query again
+
+select address, hash_value,PLAN_HASH_VALUE, executions, loads, version_count, invalidations, parse_calls from v$sqlarea where sql_id='6vnbwu8j9wvnj';
+
+
+SET LONG 10000 
+SET LINES 200 
+SET PAGES 300 
+SELECT * 
+FROM TABLE(DBMS_XPLAN.display_sql_plan_baseline(sql_handle=>
+'SQL_447e9dac99226fff'));
+
+
+declare
+drop_result pls_integer;
+begin
+drop_result := DBMS_SPM.DROP_SQL_PLAN_BASELINE(
+sql_handle => 'SQL_447e9dac99226fff',
+plan_name => 'SQL_PLAN_48znxpkck4vzz8b8002e4');
+dbms_output.put_line(drop_result);
+end;
+/
