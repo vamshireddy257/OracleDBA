@@ -1,6 +1,7 @@
----USING TUNING TASK
-
+drop table emp2 purge;
 CREATE TABLE EMP2 AS SELECT * FROM EMP;
+
+drop table dept2 purge;
 
 CREATE TABLE DEPT2 AS SELECT * FROM DEPT;
 
@@ -11,6 +12,7 @@ INSERT INTO EMP2 SELECT * FROM EMP2;
 COMMIT;
 END LOOP;
 END;
+/
 
 BEGIN
 FOR I IN 1..10
@@ -19,12 +21,17 @@ INSERT INTO DEPT2 SELECT * FROM DEPT2;
 COMMIT;
 END LOOP;
 END;
+/
 
-explain plan for 
-select  * from emp2 e,dept2 d where e.dept_no=d.dept_no order by e.dept_no;
+select count(*) from emp2 ;
+select count(*) from dept2 ;
+
+explain plan for select  * from emp2 e,dept2 d where e.dept_no=d.dept_no order by e.dept_no;
 
 select * from table(dbms_xplan.display(null,null,'ADVANCED'));
+select * from table(dbms_xplan.display(null,null,'ADVANCED'));
 
+select * from table(dbms_xplan.display());
 
 ------------------------
 --TO CHECK PROFILES CREATED
@@ -58,17 +65,18 @@ DECLARE
   v_sql_tune_task_id  VARCHAR2(100);
 BEGIN
   v_sql_tune_task_id := DBMS_SQLTUNE.create_tuning_task (
-                          sql_id      => '4cmwrzhz4xzcz',
+                          sql_id      => '6qtrpth9t86a7',
                           scope       => DBMS_SQLTUNE.scope_comprehensive,
-                          time_limit  => 1000,
+                          time_limit  => 10000,
                           task_name   => 'test_tuning_task5',
-                          description => 'Tuning task for the SQL statement with the ID:7d95f5850jkjr from the cursor cache');
+                          description => 'Tuning task for the SQL statement with the ID:6qtrpth9t86a7 from the cursor cache');
   DBMS_OUTPUT.put_line('v_sql_tune_task_id: ' || v_sql_tune_task_id);
 END;
 /
 
 EXECUTE DBMS_SQLTUNE.execute_tuning_task(task_name => 'test_tuning_task5'); 
-
+--approximately 2 min
+set long 99999
 SELECT DBMS_SQLTUNE.REPORT_TUNING_TASK( 'test_tuning_task5' ) FROM DUAL;
 
 ----
@@ -122,4 +130,3 @@ DBMS_SQLTUNE.IMPORT_SQL_PROFILE(
 );
 END;
 /
-
