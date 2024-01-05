@@ -1,0 +1,215 @@
+create a OEL server with only / 
+becaue we need /tmp in huge so dont configure /u01
+even if you configure /u01 you must assign min of 40GB to.
+
+ 91G  /
+4.9G  /home
+1.8G  /boot
+swap 16G 
+bios boot 2G
+
+make ip permanent and edit /etc/hosts
+
+systemctl stop firewalld
+systemctl disable firewalld
+
+
+
+yum -y install oracle-database-server-12cR2-preinstall
+yum -y install oracle-database-server-12cR2-preinstall.x86_64
+
+yum install make -y
+yum install binutils -y
+yum install gcc -y
+yum install libaio -y
+yum install glibc-common -y
+yum install libstdc++ -y
+yum install sysstat -y
+yum install glibc -y
+yum install glibc-devel.i686 -y
+yum install glibc-devel -y
+yum install libXtst -y
+yum install ksh* -y 
+yum install libaio* -y
+
+
+passwd oracle
+
+
+groupadd oinstall 
+groupadd dba 
+
+useradd -g oinstall -d /home/oracle -s /bin/bash -c "oracle DB Owner" oracle
+usermod -a -G dba oracle
+passwd oracle
+
+
+mkdir /u01
+chown -R oracle:oinstall /u01
+chmod -R 775 /u01
+
+copy 12c to /u01
+
+cd /u01
+
+unzip V839960-01.zip
+
+vi /tmp/12cR2_response.rsp
+
+oracle.install.responseFileVersion=/oracle/install/rspfmt_dbinstall_response_schema_v12.2.0
+oracle.install.option=INSTALL_DB_SWONLY
+ORACLE_HOSTNAME=oemserver.com
+UNIX_GROUP_NAME=oinstall
+INVENTORY_LOCATION=/u01/app/oraInventory
+SELECTED_LANGUAGES=en
+ORACLE_HOME=/u01/app/oracle/product/12.2.0.1
+ORACLE_BASE=/u01/app/oracle
+oracle.install.db.InstallEdition=EE
+oracle.install.db.OSDBA_GROUP=dba
+oracle.install.db.OSOPER_GROUP=dba
+oracle.install.db.OSBACKUPDBA_GROUP=dba
+oracle.install.db.OSDGDBA_GROUP=dba
+oracle.install.db.OSKMDBA_GROUP=dba
+oracle.install.db.OSRACDBA_GROUP=dba
+SECURITY_UPDATES_VIA_MYORACLESUPPORT=false
+DECLINE_SECURITY_UPDATES=true
+oracle.installer.autoupdates.option=SKIP_UPDATES
+
+
+:wq!
+
+
+
+cd /u01/database
+
+
+./runInstaller -ignoreSysPrereqs -showProgress -silent -responseFile /tmp/12cR2_response.rsp
+
+
+cd 
+
+vi .bash_profile
+
+
+# User specific environment and startup programs
+export ORACLE_HOME=/u01/app/oracle/product/12.2.0.1
+export ORACLE_SID=oemdb
+export OMS_HOME=/u01/app/oracle/middleware
+export AGENT_HOME=/u01/app/oracle/agent/agent_inst
+
+PATH=$PATH:$HOME/.local/bin:$ORACLE_HOME/bin
+
+export PATH
+
+
+:wq!
+
+
+. .bash_profile
+
+
+
+dbca -silent -createDatabase \
+-templateName General_Purpose.dbc \
+-gdbName oemdb \
+-sid oemdb \
+-createAsContainerDatabase false \
+-emConfiguration NONE \
+-datafileDestination /u01/db_files \
+-storageType FS \
+-characterSet AL32UTF8 \
+-totalMemory 2048 \
+-recoveryAreaDestination /u01/FRA
+
+
+alter system set "_allow_insert_with_update_check"=true scope=both;
+  alter system set session_cached_cursors=200 scope=spfile;
+  alter system set sga_target=1200M scope=both;
+  alter system set pga_aggregate_target=450M scope=both;
+  
+
+SQL> Shut immediate;
+SQL> startup;
+
+create listener
+lsnrctl start
+
+copy oem s/w to local machine
+
+
+
+from root
+xhost +
+
+su - oracle
+
+export DISPLAY=:0
+
+./em13300_linux64.bin
+
+
+GUI Options
+
+Uncheck the security update checkbox and click on Next
+SKIP
+ignore errors
+simple
+{
+/u01/app/oracle/middleware
+/u01/app/oracle/agent
+oem.com
+}
+
+sysman is user
+admin pwd
+oemadmin#1
+
+
+setup listener
+
+
+Click on Yes to allow installer fix errors
+
+Click on Ok for any warnings. Make sure you fix these in real time installation
+
+Go with the default software library location. I unchecked the "Configure a shared location for BI publisher and checked Enable BI Publisher"
+
+
+Review the installation summary and hit on Install
+
+
+
+
+$OMS_HOME/bin/emctl stop oms -all
+
+$AGENT_HOME/bin/emctl stop agent
+
+lsnrctl stop
+
+sqlplus / as sysdba
+
+SQL> shut immediate;
+
+
+lsnrctl start
+
+sqlplus / as sysdba
+
+SQL> startup;
+
+$OMS_HOME/bin/emctl start oms
+
+$AGENT_HOME/bin/emctl start agent
+
+
+-- check BI publisher status
+$OMS_HOME/bin/emctl status oms
+
+
+-- disable BI publisher
+$OMS_HOME/bin/emctl config oms -disable_bip
+
+-- enable BI publisher
+$OMS_HOME/bin/emctl config oms -enable_bip
+
+
