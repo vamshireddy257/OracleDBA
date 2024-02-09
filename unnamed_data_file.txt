@@ -1,0 +1,23 @@
+###unnamed datafile issue in standby ###
+
+--on standby 
+select FILE#||','||ERROR||','||STATUS||','||RECOVER||','||FUZZY||','||NAME from v$datafile_header where ERROR='FILE MISSING';
+select file#,name from v$datafile where file#=9;
+
+
+-- on primary
+select FILE_NAME||','||TABLESPACE_NAME||','||FILE_ID||','||STATUS||','||bytes from dba_data_files where file_id = 9;
+
+
+--on standby 
+alter system set standby_file_management=MANUAL sid='*';
+
+alter database create datafile '/u01/app/oracle/product/19.0.0.0/dbhome_1/dbs/UNNAMED00009' as '/u02/datafiles/users_004.dbf' size 20M;
+
+alter system set standby_file_management=AUTO sid='*';
+
+
+alter system switch logfile;
+
+set lines 300 pages 300;
+SELECT sequence#, first_time, next_time, applied FROM v$archived_log ORDER BY sequence#;
