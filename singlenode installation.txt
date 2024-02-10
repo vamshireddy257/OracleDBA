@@ -6,7 +6,7 @@ usermod -a -G dba oracle
 
 passwd oracle
 mkdir -p /u01/app/oracle/product/19.0.0.0/dbhome_1
-chmod 755 /u01
+chmod -R 755 /u01
 chown -R oracle:oinstall /u01
 
 ls -ld /u01/app/oracle/product/19.0.0.0/dbhome_1
