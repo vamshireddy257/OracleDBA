@@ -10,13 +10,21 @@ chmod -R 755 /u01
 chown -R oracle:oinstall /u01
 
 ls -ld /u01/app/oracle/product/19.0.0.0/dbhome_1
-go to software location
-unzip V982063-01.zip -d /u01/app/oracle/product/19.0.0.0/dbhome_1/
-chmod -R 777 /u01
-chown -R oracle: /u01
+
 
 init 6
 login as oracle
+
+install winscp on host machine
+check ip on guest machine
+and connect with that ip through winscp.
+and copy your software to guest machine in /home/oracle/software.
+
+
+go to software location
+unzip LINUX.X64_193000_db_home.zip -d /u01/app/oracle/product/19.0.0.0/dbhome_1/
+
+
 cd /u01/app/oracle/product/19.0.0.0/dbhome_1/
 ./runInstaller
 create software only 
@@ -29,8 +37,8 @@ dont automatically run
 
 run fix ups
 run below from root user
-yum install ksh*
-yum install libaio*
+yum install ksh* -y
+yum install libaio* -y
 
 
 create database 
@@ -56,4 +64,3 @@ export PATH
 change host name
 
 hostnamectl set-hostname sandviks.com
-
