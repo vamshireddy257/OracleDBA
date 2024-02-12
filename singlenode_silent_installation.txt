@@ -54,16 +54,17 @@ oracle.install.db.OSDGDBA_GROUP=oinstall
 oracle.install.db.OSKMDBA_GROUP=oinstall
 oracle.install.db.OSRACDBA_GROUP=oinstall
 
-
+su - root
 run below from root user
 yum install ksh* -y
 yum install libaio* -y
 
+su - oracle
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1/
 ./runInstaller -silent -responseFile /u01/app/oracle/product/19.0.0.0/dbhome_1/install/response/db_install.rsp
 
 
 cd /u01/app/oracle/product/19.0.0.0/dbhome_1/bin
-
 ./dbca -silent -createDatabase -templateName General_Purpose.dbc -gdbName proddb -sid proddb -sysPassword oracledb -systemPassword oracledb  -emConfiguration NONE  -datafileDestination /u01/app/oracle/oradata -storageType FS -recoveryAreaDestination /u01/app/oracle/fast_recovery_area  -characterSet AL32UTF8
 
 
