@@ -1,0 +1,69 @@
+groupadd oinstall 
+groupadd dba 
+
+useradd -g oinstall -d /home/oracle -s /bin/bash -c "oracle DB Owner" oracle
+usermod -a -G dba oracle
+
+passwd oracle
+mkdir -p /u01/app/oracle/product/19.0.0.0/dbhome_1
+chmod -R 755 /u01
+chown -R oracle:oinstall /u01
+
+ls -ld /u01/app/oracle/product/19.0.0.0/dbhome_1
+
+login as oracle
+
+
+check ip on guest machine
+and connect with that ip through winscp.
+and copy your software to guest machine in /home/oracle/software.
+
+su - oracle
+go to software location
+unzip LINUX.X64_193000_db_home.zip -d /u01/app/oracle/product/19.0.0.0/dbhome_1/
+
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1/
+
+############################
+setupsoftware only
+singleinstance
+enterprise
+oracle_home
+oracle_inventory location
+previlages
+root script
+############################
+
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1/install/response/db_install/response
+
+edit response file
+
+vi db_install.rsp
+
+oracle.install.responseFileVersion=/oracle/install/rspfmt_dbinstall_response_schema_v19.0.0
+oracle.install.option=INSTALL_DB_SWONLY
+INVENTORY_LOCATION=/u01/app/oraInventory
+ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
+ORACLE_BASE=/u01/app/oracle
+oracle.install.db.InstallEdition=EE
+oracle.install.db.OSDBA_GROUP=oinstall
+oracle.install.db.OSOPER_GROUP=oinstall
+oracle.install.db.OSBACKUPDBA_GROUP=oinstall
+oracle.install.db.OSDGDBA_GROUP=oinstall
+oracle.install.db.OSKMDBA_GROUP=oinstall
+oracle.install.db.OSRACDBA_GROUP=oinstall
+
+
+run below from root user
+yum install ksh* -y
+yum install libaio* -y
+
+./runInstaller -silent -responseFile /u01/app/oracle/product/19.0.0.0/dbhome_1/install/response/db_install.rsp
+
+
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1/bin
+
+./dbca -silent -createDatabase -templateName General_Purpose.dbc -gdbName proddb -sid proddb -sysPassword oracledb -systemPassword oracledb  -emConfiguration NONE  -datafileDestination /u01/app/oracle/oradata -storageType FS -recoveryAreaDestination /u01/app/oracle/fast_recovery_area  -characterSet AL32UTF8
+
+
+./dbca -silent -createDatabase -templateName General_Purpose.dbc -gdbName oradb -sid oradb   -emConfiguration NONE  -datafileDestination /u01/app/oracle/oradata -storageType FS -recoveryAreaDestination /u01/app/oracle/fast_recovery_area  -characterSet AL32UTF8 -createAsContainerDatabase false
