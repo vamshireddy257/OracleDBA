@@ -34,8 +34,8 @@ previlages
 root script
 ############################
 
-cd /u01/app/oracle/product/19.0.0.0/dbhome_1/install/response/db_install/response
-
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1/install/response/
+cp db_install.rsp db_install.rsp_bkp
 edit response file
 
 vi db_install.rsp
