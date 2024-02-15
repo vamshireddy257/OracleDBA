@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# Perform RMAN backup
+# Expected usage: f_perform_backup DB LEVEL
+#  DB: Database SID to pass to RMAN
+#  LEVEL: full/inc - full is full incremental, inc is differential incremental
+f_perform_backup() {
+  export LEVEL="$1"
+  echo "Performing backup on $ORACLE_SID."
+  echo "Performing $LEVEL backup."
+  
+  # Run RMAN
+  $ORACLE_HOME/bin/rman <<RMAN
+    connect target /
+    run {
+      crosscheck archivelog all;
+      crosscheck backup;
+      delete noprompt expired backup;
+      delete noprompt obsolete;
+      allocate channel d1 device type disk format '+BACKUP/bawdb/%d_%T_%U';
+      backup
+      incremental level = $LEVEL
+      database include current controlfile;
+      backup archivelog all;
+      delete noprompt archivelog all completed before 'sysdate -1';
+    }
+    exit;
+RMAN
+  echo "backup completed on $ORACLE_SID, at: $(date)"
+}
+
+# Main
+# Expected usage: ./backup_db DBNAME BACKUP_TYPE
+#  DBNAME: SID of Oracle database
+#  BACKUP_TYPE: Incremental backup, or full backup
+f_main() {
+  echo "ORACLE_HOME set to: $ORACLE_HOME"
+  if [ -z "$ORACLE_HOME" ]; then
+    echo "\$ORACLE_HOME isn't set. Exiting."
+    exit 133
+  fi
+  # which database?
+  if [ -z "$1" ]; then
+    echo "\$ORACLE_SID not provided. Exiting."
+    exit 133
+  else
+    export ORACLE_SID=$1
+  fi
+  # incremental or full?
+  if [ -z "$2" ]; then
+    echo "No backup method specified. Exiting."
+    exit 133
+  else
+    if [ "$2" == "inc" ]; then
+      f_perform_backup "1"
+    elif [ "$2" == "full" ]; then
+      f_perform_backup "0"
+    else
+      echo "Invalid backup method specified. Exiting."
+    fi
+  fi
+}
+
+# Source environment
+source $HOME/.bash_profile
+
+# Colors
+RESTORE='\033[0m'
+PURPLE='\033[00;35m'
+
+# Call main, pass parameters
+echo "Running script on: $(date)."
+f_main "$1" "$2"
+
+
+
+
+
+
+##5 4 * * 0-6 /tmp/scripts/backup.sh LIBERTYD1 full > /tmp/full_backup.log
+##5 2  * * 1-6 /tmp/scripts/backup.sh LIBERTYD1  inc  > /tmp/inc_backup.log
