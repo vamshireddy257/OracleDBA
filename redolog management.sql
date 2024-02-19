@@ -1,44 +1,42 @@
-LOG MINERS
+REDOLOG MANAGEMENT
 
-alter database add supplemental log data (ALL)columns;
-
+SELECTING GROUP,STATUS,MEMBER,MB FROM logfiles
 select group#,STATUS ,MEMBERS,bytes/1024/1024 MB from v$log;
-select member from v$logfile;
-
-/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_3_lrn5lkwn_.log
-/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_2_lrn5lkwd_.log
-/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_1_lrn5lkw2_.log
-
-begin
-dbms_logmnr.add_logfile(options => DBMS_LOGMNR.new,logfilename => '/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_1_lrn5lkw2_.log');
-end;
-/
-
-begin
-dbms_logmnr.add_logfile(options => DBMS_LOGMNR.ADDFILE,logfilename => '/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_2_lrn5lkwd_.log');
-end;
-/
-
-begin
-dbms_logmnr.add_logfile(options => DBMS_LOGMNR.ADDFILE,logfilename => '/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_3_lrn5lkwn_.log');
-end;
-/
 
 
-EXECUTE DBMS_LOGMNR.START_LOGMNR(OPTIONS => DBMS_LOGMNR.DICT_FROM_ONLINE_CATALOG);
-
-create table EMPLOYEES (sno number, name varchar2(20));
-
-
-insert into EMPLOYEES values(1,'VAMSHI');
-
-Commit complete.
-
-col username for a30;
-col SQL_REDO for a50
-col SQL_UNDO for a50;
-
-SELECT username, SQL_REDO, SQL_UNDO FROM V$LOGMNR_CONTENTS WHERE  seg_name = 'STUDENT';
+LOGSWITCHING MANUALLY
+alter sytem switch logfile;
 
 
-EXECUTE DBMS_LOGMNR.END_LOGMNR
+SELECTING GROUP,MEMBER in logfiles
+
+set lines 300;
+col member for a80;
+select GROUP#, MEMBER from V$logfile order by 1;
+
+mkdir -p /u01/duplex/
+
+ADDING MEMBER IN LOGFILE
+alter database add logfile member '/u01/duplex/redo_1_03.log' to group 1;
+alter database add logfile member '/u01/duplex/redo_2_03.log' to group 2;
+alter database add logfile member '/u01/duplex/redo_3_03.log' to group 3;
+
+
+/u01/duplex/redo_4_03.log
+
+
+ADDING GROUP with REDOLOGFILE MEMBERS in size:200mb
+
+alter database add logfile group 4 ('/u01/duplex/redo_4_03.log','/u01/app/oracle/oradata/PRODDB/onlinelog/redo_4_02.log','/u01/app/oracle/fast_recovery_area/PRODDB/onlinelog/redo_4_01.log') size 200M;
+
+
+DROPPING LOGFILE MEMBER
+alter database drop logfile member '/u01/duplex/redo_1_03.log';
+alter database drop logfile member '/u01/duplex/redo_2_03.log';
+alter database drop logfile member '/u01/duplex/redo_3_03.log';
+alter database drop logfile member '/u01/duplex/redo_4_03.log';
+
+
+ALTER DATABASE DROP LOGFILE GROUP 4;
+
+/u01/duplex/redo_4_03.log
