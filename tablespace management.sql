@@ -15,6 +15,8 @@ ORDER BY tablespace_name;
 CHECK FREE SPACE:
 
 SET PAGESIZE 140 LINESIZE 200;
+set colsep |
+
 SELECT tablespace_name,
        size_mb,
        free_mb,
