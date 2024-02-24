@@ -1,0 +1,94 @@
+How to Configure TDE Auto Login Wallet in Oracle 19c:
+*****************************************************
+STEP 1: Create pfile from spfile in below location.
+create pfile='/tmp/initprod.ora' from spfile;
+
+STEP 2: Configure the Keystore Location and Type
+You must configure Keystore location and type by setting WALLET_ROOT and TDE_CONFIGURATION parameters in pfile or spfile.
+If necessary, create a wallet directory. Typically, wallet directory is located in $ORACLE_BASE/admin/db_unique_name/wallet. Ideally wallet directory should be empty.
+cd $ORACLE_BASE/admin/
+cd db_unique_name
+mkdir -p wallet/tde
+alter system set WALLET_ROOT="/u01/app/oracle/admin/proddb/wallet" scope=spfile;
+
+
+STEP 3: Restart the Database
+shutdown immediate
+startup
+show parameter WALLET_ROOT
+alter system set TDE_CONFIGURATION="KEYSTORE_CONFIGURATION=FILE" Scope=both;
+show parameter TDE_CONFIGURATION
+
+
+Step 4: Create software Keystore
+SELECT STATUS FROM V$ENCRYPTION_WALLET;
+col WRL_PARAMETER for a60
+select WRL_TYPE, WRL_PARAMETER, STATUS, CON_ID from v$encryption_wallet;
+administer key management create keystore '/u01/app/oracle/admin/proddb/wallet/tde' identified by welcome1;
+
+STEP 5: Check the status of the wallet (Status will be closed)
+administer key management create auto_login keystore from keystore '/u01/app/oracle/admin/proddb/wallet/tde' identified by welcome1; 
+
+
+!ls -lrt /u01/app/oracle/admin/proddb/wallet/tde
+
+SELECT STATUS FROM V$ENCRYPTION_WALLET;
+col WRL_PARAMETER for a60
+select WRL_TYPE, WRL_PARAMETER, STATUS, CON_ID from v$encryption_wallet;
+select * from v$encryption_wallet;
+
+STEP 6: Open the software Keystore
+administer key management set keystore open force keystore identified by welcome1;
+select * from v$encryption_wallet;
+STEP 7: Set the Keystore TDE Encryption Master Key
+administer key management set key FORCE KEYSTORE identified by welcome1 with backup;
+
+
+Step8: Encrypt tablespace:
+Online Encryption
+select t.name, e. ENCRYPTIONALG, e. ENCRYPTEDTS, e.STATUS from V$ENCRYPTED_TABLESPACES e, v$tablespace t where t.ts#=e.ts#(+); 
+
+
+ALTER TABLESPACE hrms_ts ENCRYPTION ONLINE USING 'AES256' ENCRYPT;
+
+select t.name, e. ENCRYPTIONALG,e. ENCRYPTEDTS,e.STATUS from V$ENCRYPTED_TABLESPACES e, v$tablespace t where t.ts#=e.ts#(+); 
+
+select TABLESPACE_NAME, ENCRYPTED from dba_tablespaces where ENCRYPTED='YES';
+
+While creating new tablespace:
+create tablespace SBI_TS datafile '/u01/sbi_ts001.dbf' size 100m encryption using 'AES256' DEFAULT STORAGE (ENCRYPT);
+
+create tablespace AXIS_TS datafile '/u01/AXIS_TS_001.dbf' size 10m encryption DEFAULT STORAGE (ENCRYPT);
+
+
+Offline Encryption
+
+
+SQL> alter tablespace users offline normal;
+SQL> ALTER TABLESPACE users ENCRYPTION OFFLINE USING 'AES256' ENCRYPT;
+SQL> alter tablespace APP online;
+SQL> select t.name, e. ENCRYPTIONALG, e. ENCRYPTEDTS, e.STATUS from V$ENCRYPTED_TABLESPACES e, v$tablespace t where t.ts#=e.ts#(+);
+Steps for Decryption:
+Online Decryption:
+ALTER TABLESPACE users ENCRYPTION online DECRYPT;
+
+
+Steps for Decryption:
+Online Decryption:
+ALTER TABLESPACE APP ENCRYPTION online DECRYPT;
+select t.name, e. ENCRYPTIONALG, e. ENCRYPTEDTS, e.STATUS from V$ENCRYPTED_TABLESPACES e, v$tablespace t where t.ts#=e.ts#(+); offline Decryption:
+Same as encryption to decrypt take the tablespace offline and decrypt.
+SQL> alter tablespace APP offline normal;
+SQL> ALTER TABLESPACE APP ENCRYPTION OFFLINE DECRYPT;
+SQL> alter tablespace APP online;
+SQL> select t.name, e. ENCRYPTIONALG, e. ENCRYPTEDTS,e.STATUS from V$ENCRYPTED_TABLESPACES e, v$tablespace t where t.ts#=e.ts#(+);
+export WALLET_LOCATION=/u01/app/oracle/admin/prod/wallet
+cd /u01/app/oracle/admin/prod/wallet/tde
+mkstore -wrl. -list
+mkstore -wrl /u01/app/oracle/admin/prod/wallet/tde -list
+
+
+
+
+
+
