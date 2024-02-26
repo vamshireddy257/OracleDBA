@@ -174,7 +174,7 @@ ORDER BY file_name;
 
 CREATE TEMP TABLESPACE
 
-CREATE TEMPORARY TABLESPACE TEMP_NEW TEMPFILE '/DATA/database/ifsprod/temp_01.dbf' SIZE 500m autoextend on next 10m maxsize unlimited;
+CREATE TEMPORARY TABLESPACE TEMP_NEW TEMPFILE '/database/PRODDB/datafile/temp__new_01.dbf' SIZE 10m autoextend on maxsize unlimited;
 
 ALTER DATABASE DEFAULT TEMPORARY TABLESPACE TEMP_NEW;
 
@@ -189,6 +189,61 @@ a.username,a.osuser, a.status
 FROM v$session a,v$sort_usage b
 WHERE a.saddr = b.session_addr;
 
+
+
+TEMP % Utilization
+
+Query to check percentage (%) utilization of temp tablespace
+
+select (s.tot_used_blocks/f.total_blocks)*100 as "percent used"
+from (select sum(used_blocks) tot_used_blocks
+from v$sort_segment where tablespace_name='TEMP') s,
+(select sum(blocks) total_blocks
+from dba_temp_files where tablespace_name='TEMP') f;
+
+
+Top 10 queries using temp tablespace.
+
+select * from (
+select s.sid,
+s.status,
+s.sql_hash_value sesshash,
+u.SQLHASH sorthash,
+s.username,
+u.tablespace,
+sum(u.blocks*p.value/1024/1024) mbused ,
+sum(u.extents) noexts,
+nvl(s.module,s.program) proginfo,
+floor(last_call_et/3600)||':'||
+floor(mod(last_call_et,3600)/60)||':'||
+mod(mod(last_call_et,3600),60) lastcallet
+from v$sort_usage u,
+v$session s,
+v$parameter p
+where u.session_addr = s.saddr
+and p.name = 'db_block_size'
+group by s.sid,s.status,s.sql_hash_value,u.sqlhash,s.username,u.tablespace,
+nvl(s.module,s.program),
+floor(last_call_et/3600)||':'||
+floor(mod(last_call_et,3600)/60)||':'||
+mod(mod(last_call_et,3600),60)
+order by 7 desc,3)
+where rownum < 11;
+
+current sessions using temp.
+
+SELECT sysdate,a.username, a.sid, a.serial#, a.osuser, 
+(b.blocks*d.block_size)/1048576 MB_used, c.sql_text
+FROM v$session a, v$tempseg_usage b, v$sqlarea c,
+     (select block_size from dba_tablespaces where tablespace_name='TEMP') d
+    WHERE b.tablespace = 'TEMP'
+    and a.saddr = b.session_addr
+    AND c.address= a.sql_address
+    AND c.hash_value = a.sql_hash_value
+    AND (b.blocks*d.block_size)/1048576 > 1024
+    ORDER BY b.tablespace, 6 desc;
+
+
 get DDL of tablespace
 
 set heading off;
@@ -196,7 +251,5 @@ set echo off;
 Set pages 999;
 set long 90000;
 spool ddl_tablespace.sql
-select dbms_metadata.get_ddl('TABLESPACE',tb.tablespace_name) from dba_tablespaces tb;
+select dbms_metadata.get_ddl('TABLE','EMPLOYEE','SCOTT') from DUAL; 
 spool off
-
-
