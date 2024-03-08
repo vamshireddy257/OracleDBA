@@ -49,6 +49,8 @@ alter pluggable database all except savings close;
 
 alter pluggable database HRMS unplug into '/u01/app/oracle/oradata/HRMS.xml';
 
+drop pluggable database HRMS;
+
 create pluggable database hrms using '/u01/app/oracle/oradata/HRMS.xml'
 NOCOPY
 TEMPFILE REUSE;
