@@ -33,6 +33,12 @@ rman target /
 
 backup database;
 
+--
+backup database tag 17_mar_2024_01;
+
+--if we dont want our backup to fall in obsolete status then we have to use keep until clause.
+backup database  tag 'retain' keep until time 'sysdate+2';
+
 backup incremental level 0 database;
 
 backup incremental level 1 database;
