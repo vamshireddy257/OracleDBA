@@ -25,6 +25,11 @@ EOF
 nohup /u01/dir1/rman_FDB_bkp.sh &
 
 
+[oracle@oradbsrv ~]$ crontab -l
+@reboot /home/oracle/start_proddb.sh
+
+*/4 * * * * /home/oracle/scripts/rman_backup.sh
+
 expdp shell
 
 #!/bin/bash
