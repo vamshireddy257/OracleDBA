@@ -1,0 +1,31 @@
+rc_archived_log: Historical information about archived and non archived redo logs (Corresponds to the v$archived_log view).
+
+rc_backup_controlfile: Contains information about control files in backup sets
+
+rc_backup_corruption: Contains list of corrupted blocs in datafile backups. Corresponds to the v$backup_corruption view. 
+
+rc_database_block_corruption: Lists information about data blocks that were corrupted after last backup.
+
+rc_backup_datafile: Contains information about datafiles in backup sets.
+
+rc_backup_piece: Lists information about backup pieces.
+
+rc_backup_set: Contains information about backup sets of all incarnations of the database.
+
+rc_backup_spfile: Lists information about server parameter file in backup sets.
+
+rc_controlfile_copy: Lists information about controlfile copy in backup sets.
+
+rc_database: Contains information about all databases that registered in the recovery catalog.
+
+rc_database_incarnation: Lists information about all databases registered in the recovery catalog.
+
+rc_datafile: Lists information about all datafiles registered in the recovery catalog.
+
+rc_resync: Lists information about recovery catalog resynchronizations.
+
+rc_rman_configuration: Contains information about RMAN configuration settings.
+
+rc_rman_status: Contains information about all operations on all databases made by connecting to the recovery catalog.
+
+rc_stored_script and rc_stored_script_line: Both contain information about the scripts that stored in the recovery catalog.
