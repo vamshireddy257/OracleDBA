@@ -14,7 +14,7 @@ ALTER DATABASE ADD STANDBY LOGFILE GROUP 8 ('/u01/app/oracle/oradata/PRODDB/onli
 ALTER DATABASE ADD STANDBY LOGFILE GROUP 9 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo09.log') SIZE 200M;
 ALTER DATABASE ADD STANDBY LOGFILE GROUP 10 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo10.log') SIZE 200M;
 
-alter system set db_unique_name='proddb' scope=spfile;
+#alter system set db_unique_name='proddb' scope=spfile;
 
 ALTER SYSTEM SET LOG_ARCHIVE_CONFIG='DG_CONFIG=(proddb,proddbs)' scope=both;
 
@@ -177,3 +177,24 @@ LISTENER =
   )
 
 ADR_BASE_LISTENER = /u01/app/oracle
+
+
+
+set lines 200
+col DESTINATION for a30
+col ERROR for a50
+select DESTINATION,TYPE,ARCHIVED_THREAD#,APPLIED_SEQ#,ARCHIVED_SEQ#,GAP_STATUS,error from v$archive_dest_status where DEST_ID=2;
+
+select process,status from v$managed_standby;
+
+
+set lines 300 pages 300;
+SELECT sequence#, first_time, next_time, applied FROM v$archived_log ORDER BY sequence#;
+
+
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
+
+set lines 300 pages 300;
+SELECT sequence#, FIRST_CHANGE#,NEXT_CHANGE# FROM v$archived_log ORDER BY sequence#;
