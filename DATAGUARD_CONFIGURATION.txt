@@ -14,7 +14,7 @@ ALTER DATABASE ADD STANDBY LOGFILE GROUP 8 ('/u01/app/oracle/oradata/PRODDB/onli
 ALTER DATABASE ADD STANDBY LOGFILE GROUP 9 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo09.log') SIZE 200M;
 ALTER DATABASE ADD STANDBY LOGFILE GROUP 10 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo10.log') SIZE 200M;
 
-#alter system set db_unique_name='proddb' scope=spfile;
+alter system set db_unique_name='proddb' scope=spfile;
 
 ALTER SYSTEM SET LOG_ARCHIVE_CONFIG='DG_CONFIG=(proddb,proddbs)' scope=both;
 
@@ -37,7 +37,7 @@ mkdir -p /u01/rman_bkp/
 rman target /
 
 CONFIGURE RETENTION POLICY TO REDUNDANCY 2; # default
-CONFIGURE BACKUP OPTIMIZATION OFF; # default
+CONFIGURE BACKUP OPTIMIZATION ON; # default
 CONFIGURE DEFAULT DEVICE TYPE TO DISK; # default
 CONFIGURE CONTROLFILE AUTOBACKUP ON; # default
 CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '/u01/rman_bkp/%F'; # default
@@ -63,10 +63,10 @@ cd  /u01/app/oracle/product/19.0.0.0/dbhome_1/dbs/
 
 /u01/app/oracle/product/19.0.0.0/dbhome_1/dbs
 
-scp initproddb.ora orapwproddb oracle@oracles.com:/u01/app/oracle/product/19.0.0.0/dbhome_1/dbs
+scp initproddb.ora orapwproddb oracle@192.168.0.139:/u01/app/oracle/product/19.0.0.0/dbhome_1/dbs
 cd ../network/admin/
-scp listener.ora tnsnames.ora oracle@oracles.com:/u01/app/oracle/product/19.0.0.0/dbhome_1/network/admin/
-scp -r /u01/rman_bkp/ oracle@oracles.com:/u01/
+scp listener.ora tnsnames.ora oracle@192.168.0.139:/u01/app/oracle/product/19.0.0.0/dbhome_1/network/admin/
+scp -r /u01/rman_bkp/ oracle@192.168.0.139:/u01/
 scp -r /u01/rman_bkp/ oracle@oracles.com:/u01/
 
 
@@ -74,16 +74,65 @@ standby
 cd $ORACLE_HOME
 cd dbs
 mv orapwproddb orapwproddbs
+mv initproddb.ora initproddbs.ora
+
 
 edit pfile
+
+after modification your pfile will look like below.
+[oracle@oradbsrv2 dbs]$ cat initproddbs.ora
+proddbs.__data_transfer_cache_size=0
+proddbs.__db_cache_size=1761607680
+proddbs.__inmemory_ext_roarea=0
+proddbs.__inmemory_ext_rwarea=0
+proddbs.__java_pool_size=0
+proddbs.__large_pool_size=16777216
+proddbs.__oracle_base='/u01/app/oracle'#ORACLE_BASE set from environment
+proddbs.__pga_aggregate_target=805306368
+proddbs.__sga_target=2415919104
+proddbs.__shared_io_pool_size=117440512
+proddbs.__shared_pool_size=503316480
+proddbs.__streams_pool_size=0
+proddbs.__unified_pga_pool_size=0
+*.audit_file_dest='/u01/app/oracle/admin/proddb/adump'
+*.audit_trail='db'
+*.compatible='19.0.0'
+*.control_files='/u01/app/oracle/oradata/PRODDB/controlfile/o1_mf_lzt01bvo_.ctl','/u01/app/oracle/fast_recovery_area/PRODDB/controlfile/o1_mf_lzt01bwt_.ctl'
+*.db_block_size=8192
+*.db_create_file_dest='/u01/app/oracle/oradata'
+*.db_name='proddb'
+*.db_recovery_file_dest='/u01/app/oracle/fast_recovery_area'
+*.db_recovery_file_dest_size=12732m
+*.db_unique_name='proddbs'
+*.diagnostic_dest='/u01/app/oracle'
+*.dispatchers='(PROTOCOL=TCP) (SERVICE=proddbsXDB)'
+*.enable_pluggable_database=true
+*.fal_server='PRODDB'
+*.log_archive_config='DG_CONFIG=(proddb,proddbs)'
+*.log_archive_dest_2='SERVICE=to_proddb LGWR ASYNC VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=proddb'
+*.open_cursors=300
+*.pga_aggregate_target=767m
+*.processes=320
+*.remote_login_passwordfile='EXCLUSIVE'
+*.sga_target=2301m
+*.standby_file_management='AUTO'
+*.undo_tablespace='UNDOTBS1'
+
+
 
 mkdir -p /u01/app/oracle/admin/proddb/adump /u01/app/oracle/oradata/PRODDB/controlfile/ /u01/app/oracle/fast_recovery_area/PRODDB/controlfile/ /u01/app/oracle/oradata /u01/app/oracle/fast_recovery_area
 
 
+NOTE : make sure your environment variable ORACLE_SID is set to proddbs
+
 sqlplus / as sysdba
 create spfile from pfile;
+startup nomount;
+exit;
 
-edit listener file
+
+edit listener file with global database name as proddbs and oracle_sid as proddbs and ip as standby server ip.
+make sure your tns has both tns entries of primary and standby 
 cd /u01/app/oracle/product/19.0.0.0/dbhome_1/network/admin/
 
 lsnrctl start
@@ -187,7 +236,7 @@ select DESTINATION,TYPE,ARCHIVED_THREAD#,APPLIED_SEQ#,ARCHIVED_SEQ#,GAP_STATUS,e
 
 select process,status from v$managed_standby;
 
-
+-- to check the sysnc.
 set lines 300 pages 300;
 SELECT sequence#, first_time, next_time, applied FROM v$archived_log ORDER BY sequence#;
 
