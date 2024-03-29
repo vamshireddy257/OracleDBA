@@ -2,9 +2,17 @@ convert stand by to snapshot and viceversa
 
 SQL@STANDBY> 
 select open_mode,database_role from v$database;
+ 
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
 
 SYS@STANDBY> 
 alter database recover managed standby database cancel;
+ 
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
 
 SYS@STANDBY> 
 shut immediate
@@ -18,14 +26,29 @@ alter database flashback on;
 
 select GUARANTEE_FLASHBACK_DATABASE,RESTORE_POINT_TIME,name from v$restore_point;
 
+ 
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
+
 SYS@TESTER1 SQL> 
 select status from v$instance;
 
 SYS@TESTER1 SQL> 
 alter database convert to snapshot standby;
 
+ 
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
+
 SYS@TESTER1 SQL> 
 alter database open;
+
+ 
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
 
 SYS@TESTER1 SQL> 
 select open_mode,database_role from v$database;
@@ -47,11 +70,8 @@ alter database convert to physical standby;
 
 select status from v$instance;
 
- shut immediate;
  
- startup;
- 
- SYS@TESTER1 SQL>alter database recover managed standby database using current logfile disconnect;
+SYS@TESTER1 SQL>alter database recover managed standby database disconnect from session;
  
  
 set lines 300 pages 300;
