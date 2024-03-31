@@ -1,0 +1,152 @@
+SCN_BASED
+
+prepare environment with a gap.
+
+1: Stop MRP on standby
+alter database recover managed standby database cancel;
+
+2: generate 5 archive logs on primary.
+
+begin
+for i in 1..5
+loop
+execute immediate 'alter system switch logfile';
+end loop;
+end;
+/
+
+archive log list;
+
+3:delete latest 2 archive logs from standby and primary.
+rm o1_mf_1_199_m0l0f6kc_.arc  o1_mf_1_200_m0l0fcxp_.arc
+rm o1_mf_1_199_m0l0f6ps_.arc o1_mf_1_200_m0l0fd1x_.arc
+
+4: disable log shipping on primary
+alter system set log_archive_dest_state_2=DEFER scope=both sid='*';
+
+5:start MRP and monitor alert logs of primary.
+alter database recover managed standby database disconnect from session;
+
+##below is part of alert log.
+Error opening /u01/app/oracle/fast_recovery_area/PRODDBS/archivelog/2024_03_31/o1_mf_1_199_m0l0f6ps_.arc
+Attempting refetch
+PR00 (PID:15215): Media Recovery Waiting for T-1.S-199
+PR00 (PID:15215): Fetching gap from T-1.S-199 to T-1.S-199
+2024-03-31T12:01:48.353799+05:30
+Completed: alter database recover managed standby database disconnect from session
+2024-03-31T12:02:08.532703+05:30
+PR00 (PID:15215): Error 12154 received logging on to the standby
+PR00 (PID:15215): FAL: Error 12154 connecting to PRODDB for fetching gap sequence
+
+
+6: enable log shipping and switch 5 more logs check if the next logs are getting shipped.
+
+alter system set log_archive_dest_state_2=ENABLE scope=both sid='*';
+begin
+for i in 1..5
+loop
+execute immediate 'alter system switch logfile';
+end loop;
+end;
+/
+
+7: check if the gap can be resolved
+
+set lines 200
+col DESTINATION for a30
+col ERROR for a50
+select DESTINATION,TYPE,ARCHIVED_THREAD#,APPLIED_SEQ#,ARCHIVED_SEQ#,GAP_STATUS,error from v$archive_dest_status where DEST_ID=2;
+
+You can see unresolvable gap.
+
+
+
+
+NOW THE FIX.
+
+STEP 1: DISABLE LOG SHIPPING.
+alter system set log_archive_dest_state_2=DEFER scope=both sid='*';
+
+
+STEP 2: STOP MRP
+alter database recover managed standby database cancel;
+
+STEP 3: GET SCN FROM STANDBY
+
+select current_scn from v$database;
+CURRENT_SCN
+-----------
+    3327810
+
+STEP 4: TAKE INCREMENTAL BACKUP FROM RMAN AND STANBY CONTROLFILE BACKUP;
+
+run
+{
+allocate channel t1 type disk;
+allocate channel t2 type disk;
+backup incremental from SCN 3327810 database tag='STANDBY_TODAY_REFRESH' format '/u01/rman_incr/database_%d_%u_%s';
+release channel t1;
+release channel t2;
+}
+
+
+alter database create standby controlfile as '/u01/rman_incr/std_control.ctl';
+
+STEP 5 : SCP THE BACKUP AND STANDBY CONTROLFILE.
+
+scp * oracle@192.168.100.239:/u01/rman_incr/
+
+STEP 6: SHUT DOWN STANDBY 
+shut immediate;
+
+STEP 7: STARTUP STANDBY NOMOUNT   
+shut immediate;
+
+STEP 8: RESTORE CONTROL FILE FROM CONTROLFILE FROM RMAN.
+restore controlfile from '/u01/rman_incr/std_control.ctl';
+
+STEP 9: MOUNT DATABASE.
+alter database mount;
+
+
+STEP 10: CATALOG INCREMENTAL BACKUP PIECES 
+
+catalog backuppiece '/u01/rman_incr/database_PRODDB_1u2n2sdt_62';
+catalog backuppiece '/u01/rman_incr/database_PRODDB_1v2n2sdt_63';
+catalog backuppiece '/u01/rman_incr/database_PRODDB_202n2sdv_64';
+catalog backuppiece '/u01/rman_incr/database_PRODDB_232n2sdv_67';
+catalog backuppiece '/u01/rman_incr/database_PRODDB_242n2sdv_68';
+
+STEP 11: IF THE DATABASE DIRECTORIES ARE NOT SAME THEN.(YES when prompted for input)
+catalog start with '/u01/app/oracle/oradata/PRODDBS/';
+
+STEP 11: SWITCH THE DATAFILE WHICH NEEDS TO BE COPIED.
+SWITCH database to copy;
+
+STEP 12: RECOVER DATABASE FROM SCN BASED INCR BACKUP;
+RECOVER DATABASE FROM TAG STANDBY_TODAY_REFRESH NOREDO;
+
+
+STEP 13: START MRP
+alter database recover managed standby database disconnect from session;
+
+recreate standby redologs:
+select group#, thread#, sequence#, status from v$standby_log;
+select * from v$logfile;
+
+/u01/app/oracle/oradata/PRODDB/onlinelog/redo08.log
+/u01/app/oracle/oradata/PRODDB/onlinelog/redo09.log
+/u01/app/oracle/oradata/PRODDB/onlinelog/redo10.log
+
+alter system set standby_file_management=manual;
+alter database drop logfile group 8;
+alter database drop logfile group 9;
+alter database drop logfile group 10;
+
+ALTER DATABASE ADD STANDBY LOGFILE GROUP 8 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo08.log') SIZE 200M;
+ALTER DATABASE ADD STANDBY LOGFILE GROUP 9 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo09.log') SIZE 200M;
+ALTER DATABASE ADD STANDBY LOGFILE GROUP 10 ('/u01/app/oracle/oradata/PRODDB/onlinelog/redo10.log') SIZE 200M;
+
+alter system set standby_file_management=AUTO;
+
+
