@@ -39,7 +39,28 @@ RMAN>switch database to copy;
 STEP 8: RUN RECOVER DATABASE(IN STANDBY - NOT Mandatory):
 RMAN>RECOVER DATABASE;
 
-STEP 9: OPEN THE DATABASE and START  MEDIA RECOVERY:
+
+
+STEP 9: rename all redologs:
+
+alter system set standby_file_management = manual scope = both;
+
+alter database rename file '/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_3_lzt01f8p_.log'             to '/u01/app/oracle/oradata/PRODDBS/onlinelog/o1_mf_3_m0l9326z_.log'             ;
+alter database rename file '/u01/app/oracle/fast_recovery_area/PRODDB/onlinelog/o1_mf_3_lzt01g97_.log'  to '/u01/app/oracle/fast_recovery_area/PRODDBS/onlinelog/o1_mf_3_m0l93295_.log'  ;
+alter database rename file '/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_2_lzt01f7r_.log'             to '/u01/app/oracle/oradata/PRODDBS/onlinelog/o1_mf_2_m0l931sc_.log'             ;
+alter database rename file '/u01/app/oracle/fast_recovery_area/PRODDB/onlinelog/o1_mf_2_lzt01g4o_.log'  to '/u01/app/oracle/fast_recovery_area/PRODDBS/onlinelog/o1_mf_2_m0l931vv_.log'  ;
+alter database rename file '/u01/app/oracle/oradata/PRODDB/onlinelog/o1_mf_1_lzt01f71_.log'             to '/u01/app/oracle/oradata/PRODDBS/onlinelog/o1_mf_1_m0l931d7_.log'             ;
+alter database rename file '/u01/app/oracle/fast_recovery_area/PRODDB/onlinelog/o1_mf_1_lzt01g5l_.log'  to '/u01/app/oracle/fast_recovery_area/PRODDBS/onlinelog/o1_mf_1_m0l931go_.log'  ;
+alter database rename file '/u01/app/oracle/oradata/PRODDB/onlinelog/redo08.log'                        to '/u01/app/oracle/oradata/PRODDBS/onlinelog/o1_mf_8_m0l932nb_.log'             ;
+alter database rename file '/u01/app/oracle/oradata/PRODDB/onlinelog/redo09.log'                        to '/u01/app/oracle/oradata/PRODDBS/onlinelog/o1_mf_9_m0l9335p_.log'             ;
+alter database rename file '/u01/app/oracle/oradata/PRODDB/onlinelog/redo10.log'                        to '/u01/app/oracle/oradata/PRODDBS/onlinelog/o1_mf_10_m0l933r5_.log'            ;
+
+alter system set standby_file_management = AUTO scope = both;
+
+
+
+
+STEP 10 : OPEN THE DATABASE and START  MEDIA RECOVERY:
 SQL> alter database open;
 SQL> ALTER DATABASE RECOVER MANAGED STANDBY DATABASE disconnect from session;
 
