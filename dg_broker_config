@@ -102,3 +102,7 @@ switchover to proddbs;
 to check if standby is in sysnc;
 show database verbose <stdby name>;
 
+STOP LOG SHIPPING 
+edit database proddb set state='LOG-TRANSPORT-OFF';
+stop MRP
+edit database proddbs set state='APPLY-OFF';
