@@ -23,14 +23,31 @@ power off virtual machine and add newly created disks.
 yum install oracle-database-preinstall-19c.x86_64
 
 
+
+su -
+groupadd asmadmin
+groupadd oinstall
+groupadd asmdba
+usermod -g oinstall oracle
+usermod -a -G asmdba oracle
+useradd -u 54323 -g oinstall -G asmadmin,asmdba grid
+passwd grid
+passwd oracle
+
+#usermod -a -G vboxsf oracle
+#usermod -a -G vboxsf grid
+
+
+mkdir -p /u01/app/oracle/product/19.0.0/db_1
+mkdir -p /u01/app/grid
+mkdir -p /u01/app/19.0.0/grid
+chown -R grid:oinstall /u01
+chown -R oracle:oinstall /u01/app/oracle
+chmod -R 775 /u01
+
+
 su - oracle
 mv ~/.bash_profile ~/.bash_profile_bkp
-
-
-
-
-
-
 vi ~/.bash_profile
 
 # .bash_profile
@@ -67,28 +84,6 @@ umask 022
 
 wq!
 
-su -
-groupadd asmadmin
-groupadd oinstall
-groupadd asmdba
-usermod -g oinstall oracle
-usermod -a -G asmdba oracle
-useradd -u 54323 -g oinstall -G asmadmin,asmdba grid
-passwd grid
-passwd oracle
-
-#usermod -a -G vboxsf oracle
-#usermod -a -G vboxsf grid
-
-
-mkdir -p /u01/app/oracle/product/19.0.0/db_1
-mkdir -p /u01/app/grid
-mkdir -p /u01/app/19.0.0/grid
-chown -R grid:oinstall /u01
-chown -R oracle:oinstall /u01/app/oracle
-chmod -R 775 /u01
-
-
 su - grid
 mv ~/.bash_profile ~/.bash_profile_bkp
 vi ~/.bash_profile
@@ -116,7 +111,7 @@ yum install oracleasm-support -y
 yum install kmod-oracleasm -y
 
 
-configure oracle asm
+###configure oracle asm
 
 oracleasm configure -i
 
@@ -144,11 +139,94 @@ Mounting ASMlib driver filesystem: /dev/oracleasm
 
 lsblk
 
+--- start : formating the disks
+[root@dbsrv1 ~]# fdisk /dev/sdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table
+Building a new DOS disklabel with disk identifier 0xabf9e75f.
+
+Command (m for help): m
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   g   create a new empty GPT partition table
+   G   create an IRIX (SGI) partition table
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition's system id
+   u   change display/entry units
+   v   verify the partition table
+   w   write table to disk and exit
+   x   extra functionality (experts only)
+
+Command (m for help): n
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): p
+Partition number (1-4, default 1): 
+First sector (2048-41943039, default 2048): 
+Using default value 2048
+Last sector, +sectors or +size{K,M,G} (2048-41943039, default 41943039): 
+Using default value 41943039
+Partition 1 of type Linux and of size 20 GiB is set
+
+Command (m for help): 
+Command (m for help): 
+Command (m for help): 
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+[root@dbsrv1 ~]# fdisk /dev/sdc
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table
+Building a new DOS disklabel with disk identifier 0xc90d6483.
+
+Command (m for help): n
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): 
+Using default response p
+Partition number (1-4, default 1): 
+First sector (2048-83886079, default 2048): 
+Using default value 2048
+Last sector, +sectors or +size{K,M,G} (2048-83886079, default 83886079): 
+Using default value 83886079
+Partition 1 of type Linux and of size 40 GiB is set
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+
+--- stop  : formating the disks
+
 oracleasm createdisk FRADISK1 /dev/sdb1
 oracleasm createdisk DATADISK1 /dev/sdc1
 oracleasm listdisks
 
-
+--ignore start 
 vi /etc/sysctl.d/97-oracle-database-sysctl.conf
 
 fs.aio-max-nr = 1048576
@@ -166,22 +244,33 @@ net.core.wmem_max = 1048576
 
 /sbin/sysctl --system
 
-
 reboot the server
+
+--ignore stop 
 
 init 6
 
-copy software to /u01/grid_sw
+copy software to /u01/grid_sw using winscp (login with grid user)
 
 V982068-01_grid.zip
 
-
+su - grid
 unzip /u01/grid_sw/V982068-01_grid.zip -d $ORACLE_HOME
+cd $ORACLE_HOME
+
+new terminal 
+xhost +
+su - grid
+export DISPLAY=:0
+
 cd $ORACLE_HOME
 
 ./gridSetup.sh
 
+configure oracle grid ......(oracle restart)
 
+FRA 20GB
+redundancy external.
 
 search path /dev/oracleasm/disks/*
 
