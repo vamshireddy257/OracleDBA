@@ -70,6 +70,8 @@ DDL ON TABLESPACE:
 --Create TABLESPACE
 Create tablespace HRMS_TS datafile '/u01/app/oracle/oradata/ICICI/datafile/HRMS_001.dbf' size 5M autoextend on;
 
+create tablespace hrms_ts datafile '+DATA' size 20G;
+
 -- Add a datafile to a tablespace
 Alter tablespace HRMS_TS add datafile '/u01/app/oracle/oradata/ICICI/datafile/HRMS_002.dbf'  size 5M autoextend on;
 
