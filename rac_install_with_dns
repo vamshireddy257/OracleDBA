@@ -254,13 +254,13 @@ sdc           8:32   0   40G  0 disk
 
 ls -ltr /dev/oracleasm/disks
 
-oracleasm createdisk DATA_01 /dev/sdb1
-oracleasm createdisk FRA_01 /dev/sdc1
-oracleasm createdisk OCR_01 /dev/sdd1
+oracleasm createdisk FRA_01 /dev/sdb1
+oracleasm createdisk DATA_01 /dev/sdc1
+
+oracleasm createdisk DATA_02 /dev/sdd1
 
 
-usermod -a -G vboxsf oracle
-usermod -a -G vboxsf grid
+
 
 2nd node
 oracleasm listdisks
@@ -270,11 +270,6 @@ oracleasm configure
 
 run below from node1
 
-
-#adding permissions to oracle and grid users on vbox shared folders.
-
-usermod -a -G vboxsf oracle
-usermod -a -G vboxsf grid
 
 
 
@@ -350,9 +345,9 @@ xhost +
 su - oracle
 export DISPLAY=:0
 go to software location
-unzip V982063-01.zip -d /u01/app/oracle/product/19.0.0/db_1/
+unzip V982063-01.zip -d /u02/app/oracle/product/19.0.0/db_1/
 
-cd /u01/app/oracle/product/19.0.0/db_1/
+cd /u02/app/oracle/product/19.0.0/db_1/
 
 ./runInstaller
 
