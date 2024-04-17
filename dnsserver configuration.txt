@@ -99,7 +99,7 @@ include "/etc/named.root.key";
 
 
 [root@dnssrv named]#  vi /var/named/localdomain.zone
-[root@dnssrv ~]# cat /var/named/localdomain.zone
+[root@dnssrv ~]# cat /var/named/localdomain.zone 
 $TTL    86400
 @               IN SOA  dnssrv.localdomain. root.localdomain. (
                                         42              ; serial (d. adams)
@@ -108,10 +108,17 @@ $TTL    86400
                                         1W              ; expiry
                                         1D )            ; minimum
                 IN NS   dnssrv.localdomain.
-dnssrv          IN A    192.168.100.149
-rac-scan        IN A    192.168.56.91
-rac-scan        IN A    192.168.56.92
-rac-scan        IN A    192.168.56.93
+dnssrv          IN A    192.168.0.149
+rac1            IN A    192.168.0.101
+rac2            IN A    192.168.0.102
+rac1-priv       IN A    192.168.1.101
+rac2-priv       IN A    192.168.1.102
+rac1-vip        IN A    192.168.0.111
+rac2-vip        IN A    192.168.0.112
+rac-scan        IN A    192.168.0.121
+rac-scan        IN A    192.168.0.122
+rac-scan        IN A    192.168.0.123
+
 
 
 
