@@ -304,7 +304,7 @@ ALTER DISKGROUP DATA ADD disk '/dev/oracleasm/disks/DATA_02' ;
 
 
 col PATH for a55
-select path, group_number group_#, disk_number disk_#, mount_status,header_status, state, total_mb, free_mb from v$asm_disk where header_status='CANDIDATE' or header_status='FORMER' order by 1 ;
+select path, group_number group_#, disk_number disk_#, mount_status,header_status, state, total_mb, free_mb from v$asm_disk where header_status in ('CANDIDATE' , 'FORMER' ,'PROVISIONED')order by 1 ;
 
 To know the all diskgroups information:
 --------------------------------------
