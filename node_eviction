@@ -1,0 +1,28 @@
+[grid@rac2 trace]$ pwd
+$ORACLE_BASE/diag/crs/rac2/crs/trace
+[grid@rac2 trace]$ cat ocssd.trc |grep "master node"
+
+
+
+#########below content is from crs log located in file alert.log in location
+$ORACLE_BASE/diag/crs/rac2/crs/trace
+
+
+########the below 3 lines was a network fail and was resolved with in 30 seconds
+
+2024-04-21 10:40:10.509 [OCSSD(12761)]CRS-1612: Network communication with node rac2 (2) has been missing for 50% of the timeout interval.  If this persists, removal of this node from cluster will occur in 14.550 seconds
+2024-04-21 10:40:18.552 [OCSSD(12761)]CRS-1611: Network communication with node rac2 (2) has been missing for 75% of the timeout interval.  If this persists, removal of this node from cluster will occur in 6.500 seconds
+2024-04-21 10:40:19.573 [OCSSD(12761)]CRS-1727: Network communication between this node 'rac1' (1) and node 'rac2' (2) re-established. Node removal no longer imminent.
+
+#########below resembles that the node is evicted and that is because of private connectivity failure:
+
+2024-04-21 10:40:34.658 [OCSSD(12761)]CRS-1612: Network communication with node rac2 (2) has been missing for 50% of the timeout interval.  If this persists, removal of this node from cluster will occur in 14.010 seconds
+2024-04-21 10:40:41.697 [OCSSD(12761)]CRS-1611: Network communication with node rac2 (2) has been missing for 75% of the timeout interval.  If this persists, removal of this node from cluster will occur in 6.980 seconds
+2024-04-21 10:40:45.703 [OCSSD(12761)]CRS-1610: Network communication with node rac2 (2) has been missing for 90% of the timeout interval.  If this persists, removal of this node from cluster will occur in 2.970 seconds
+2024-04-21 10:40:48.684 [OCSSD(12761)]CRS-1607: Node rac2 is being evicted in cluster incarnation 609156430; details at (:CSSNM00007:) in /u01/app/grid/diag/crs/rac1/crs/trace/ocssd.trc.
+2024-04-21 10:40:55.267 [OCSSD(12761)]CRS-1601: CSSD Reconfiguration complete. Active nodes are rac1 .
+2024-04-21 10:40:55.594 [OCTSSD(13044)]CRS-2407: The new Cluster Time Synchronization Service reference node is host rac1.
+2024-04-21 10:41:07.895 [CRSD(13234)]CRS-5504: Node down event reported for node 'rac2'.
+2024-04-21 10:41:23.453 [CRSD(13234)]CRS-2773: Server 'rac2' has been removed from pool 'Generic'.
+2024-04-21 10:41:23.468 [CRSD(13234)]CRS-2773: Server 'rac2' has been removed from pool 'ora.oradb'.
+2024-04-21 10:41:23.472 [CRSD(13234)]CRS-2773: Server 'rac2' has been removed from pool 'ora.oradb_oradbsvc'.
