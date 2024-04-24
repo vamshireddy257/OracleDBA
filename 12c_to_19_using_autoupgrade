@@ -142,3 +142,7 @@ $ORACLE_HOME/jdk/bin/java -jar /home/oracle/autoupgrade.jar -config /home/oracle
 1.1: ##DEPLOY##
 ========================
 $ORACLE_HOME/jdk/bin/java -jar /home/oracle/autoupgrade.jar -config /home/oracle/config.txt -mode deploy
+
+drop restorepoint;
+
+change compatible;
