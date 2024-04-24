@@ -1,0 +1,142 @@
+========================
+AUTO UPGRADE:
+========================
+
+========================
+1.0: makesure database is in archivelog mode.
+========================
+
+========================
+1.1: make sure database flashback is on.
+========================
+
+========================
+1.2: Install 19c Binary:
+========================
+mkdir -p /u01/app/oracle/product/19.0.0.0/dbhome_1
+chmod 777 /u01
+chown -R oracle:oinstall /u01
+go to software location
+unzip V982063-01_19c_db.zip -d /u01/app/oracle/product/19.0.0.0/dbhome_1/
+chmod -R 777 /u01
+chown -R oracle: /u01
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1/
+./runInstaller
+
+
+========================
+1.3: SET Environment variables
+========================
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
+ORACLE_SID=proddb
+ORACLE_BASE=/u01/app/oracle
+cd $ORACLE_HOME/rdbms/admin
+
+
+
+========================
+1.4: CHECK version autoupgrade.jar 
+========================
+
+$ORACLE_HOME/jdk/bin/java -jar autoupgrade.jar -version
+build.version 20190207
+build.date 2019/02/07 12:35:56
+build.label RDBMS_PT.AUTOUPGRADE_LINUX.X64_190205.1800
+
+========================
+1.5: Download the latest autoupgrade.jar
+========================
+
+copy that file to $ORACLE_HOME/rdbms/admin
+
+Doc ID 2485457.1:
+
+https://support.oracle.com/epmos/faces/SearchDocDisplay?_adf.ctrl-state=4u31oejzu_4&_afrLoop=241437419909255#aref_section21
+
+========================
+1.6: check the version of autoupgrade.jar
+========================
+check the version of autoupgrade.jar
+
+$ORACLE_HOME/jdk/bin/java -jar autoupgrade.jar -version
+build.version 24.3.240419
+build.date 2024/04/19 15:45:58 -0400
+build.hash a1ea950cc
+build.hash_date 2024/04/19 15:05:29 -0400
+build.supported_target_versions 12.2,18,19,21,23
+build.type production
+build.label (HEAD, tag: v24.3, origin/stable_devel, stable_devel)
+build.MOS_NOTE 2485457.1
+build.MOS_LINK https://support.oracle.com/epmos/faces/DocumentDisplay?id=2485457.1
+
+
+========================
+1.7: make directory for logs.
+========================
+##for logs
+mkdir -p /u01/app/oracle/autoupgrade
+
+cd /home/oracle
+
+========================
+1.8: CREATE CONFIG FILE
+========================
+vi config.txt
+
+#
+# Global logging directory pertains to all jobs
+#
+global.autoupg_log_dir=/u01/app/oracle/autoupgrade        # Top level logging directory (Required)
+#
+# Database 1
+#
+upg1.dbname=proddb
+upg1.source_home=/u01/app/oracle/product/12.2.0/dbhome_1
+upg1.target_home=/u01/app/oracle/product/19.0.0.0/dbhome_1
+upg1.sid=proddb
+upg1.start_time=now
+upg1.log_dir=/u01/app/oracle/autoupgrade/proddb
+upg1.upgrade_node=ora12c.com
+upg1.run_utlrp=yes
+upg1.timezone_upg=yes
+upg1.target_version=19.12
+
+
+:wq!
+
+
+========================
+1.9: OPTIONS IN AUTO UPGRADE
+========================
+###########
+
+There are three main commands in this upgrade to check the status of the upgrade.
+
+lsj       –   list the jobs which are running.
+
+tasks  –  to see the tasks of the jobs and their status.
+
+status – it gives an overall summary of the upgrade, here we can see the no of container and non-container databases, job finished successfully, job aborted and jobs which are in progress state.
+
+========================
+2.0: make sure DB is up and all PDBS are up.
+========================
+
+========================
+2.1: ##ANALYZE#
+========================
+
+$ORACLE_HOME/jdk/bin/java -jar /home/oracle/autoupgrade.jar -config /home/oracle/config.txt -mode analyze
+
+lsj
+status
+
+========================
+2.2: ##FIXUPS##
+========================
+$ORACLE_HOME/jdk/bin/java -jar /home/oracle/autoupgrade.jar -config /home/oracle/config.txt -mode fixups
+
+========================
+1.1: ##DEPLOY##
+========================
+$ORACLE_HOME/jdk/bin/java -jar /home/oracle/autoupgrade.jar -config /home/oracle/config.txt -mode deploy
