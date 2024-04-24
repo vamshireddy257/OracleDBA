@@ -100,6 +100,8 @@ upg1.upgrade_node=ora12c.com
 upg1.run_utlrp=yes
 upg1.timezone_upg=yes
 upg1.target_version=19.12
+upg1.parallel=4
+
 
 
 :wq!
