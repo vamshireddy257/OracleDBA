@@ -9,7 +9,7 @@ mv OPatch OPatch_bkp
 
 mkdir -p  /u01/patch/
 cd /u01/patch/
-unzip p6880880_190000_Linux-x86-64.zip $ORACLE_HOME
+unzip p6880880_190000_Linux-x86-64.zip -d $ORACLE_HOME
 
 cd $ORACLE_HOME/OPatch/
 ./optach version
@@ -41,7 +41,7 @@ rman> backup database plus archivelog
 SQL> shut immediate;
 
 -- Take backup of ORACLE_HOME
-tar -cvf /u01/rman_bkp/oracle_home_1712bkp.tar $ORACLE_HOME
+tar -cvf /u01/oracle_home_25_04_bkp.tar $ORACLE_HOME
 
 
 cd /u01/patch
@@ -66,10 +66,11 @@ $ORACLE_HOME/OPatch/opatch apply
 $ORACLE_HOME/OPatch/opatch lsinventory |grep applied
 
 -- start database once oracle-home patch applied
-
-SQL> startup;
-SQL> alter pluggable database all open;
-
+sqlplus /nolog
+Connect / as sysdba
+startup
+alter pluggable database all open;
+EXIT
 
 -- run datapatch
 
@@ -78,7 +79,7 @@ cd $ORACLE_HOME
 
 --verify datapatch at dblevel
 
-sqlplus / as sysdba
+
 
 SQL> select PATCH_ID,to_char(ACTION_TIME,'DD-MON-YY'), action from dba_registry_sqlpatch;
 
