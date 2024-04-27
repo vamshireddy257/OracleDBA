@@ -15,7 +15,6 @@ systemctl disable firewalld
 
 
 
-yum -y install oracle-database-server-12cR2-preinstall
 yum -y install oracle-database-server-12cR2-preinstall.x86_64
 
 yum install make -y
@@ -33,7 +32,6 @@ yum install ksh* -y
 yum install libaio* -y
 
 
-passwd oracle
 
 
 groupadd oinstall 
@@ -62,7 +60,7 @@ ORACLE_HOSTNAME=oemserver.com
 UNIX_GROUP_NAME=oinstall
 INVENTORY_LOCATION=/u01/app/oraInventory
 SELECTED_LANGUAGES=en
-ORACLE_HOME=/u01/app/oracle/product/12.2.0.1
+ORACLE_HOME=/u01/app/oracle/product/12.2.0.1/dbhome_1
 ORACLE_BASE=/u01/app/oracle
 oracle.install.db.InstallEdition=EE
 oracle.install.db.OSDBA_GROUP=dba
@@ -92,7 +90,7 @@ vi .bash_profile
 
 
 # User specific environment and startup programs
-export ORACLE_HOME=/u01/app/oracle/product/12.2.0.1
+export ORACLE_HOME=/u01/app/oracle/product/12.2.0.1/dbhome_1
 export ORACLE_SID=oemdb
 export OMS_HOME=/u01/app/oracle/middleware
 export AGENT_HOME=/u01/app/oracle/agent/agent_inst
@@ -123,9 +121,9 @@ dbca -silent -createDatabase \
 
 
 alter system set "_allow_insert_with_update_check"=true scope=both;
-  alter system set session_cached_cursors=200 scope=spfile;
-  alter system set sga_target=1200M scope=both;
-  alter system set pga_aggregate_target=450M scope=both;
+alter system set session_cached_cursors=200 scope=spfile;
+alter system set sga_target=1200M scope=both;
+alter system set pga_aggregate_target=450M scope=both;
   
 
 SQL> Shut immediate;
@@ -211,5 +209,3 @@ $OMS_HOME/bin/emctl config oms -disable_bip
 
 -- enable BI publisher
 $OMS_HOME/bin/emctl config oms -enable_bip
-
-
