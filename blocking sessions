@@ -1,0 +1,34 @@
+SELECT 
+  blocking_session "BLOCKING_SESSION",
+  sid "BLOCKED_SESSION",
+  serial# "BLOCKED_SERIAL#", 
+  seconds_in_wait/60 "WAIT_TIME(MINUTES)"
+FROM v$session
+WHERE blocking_session is not NULL
+ORDER BY blocking_session;
+
+
+select * from v$session where sid = 182;
+
+select * from v$sql where sql_id ='caty2h7pjtgcn';
+
+SELECT 
+  blocking_session "BLOCKING_SESSION",
+  sid "BLOCKED_SESSION",
+  serial# "BLOCKED_SERIAL#", 
+  seconds_in_wait/60 "WAIT_TIME(MINUTES)"
+FROM v$session
+WHERE blocking_session is not NULL
+ORDER BY blocking_session;
+
+select * from v$locked_object;
+
+select * from dba_objects where object_id = '80271';
+
+select * from dba_objects where object_id in 
+(select object_id from v$locked_object where session_id = 250);
+
+
+
+select sid,serial# from v$session where sid = 250;
+alter system kill session '250,30467,@1' IMMEDIATE;
