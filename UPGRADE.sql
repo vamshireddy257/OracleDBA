@@ -1,21 +1,26 @@
-========================
-AUTO UPGRADE:
-========================
+1. Pre-Checks / Pre-Steps
+2. Manual Upgrade using command Steps
+3. Post upgrade Steps
+
 
 ========================
-1.0: makesure database is in archivelog mode.
+1.1: Install 19c Binary:
 ========================
 
-========================
-1.1: make sure database flashback is on.
-========================
-
-========================
-1.2: Install 19c Binary:
-========================
 mkdir -p /u01/app/oracle/product/19.0.0.0/dbhome_1
 chmod 777 /u01
 chown -R oracle:oinstall /u01
+
+    
+        
+          
+    
+
+        
+        Expand All
+    
+    @@ -17,202 +23,127 @@ chown -R oracle: /u01
+  
 go to software location
 unzip V982063-01_19c_db.zip -d /u01/app/oracle/product/19.0.0.0/dbhome_1/
 chmod -R 777 /u01
@@ -23,127 +28,176 @@ chown -R oracle: /u01
 cd /u01/app/oracle/product/19.0.0.0/dbhome_1/
 ./runInstaller
 
+====================================
+1.2 Execute the pre-upgrade command:
+====================================
+mkdir -p /u01/upgradelogs
 
-========================
-1.3: SET Environment variables
-========================
+/u01/app/oracle/product/12.2.0/dbhome_1/jdk/bin/java -jar /u01/app/oracle/product/19.0.0.0/dbhome_1/rdbms/admin/preupgrade.jar FILE DIR /u01/upgradelogs
+
+
+@/u01/upgradelogs/preupgrade_fixups.sql
+
+========================================
+1.3. Refresh Materialized Views if any:
+========================================
+
+declare
+list_failures integer(3) :=0;
+begin
+DBMS_MVIEW.REFRESH_ALL_MVIEWS(list_failures,'C','', TRUE, FALSE);
+end;
+/ 
+
+=================================
+1.4: Manually gather statistics:
+=================================
+
+exec dbms_stats.gather_fixed_objects_stats;
+
+exec dbms_stats.gather_schema_stats ('SYSTEM');
+
+exec dbms_stats.gather_schema_stats ('SYS');
+
+exec dbms_stats.gather_dictionary_stats;
+
+==============================
+1.5: Active Backup Validation:
+==============================
+
+SELECT * FROM v$recover_file;
+
+SELECT * FROM v$backup WHERE status != 'NOT ACTIVE';
+
+========================================
+1.6: Default Tablespace for SYS & SYSTEM:
+========================================
+
+SELECT USERNAME,default_tablespace from dba_users where username in ('SYS','SYSTEM') ;
+
+=============================
+1.8: Invalid Objects compile:
+=============================
+
+select owner, count(*) from dba_objects where status <> 'VALID'group by owner;
+
+@$ORACLE_HOME/rdbms/admin/utlrp.sql
+
+=========================================== 
+1.9: Component’s version along with status: 
+===========================================
+
+set lines 333 pages 111
+col COMP_NAME form a55
+select comp_name, version, status from dba_registry;
+
+=============================== 
+1.10: Empty Database Recyclebin:
+===============================
+purge DBA_RECYCLEBIN;
+
+select count(*) from DBA_RECYCLEBIN;
+
+show parameter sec_case_sensitive_logon
+
+==============
+1.11: Timezone
+==============
+COL PROPERTY_NAME FOR A25
+COL PROPERTY_VALUE FOR A21
+Select version from v$timezone_file;
+
+select PROPERTY_NAME,PROPERTY_VALUE from database_properties where property_name ='DST_PRIMARY_TT_VERSION';
+
+show parameter cluster_database
+
+================ 
+1.12 Create GRP:
+================
+
+COL NAME FOR A25
+COL GUARANTEE_FLASHBACK_DATABASE FOR A31
+select NAME,GUARANTEE_FLASHBACK_DATABASE,TIME from V$restore_point;
+
+create restore point PRE_UPGRADE guarantee flashback database;
+
+=====================
+1.13: Database Backup:
+=====================
+
+rman target /
+
+run
+{
+ALLOCATE CHANNEL D1 DEVICE TYPE DISK FORMAT '/u01/upgradelogs/FULLBACKUP_2901_%U';
+ALLOCATE CHANNEL D2 DEVICE TYPE DISK FORMAT '/u01/upgradelogs/FULLBACKUP_2901_%U';
+ALLOCATE CHANNEL D3 DEVICE TYPE DISK FORMAT '/u01/upgradelogs/FULLBACKUP_2901_%U';
+BACKUP tag 'UPGRADE_DB' FORCE AS COMPRESSED BACKUPSET DATABASE PLUS ARCHIVELOG;
+BACKUP CURRENT CONTROLFILE TAG 'UPGRADE_CTL' FORMAT '/u01/upgradelogs/proddbbeforeupgrade.ctl';
+BACKUP SPFILE TAG 'UPGRADE_SPFILE' FORMAT '/u01/upgradelogs/SPFILE2901.ora';
+RELEASE CHANNEL D1;
+RELEASE CHANNEL D2;
+RELEASE CHANNEL D3;
+}
+
+==============
+1.14: Shutdown
+==============
+shut immediate;
+
+
+=========================================
+1.15: Copy Password file spfile to 19c OH
+=========================================
+cp spfileproddb.ora  orapwproddb /u01/app/oracle/product/19.0.0.0/dbhome_1/dbs
+
+=====================================
+1.16 Export NEW Environment Variables
+=====================================
+
 export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
-export ORACLE_SID=proddb
-export ORACLE_BASE=/u01/app/oracle
-cd $ORACLE_HOME/rdbms/admin
+export PATH=$PATH:$ORACLE_HOME/bin
+
+/u01/app/oracle/product/19.0.0.0/dbhome_1/bin/sqlplus / as sysdba
+
+=====================================
+1.17 :  Open database in upgrade mode:
+=====================================
+startup upgrade:
+
+alter pluggable database all open upgrade;
+
+select open_mode,status from v$database,v$instance;
 
 
+=====================================
+2 :  run DBUPGRADE Script
+=====================================
 
-========================
-1.4: CHECK version autoupgrade.jar 
-========================
+nohup $ORACLE_HOME/bin/dbupgrade -n 2 -l /u01/upgradelogs &
 
-$ORACLE_HOME/jdk/bin/java -jar autoupgrade.jar -version
-build.version 20190207
-build.date 2019/02/07 12:35:56
-build.label RDBMS_PT.AUTOUPGRADE_LINUX.X64_190205.1800
+======================
+3:POST UPGRADE CHECKS:
+======================
 
-========================
-1.5: Download the latest autoupgrade.jar
-========================
+select name,open_mode,status,banner from v$database,v$instance,v$version;
 
-copy that file to $ORACLE_HOME/rdbms/admin
+select name,open_mode,cdb,version,status from v$database, v$instance;
 
-Doc ID 2485457.1:
-### At the edn of the document there are attachments of autoupgrade.jar which can be downloaded.
+col COMP_ID for a10
+col COMP_NAME for a40
+col VERSION for a15
+set lines 180
+set pages 999
+select COMP_ID,COMP_NAME,VERSION,STATUS from dba_registry;
 
-https://support.oracle.com/epmos/faces/SearchDocDisplay?_adf.ctrl-state=4u31oejzu_4&_afrLoop=241437419909255#aref_section21
+SQL> select count(*) from  cdb_objects where status ='INVALID';
 
-========================
-1.6: check the version of autoupgrade.jar
-========================
-check the version of autoupgrade.jar
-
-$ORACLE_HOME/jdk/bin/java -jar autoupgrade.jar -version
-build.version 24.3.240419
-build.date 2024/04/19 15:45:58 -0400
-build.hash a1ea950cc
-build.hash_date 2024/04/19 15:05:29 -0400
-build.supported_target_versions 12.2,18,19,21,23
-build.type production
-build.label (HEAD, tag: v24.3, origin/stable_devel, stable_devel)
-build.MOS_NOTE 2485457.1
-build.MOS_LINK https://support.oracle.com/epmos/faces/DocumentDisplay?id=2485457.1
+  COUNT(*)
+----------
+      2295
 
 
-========================
-1.7: make directory for logs.
-========================
-##for logs
-mkdir -p /u01/app/oracle/autoupgrade
+@/u01/upgradelogs/postupgrade_fixups.sql
 
-cd /home/oracle
-
-========================
-1.8: CREATE CONFIG FILE
-========================
-vi config.txt
-
-#
-# Global logging directory pertains to all jobs
-#
-global.autoupg_log_dir=/u01/app/oracle/autoupgrade        # Top level logging directory (Required)
-#
-# Database 1
-#
-upg1.dbname=proddb
-upg1.source_home=/u01/app/oracle/product/12.2.0/dbhome_1
-upg1.target_home=/u01/app/oracle/product/19.0.0.0/dbhome_1
-upg1.sid=proddb
-upg1.start_time=now
-upg1.log_dir=/u01/app/oracle/autoupgrade/proddb
-upg1.upgrade_node=ora12c.com
-upg1.run_utlrp=yes
-upg1.timezone_upg=yes
-upg1.target_version=19.12
-upg1.parallel=4
-
-
-
-:wq!
-
-
-========================
-1.9: OPTIONS IN AUTO UPGRADE
-========================
-###########
-
-There are three main commands in this upgrade to check the status of the upgrade.
-
-lsj       –   list the jobs which are running.
-
-tasks  –  to see the tasks of the jobs and their status.
-
-status – it gives an overall summary of the upgrade, here we can see the no of container and non-container databases, job finished successfully, job aborted and jobs which are in progress state.
-
-========================
-2.0: make sure DB is up and all PDBS are up.
-========================
-
-========================
-2.1: ##ANALYZE#
-========================
-
-$ORACLE_HOME/jdk/bin/java -jar /home/oracle/autoupgrade.jar -config /home/oracle/config.txt -mode analyze
-
-lsj
-status
-
-========================
-2.2: ##FIXUPS##
-========================
-$ORACLE_HOME/jdk/bin/java -jar /home/oracle/autoupgrade.jar -config /home/oracle/config.txt -mode fixups
-
-========================
-1.1: ##DEPLOY##
-========================
-$ORACLE_HOME/jdk/bin/java -jar /home/oracle/autoupgrade.jar -config /home/oracle/config.txt -mode deploy
-
-drop restorepoint;
-
-change compatible;
+@?/rdbms/admin/utlrp.sql
