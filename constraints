@@ -1,0 +1,49 @@
+drop table student purge;
+
+create table student 
+(
+s_no number(4) ,
+s_name varchar2(10),
+s_cls number(2),
+DOJ date,
+DOB date,
+aadhar number(12) not null ,
+unique (aadhar),
+primary key (s_no),
+check (doj > dob)
+);
+
+
+
+create table 
+
+INSERT INTO STUDENT 
+(S_NO,S_NAME,s_cls,DOJ,DOB,aadhar)
+VALUES
+(1,'ADITI',6,'04-jul-19',sysdate ,123412341234);
+
+
+
+
+create table product
+(
+prd_id number(4) primary key,
+prd_name varchar2(10),
+brand varchar2(10),
+mfg_date date not null,
+prd_cost number(7,2)
+);
+
+insert into product values (1,'SOAP','SANTHOOR',sysdate-180,50);
+insert into product values (2,'surf','XXX',sysdate-180,70);
+insert into product values (3,'shapoo','DOVE',sysdate-180,50);
+
+create table orders (
+ord_id number(10) not null,
+prd_id number(4) ,
+quantity number(4),
+prd_cost number ,
+foreign key (prd_id) REFERENCES  product(prd_id)
+);
+
+insert into orders values (1,2,2,100);
