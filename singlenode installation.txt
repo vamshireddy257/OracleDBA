@@ -46,21 +46,19 @@ create database
 create database
 cat /etc/oratab
 
-
-setting bash profile
-go to /home/oracle
-vi .bash_profile
-
 export ORACLE_BASE=/u01/app/oracle
 export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
+export ORACLE_SID=vamdb
+cd $ORACLE_HOME
+cd bin
+./sqlplus / as sysdba
 
-export ORACLE_SID=chennai
+select instance_name,status from v$instance;
+select name,open_mode from v$database;
+
+shut immediate;
+
+startup;
 
 
-PATH=$PATH:$HOME/.local/bin:$ORACLE_HOME/bin
 
-export PATH
-
-change host name
-
-hostnamectl set-hostname sandviks.com
