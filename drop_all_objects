@@ -1,0 +1,53 @@
+set serveroutput on size unlimited;
+declare
+  v_ItemCount integer;
+  v_user varchar2(32) := '&Enter_schema';
+begin
+  --SELECT USER INTO v_user FROM DUAL;
+  IF V_USER NOT IN ( 'SYS','SYSTEM') THEN
+  SELECT count(*)
+    INTO v_ItemCount
+    FROM ALL_OBJECTS AO
+   WHERE AO.OWNER = V_USER
+     AND AO.OBJECT_TYPE NOT IN ('INDEX', 'LOB')
+     AND AO.OBJECT_NAME NOT LIKE 'BIN$%';
+  while (v_ItemCount > 0) loop
+    for v_Cmd in (SELECT 'drop ' || AO.OBJECT_TYPE || ' ' || '"'||AO.OWNER||'"'|| '.' || '"'||AO.OBJECT_NAME||'"' ||
+                         DECODE(AO.OBJECT_TYPE,
+                                'TABLE',
+                                ' CASCADE CONSTRAINTS PURGE',
+                                '') as DROPCMD,
+                                AO.OWNER,
+                                AO.OBJECT_TYPE,
+                                AO.OBJECT_NAME
+                    FROM ALL_OBJECTS AO
+                   WHERE AO.OWNER = V_USER
+                     AND AO.OBJECT_TYPE NOT IN ('INDEX', 'LOB')
+                     AND AO.OBJECT_NAME NOT LIKE 'BIN$%') 
+    loop
+      begin
+        if v_Cmd.OBJECT_TYPE = 'SCHEDULE' then
+          DBMS_SCHEDULER.DROP_SCHEDULE('"'||v_Cmd.OWNER||'"'||'.'||'"'||v_Cmd.OBJECT_NAME||'"', true);
+        ELSIF v_Cmd.OBJECT_TYPE = 'JOB' then
+          DBMS_SCHEDULER.DROP_JOB('"'||v_Cmd.OWNER||'"'||'.'||'"'||v_Cmd.OBJECT_NAME||'"', true);
+        ELSIF v_Cmd.OBJECT_TYPE = 'PROGRAM' then
+          DBMS_SCHEDULER.DROP_PROGRAM('"'||v_Cmd.OWNER||'"'||'.'||'"'||v_Cmd.OBJECT_NAME||'"', true);                              
+        else
+          execute immediate v_Cmd.dropcmd;
+        end if;  
+      exception
+        when others then
+          null; -- ignore errors
+      end;
+    end loop;
+      execute immediate 'purge recyclebin';
+    SELECT count(*)
+      INTO v_ItemCount
+      FROM ALL_OBJECTS AO
+     WHERE AO.OWNER = V_USER     
+       AND AO.OBJECT_TYPE NOT IN ('INDEX','LOB')
+       AND AO.OBJECT_NAME NOT LIKE 'BIN$%';
+  end loop;
+  END IF;
+end;
+/
