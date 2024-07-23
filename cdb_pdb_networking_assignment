@@ -1,0 +1,29 @@
+cdb
+pdb1
+pdb2
+pdb3
+
+create a listener for all these database
+
+
+
+create 2 users in pdb1 (user1,user2)
+
+create 3 users in pdb2 (user1,user2,user3)
+
+create 2 users in pdb3 (user1,user3);
+
+connect to newly created users with tns
+and check show user.
+or select user from dual;
+
+######################################
+create table emp in all above 7 users.
+try to maintain diferent structure.
+
+now verify 
+user_objects (from user1,user2,user3)
+all_object (from user1,user2,user3)
+dba_objects (from sys user of pdb1 , pdb2 and pdb3)
+cdb_objects (from cdb$root)
+
