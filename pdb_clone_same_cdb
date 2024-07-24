@@ -1,0 +1,13 @@
+Cloning a PDB from other other PDB of same CDB.
+
+alter pluggable database hdfc close;
+
+alter pluggable database hdfc open read only;
+
+CREATE PLUGGABLE DATABASE HDFC_C FROM HDFC;
+
+alter pluggable database hdfc_c open;
+
+alter pluggable database hdfc close;
+
+alter pluggable database hdfc open;
