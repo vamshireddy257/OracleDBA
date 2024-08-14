@@ -46,3 +46,17 @@ new primary>alter database open;
 stand by> alter database open;
 enable MRP :
 alter database recover managed standby database using current logfile disconnect;
+
+
+
+failover:
+
+alter database recover managed standby database finish;
+alter database activate standby database;
+
+shut immediate;
+startup;
+
+set lines 300 pages 300;
+col DB_UNIQUE_NAME for a10;
+select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
