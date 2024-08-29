@@ -1,3 +1,7 @@
+CREATE VIRTUAL BOX.
+
+RAM : Minimum 4096mb.
+i have give 8192GB and 2 cpus
 
 HDD 120.
 Network:
@@ -5,15 +9,17 @@ Network:
 2 internal--10.10.100.11/12
 3 bridged network. -- automatic
 
+
 partitions:
+Mounted on			Size
+/swap 				double of ram.
+biosboot 			2048
+/boot				2.0G
+/					25G 
+/u02				46G 
+/u01				40G 
 
-biosboot 2048
-/swap double of ram.
-/boot 2048
-/tmp 10000
-/ 15000
-/ u01 ALL
-
+Install guest additions.
 
 connect as root.
 #systemctl stop firewalld
@@ -116,7 +122,15 @@ netstat -tulpn
 systemctl restart dnsmasq 
 nslookup rac-scan
 
+#############
+Till now we have completed with OS setup and scan configuration.
+Ideally all these steps in real time will be performed unix admins.
+#############
 
+
+###############################
+Now actual intsllation starts
+###############################
 yum search oracle
 
 yum install oracle-database-preinstall-19c.x86_64 -y
@@ -125,9 +139,13 @@ groupadd -g 54327 asmdba
 groupadd -g 54328 asmoper
 groupadd -g 54329 asmadmin
 
+
+usermod -a -G asmdba,asmoper,asmadmin oracle
+useradd -u 54323 -g oinstall -G asmdba,asmoper,asmadmin grid
 usermod -aG asmdba,asmoper,asmadmin oracle
 
 passwd oracle
+passwd grid
 
 yum search oracleasm
 
@@ -145,14 +163,8 @@ rpm -qa |grep -i oracleasm
 
 ****** hold on and configure asm owner***
 
-groupadd asmadmin
-groupadd oinstall
-groupadd asmdba
-usermod -g oinstall oracle
-usermod -a -G asmdba,asmoper,asmadmin oracle
-useradd -u 54323 -g oinstall -G asmdba,asmoper,asmadmin grid
 
-passwd grid
+
 
 oracleasm configure -i
 
@@ -175,13 +187,15 @@ oracleasm init
 
 oracleasm configure
 
-#create directories:
-mkdir -p /u01/app/oracle/product/19.0.0/db_1
+#make required directories
+
 mkdir -p /u01/app/grid
 mkdir -p /u01/app/19.0.0/grid
 chown -R grid:oinstall /u01
-chown -R oracle:oinstall /u01/app/oracle
-chmod -R 775 /u01
+mkdir -p /u02/app/oracle
+mkdir -p /u02/app/oracle/product/19.0.0/db_1
+chown -R oracle:oinstall /u02/
+
 
 
 #setting up bash for grid 
@@ -229,7 +243,7 @@ vi ~/.bash_profile
 if [ -f ~/.bashrc ]; then
 . ~/.bashrc
 fi
-ORACLE_BASE=/u01/app/oracle; export ORACLE_BASE
+ORACLE_BASE=/u02/app/oracle; export ORACLE_BASE
 ORACLE_SID=oradb1; export ORACLE_SID
 ORACLE_HOME=$ORACLE_BASE/product/19.0.0/db_1; export ORACLE_HOME
 NLS_DATE_FORMAT="DD-MON-YYYY HH24:MI:SS"; export NLS_DATE_FORMAT
@@ -252,11 +266,15 @@ export TMPDIR=/tmp
 umask 022
 
 
+server is now completely ready.
 
 
 poweroff
-clone
-change ip addrsses
+#clone
+#change hostname
+hostnamectl set-hostname rac2.com
+#change ip addrsses
+
 change oracle_sid in bash profile
 
 
@@ -264,11 +282,9 @@ change host name
 nmtui
 bash
 
-add 3 disks
+add 4 disks of 20GB each.
 >> vitrual media managers.
-OCR & Voting DISKS 12gb
-data 40GB
-FRA 12GB
+
 
 oracleasm listdisks
 
@@ -292,13 +308,12 @@ sdc           8:32   0   40G  0 disk
 
 ls -ltr /dev/oracleasm/disks
 
-oracleasm createdisk DATA_01 /dev/sdb1
-oracleasm createdisk FRA_01 /dev/sdc1
-oracleasm createdisk OCR_01 /dev/sdd1
+oracleasm createdisk DISK1 /dev/sdb1
+oracleasm createdisk DISK2 /dev/sdc1
+oracleasm createdisk DISK3 /dev/sdd1
+oracleasm createdisk DISK4 /dev/sde1
 
 
-usermod -a -G vboxsf oracle
-usermod -a -G vboxsf grid
 
 2nd node
 oracleasm listdisks
@@ -309,10 +324,7 @@ oracleasm configure
 run below from node1
 
 
-#adding permissions to oracle and grid users on vbox shared folders.
 
-usermod -a -G vboxsf oracle
-usermod -a -G vboxsf grid
 
 
 
@@ -480,4 +492,3 @@ olsnodes
 if unpinned and node down for week node cant come back to cluster with same node number number .
 
 /u01/app/19.0.0/grid/bin/olsnodes -t -n 
-
