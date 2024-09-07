@@ -1,7 +1,8 @@
 CREATE VIRTUAL BOX.
 
 RAM : Minimum 4096mb.
-i have give 8192GB and 2 cpus
+i have give 6144M and 2 cpus
+6144 is intentionally to make sure add node doest give any issues due to lack of ram
 
 HDD 120.
 Network:
