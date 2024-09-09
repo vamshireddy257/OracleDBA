@@ -1,0 +1,84 @@
+https://docs.oracle.com/en/database/oracle/oracle-database/19/spmdu/transporting-data-across-platforms.html#GUID-FE3003B9-605A-4269-B167-005AC778C870
+
+COLUMN PLATFORM_NAME FORMAT A40
+COLUMN ENDIAN_FORMAT A14
+ 
+SELECT PLATFORM_ID, PLATFORM_NAME, ENDIAN_FORMAT 
+  FROM V$TRANSPORTABLE_PLATFORM
+  ORDER BY PLATFORM_ID;
+
+select username,DEFAULT_TABLESPACE from dba_users where DEFAULT_TABLESPACE='SOETBS';
+
+select FILE_NAME  from dba_data_files where TABLESPACE_NAME='SOETBS';
+
+ set long 100000 
+ SELECT DBMS_METADATA.GET_DDL('USER','SOE') FROM dual;
+
+
+
+EXEC SYS.DBMS_TTS.TRANSPORT_SET_CHECK(ts_list => 'UAT_TBS,UAT_TBS2', incl_constraints => TRUE);
+
+EX:
+EXEC SYS.DBMS_TTS.TRANSPORT_SET_CHECK(ts_list => 'SOETBS', incl_constraints => TRUE);
+
+
+SELECT * FROM transport_set_violations;
+
+Note: you will see the violations when a single object is shared in multiple tablespaces but we did not include both tablespace in the ts_list parameter of above procedure.
+To overcome this include both the tablespaces in ts_list.
+
+ALTER TABLESPACE uat_tbs READ ONLY;
+ALTER TABLESPACE uat_tbs2 READ ONLY;
+
+ALTER TABLESPACE SOETBS READ ONLY;
+
+
+mkdir -p /u01/datapump
+
+create directory exp_dir as '/u01/datapump';
+
+expdp directory=tts_dir transport_tablespaces=UAT_TBS1,UAT_TBS2 dumpfile=uat2_data.dmp logfile=uat2_data.log
+
+EX:
+expdp directory=exp_dir transport_tablespaces=SOETBS dumpfile=Proddb_soetbs.dmp logfile=Proddb_soetbs.log
+
+ALTER TABLESPACE UAT_TBS READ WRITE;
+ALTER TABLESPACE UAT_TBS2 READ WRITE;
+
+ALTER TABLESPACE SOETBS READ WRITE;
+############################################
+if this is cross platform then we have to convert datafile to required os  FORMAT like below
+
+RMAN> CONVERT DATAFILE '/u01/oradata/source_db/tablespace1.dbf'
+FORMAT '/u02/oradata/target_db/tablespace1_converted.dbf'
+TO PLATFORM='Linux x86 64-bit';
+#############################################
+
+scp dumpfiles and datafiles to target server
+
+
+scp /u01/app/oracle/oradata/uat_001.dbf oracle@192.168.50.45:/u01/app/oracle/oradata
+scp /u01/app/oracle/oradata/uat_002.dbf oracle@192.168.50.45:/u01/app/oracle/oradata
+
+scp Proddb_soetbs.dmp oracle@192.168.0.223:/u01/migration
+
+scp /u01/app/oracle/oradata/PRODDB/datafile/o1_mf_soetbs_lrn6blkm_.dbf oracle@192.168.0.223:/u01/app/oracle/oradata/PRODDB/datafile/
+
+
+Create a new user on test server which will own all the objects inside the tablespace that we are transporting. Create user only if its not already available on test server.
+
+CREATE USER uat_user IDENTIFIED BY uat_user;
+
+GRANT CREATE SESSION, CREATE TABLE TO uat_user;;
+
+
+mkdir -p /u01/migration
+create directory impdp_dir as '/u01/migration';
+
+impdp directory=impdp_dir dumpfile=Proddb_soetbs.dmp logfile=import_tts.log transport_datafiles='/u01/app/oracle/oradata/PRODDB/datafile/o1_mf_soetbs_lrn6blkm_.dbf'
+
+SELECT TABLESPACE_NAME, STATUS FROM DBA_TABLESPACES WHERE TABLESPACE_NAME='UAT_TBS';
+
+check the data in target server.
+
+
