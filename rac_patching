@@ -42,27 +42,31 @@ cd 36233126
 Determine whether any currently installed one-off patches conflict with this patch 36233126 as follows:
 =================================
 
-
+=================================
 As the Grid user:
+=================================
 
-$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36209493/36233126/36233263
 
-$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36209493/36233126/36240578
+$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36582629/36582781
 
-$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36209493/36233126/36233343
+$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36582629/36587798
 
-$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36209493/36233126/36460248
+$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36582629/36590554
 
-$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36209493/36233126/36383196
+$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36582629/36648174
+
+$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36582629/36758186
+
 	
 	
 	
 =================================
 For Oracle home, as home user:
 =================================
-$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36209493/36233126/36233263
-$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36209493/36233126/36240578
 
+
+$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36582629/36582781
+$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir /tmp/rac_patch/36582629/36587798
 
 =================================
 2.1.1.5 Run OPatch System Space Check
@@ -74,12 +78,11 @@ Create file /tmp/patch_list_gihome.txt with the following content:
 
 % cat /tmp/patch_list_gihome.txt
 
-/tmp/rac_patch/36209493/36233126/36233263
-/tmp/rac_patch/36209493/36233126/36240578
-/tmp/rac_patch/36209493/36233126/36233343
-/tmp/rac_patch/36209493/36233126/36460248
-/tmp/rac_patch/36209493/36233126/36383196
-
+/tmp/rac_patch/36582629/36582781
+/tmp/rac_patch/36582629/36587798
+/tmp/rac_patch/36582629/36590554
+/tmp/rac_patch/36582629/36648174
+/tmp/rac_patch/36582629/36758186
      
 
 Run the OPatch command to check if enough free space is available in the Grid Infrastructure home:
@@ -91,8 +94,8 @@ For Oracle home, as home user:
 Create file /tmp/patch_list_dbhome.txt with the following content:
 
 % cat /tmp/patch_list_dbhome.txt
-/tmp/rac_patch/36209493/36233126/36233263
-/tmp/rac_patch/36209493/36233126/36240578
+/tmp/rac_patch/36582629/36582781
+/tmp/rac_patch/36582629/36587798
 
 Run OPatch command to check if enough free space is available in the Oracle home:
 
@@ -104,7 +107,6 @@ $ORACLE_HOME/OPatch/opatch prereq CheckSystemSpace -phBaseFile /tmp/patch_list_d
 
 Add the directory containing the OPatchAuto to the $PATH environment variable. For example:
 
-export PATH=$PATH:$ORACLE_HOME/OPatch
 
 export PATH=$PATH:/u01/app/19.0.0/grid/OPatch
 
@@ -115,7 +117,7 @@ Or, when using -oh flag:
 
 To patch the Grid home and all Oracle RAC database homes of the same version:
 
-opatchauto apply /tmp/rac_patch/36209493/36233126
+opatchauto apply /tmp/rac_patch/36582629
 
 To patch only the Grid home:
 
