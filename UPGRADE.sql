@@ -201,3 +201,25 @@ SQL> select count(*) from  cdb_objects where status ='INVALID';
 @/u01/upgradelogs/postupgrade_fixups.sql
 
 @?/rdbms/admin/utlrp.sql
+
+@$ORACLE_HOME/rdbms/admin/utlusts.sql
+
+=================
+UPGRADE TIMEZONE:
+=================
+
+Select version from v$timezone_file;
+
+@$ORACLE_HOME/rdbms/admin/utltz_upg_check.sql
+
+@$ORACLE_HOME/rdbms/admin/utltz_upg_apply.sql
+
+COL NAME FOR A25
+COL GUARANTEE_FLASHBACK_DATABASE FOR A31
+select NAME,GUARANTEE_FLASHBACK_DATABASE,TIME from V$restore_point;
+
+drop restore point preupgrade;
+
+show parameter compatible
+
+alter system set compatible = '19.0.0' scope =spfile;
