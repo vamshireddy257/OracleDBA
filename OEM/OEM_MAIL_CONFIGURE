@@ -1,0 +1,41 @@
+MAIL SETUP.
+
+Login to OEM cloud control.
+
+SETUP >> NOTIFICATIONS >> MAILSERVER
+
+EDIT:
+Identify Sender As 		:	OEM_ALERTS
+Sender's Email Address 	:	va*******1555@gmail
+
+
+OUTGOING SMTP SERVER:
+
+ADD 
+
+FOR GMAIL.
+hostname 	: smpt.gmail.com
+port 		: 465
+MAILID 		: va*******1555@gmail
+password 	: abcdefghijklmnop
+password 	: abcdefghijklmnop
+
+			: ssl/tsl
+			
+			
+PASSOWRD IS NOT THE GMAIL PASSWORD.
+
+WE have to generate a passkey .
+GMAIL >>> manage your google account >> security >> 
+
+search box :: app passwords
+
+App name  : OEM
+
+CREATE
+
+you get a passcode 
+abcd efgh ijkl mnop
+
+
+Now test mail and you shd get test mail.
