@@ -1,0 +1,35 @@
+Create monitoring template:
+
+Enterprise >> monitoring >> monitoring template
+
+Create >> 
+target type : 
+target type category 	: databases
+Target type 			: instance
+
+CONTINUE.
+
+NAME  : MY_DB_TEMPLATE
+DESC : .....
+
+check make this default 
+
+Go to metrics thresholds.
+
+select only metrics with thresholds.(list will be reduced).
+For small demo change the table psace threshold percentages and also change the frequency from 30 min to 15 min.
+
+
+Enterprise >> monitoring >> monitoring template
+
+Click on new template and say apply.
+
+Template will only override metrics that are common to both template and target.
+
+ADD:
+
+select the targets.
+
+
+finish
+
