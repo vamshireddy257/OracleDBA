@@ -1,0 +1,67 @@
+check below when db is running, abort and mounted and graceful shut down and mount;
+
+ select checkpoint_change# from v$database;
+ select name,checkpoint_change#,last_change# from v$datafile;
+ #############################################################
+
+ alter system checkpoint;
+
+ DataFile (checkpoint) SCN:
+ After a checkpoint completes, Oracle stores the SCN individually in the control file for each datafile. 
+ The following SQL shows the datafile checkpoint SCN for a datafile in the control file:
+
+ select name,checkpoint_change# from v$datafile;
+
+Partial checkpoint.
+  select name,checkpoint_change# from v$datafile_header;
+  alter tablespace users read only;
+select name,checkpoint_change# from v$datafile_header;
+
+ alter tablespace users read write;
+ select name,checkpoint_change# from v$datafile_header;
+
+End (checkpoint) SCN:
+alter database close;
+ select distinct LAST_CHANGE# from v$datafile;
+select distinct CHECKPOINT_CHANGE# from v$datafile_header ;
+
+
+###########################################################
+
+SCN and sequence at the block level
+
+create table TEST (NAME Varchar2(20) , SAL number);
+
+ insert into Test values ('AMIT',100);
+
+ commit;
+Commit complete.
+
+ SELECT DBMS_ROWID.ROWID_TO_ABSOLUTE_FNO(ROWID,'SYS','TEST') FNO, DBMS_ROWID.ROWID_BLOCK_NUMBER (ROWID) BLK, NAME,SAL FROM SYS.TEST ;
+
+
+ Transaction 1
+----------------------------------------------------
+ update test set SAL=101 where Name='AMIT';
+
+commit;
+alter system checkpoint;
+
+ alter system dump datafile 1 block 86505;
+
+
+----------------------------------------------------
+Transaction 2
+----------------------------------------------------
+
+ update test set SAL=201 where Name='AMIT';
+
+ update test set SAL=SAL+20 where Name='AMIT';
+
+ commit;
+
+alter system checkpoint;
+System altered.
+
+ alter system dump datafile 1 block 86505;
+grep -A3 'buffer tsn' mask11g_ora_11326.trc
