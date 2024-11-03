@@ -19,16 +19,16 @@ Open Virtual Box
 ====>> Give details like name of the server and folder (where you have sufficient space)
 ====>> Select ISO image of linux os from the folder.
 ====>> Type and version will be automatically populated.
-====>> Check box skip unattended installation
+====>> Check the box skip unattended installation
 
 
 Hardware:
 
-Set parameters for Base memory (RAM) and no of processes (CPU)
+Set parameters for Base memory (RAM) ( min 4GB)  and no of processes (CPU) (1)
 
 Harddisk:
 
-Select hardisk file folder and size
+Select hardisk file folder where you have space and size - 120 G
 
 ====>>  done (finish)
 
