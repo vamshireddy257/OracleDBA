@@ -1,0 +1,81 @@
+LINUX OS Installation
+======================
+=================================
+Installing Virtual Box SOftware: 
+=================================
+
+Open Chrome Browser 
+====>> Search for virtual Box download 
+====>> go to  virtual Box Homepage 
+====>> check for download windows Host 
+====>> then Install
+
+=====================
+Creating New Machine:
+=====================
+
+Open Virtual Box
+====>> Click on new
+====>> Give details like name of the server and folder (where you have sufficient space)
+====>> Select ISO image of linux os from the folder.
+====>> Type and version will be automatically populated.
+====>> Check box skip unattended installation
+
+
+Hardware:
+
+Set parameters for Base memory (RAM) and no of processes (CPU)
+
+Harddisk:
+
+Select hardisk file folder and size
+
+====>>  done (finish)
+
+=================
+Click on Settings
+=================
+====>> General  ==== >>> Advanced  ==== >>> Shared clipboard - Bidirectional 
+                                            Drag and Drop    - Bidirectional										
+											
+====>> Network  ====>> Adapter1 ====>> Bridged Adapater    											
+
+====>> Click on Ok
+
+=================
+
+Click on install oracle linux 7.9
+
+Select language and continue
+
+
+Installation summary === >>  Date and time            ====> select india map and done
+                             Software selection       ====> Server with GUI - compatibility tools and development tools and done
+							 Installation destination ====> select  I will configure partiotioning and done
+							 
+							 ==== >> click on + symbol 1) select swap from dropdown  -  8192M
+							                           2)  / - 20G
+                                                       3) /boot - 2048M
+                                                       4) biosboot - 2048
+													   5) type /u01 - ALL   
+													     ---- and click on done and accept changes
+					        
+							Network and Hostname      ====> Ethernet - ON
+							                                Hostname - Provide hostname and apply... done
+															
+Next  ====>>>> Begin Inastallation
+
+Root password -- > root123 and confirm
+user creation -- > create user with your name and enter password			
+
+Once installation done click on reboot...
+ 
+Accept licence agreement  -- > Done
+
+Install guest adiitions
+=======================
+
+devices >> insert guest additions
+                          >>> run
+						  
+once completed open terminal and init 6 (for restart)                   												
