@@ -1,6 +1,5 @@
 https://www.oracle.com/database/technologies/oracle-database-software-downloads.html
-Oracle Database 19c (19.3) for Linux x86-64
-
+Oracle Database 19c for Linux x86-64
 
 
 groupadd oinstall 
