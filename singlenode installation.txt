@@ -1,3 +1,8 @@
+https://www.oracle.com/database/technologies/oracle-database-software-downloads.html
+Oracle Database 19c (19.3) for Linux x86-64
+
+
+
 groupadd oinstall 
 groupadd dba 
 
@@ -27,7 +32,7 @@ unzip LINUX.X64_193000_db_home.zip -d /u01/app/oracle/product/19.0.0.0/dbhome_1/
 
 cd /u01/app/oracle/product/19.0.0.0/dbhome_1/
 ./runInstaller
-create software only 
+setup software only 
 single instance database
 enterprise edition
 oracle base : /u01/app/oracle
@@ -39,6 +44,8 @@ run fix ups
 run below from root user
 yum install ksh* -y
 yum install libaio* -y
+
+run root scripts from root user and click ok.
 
 
 create database 
@@ -59,6 +66,5 @@ select name,open_mode from v$database;
 shut immediate;
 
 startup;
-
 
 
