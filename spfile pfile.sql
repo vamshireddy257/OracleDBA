@@ -1,3 +1,4 @@
+
 check the parameter 
 show parameter parameter name;
 show parameter open_cursors;
@@ -32,4 +33,7 @@ case when isses_modifiable = 'FALSE' then 'STATIC_WRT_SESSION'
 when isses_modifiable = 'TRUE' then 'DYNAMIC_WRT_SESSION' end  m_SESSION  FROM V$parameter order by 1;
 ---
 
-/u01/app/oracle/oradata/PRODDB/controlfile/o1_mf_k25kxfxt_.ctl, /u01/app/oracle/fast_recovery_area/PRODDB/controlfile/o1_mf_k25kxfy9_.ctl,/
+NOTE: you cannot use scope = memory or scope = both for the static parameters(w.r.t instance).
+
+you should use scope = spfile 
+And that parameter to reflect you should restart/bounce instance.
