@@ -48,7 +48,8 @@ ORDER BY tablespace_name;
 CHECK ALL THE DATAFILE OF A TABLESPACE
 
 COLUMN file_name FORMAT A70;
-SELECT file_id,
+SELECT tablespace_name,
+		file_id,
        file_name,
        ROUND(bytes/1024/1024) AS size_mb,
        ROUND(maxbytes/1024/1024) AS max_size_mb,
@@ -56,7 +57,7 @@ SELECT file_id,
        increment_by,
        status
 FROM   dba_data_files
-WHERE  tablespace_name = 'USERS'
+--WHERE  tablespace_name = 'USERS'
 ORDER BY file_id;
 
 OMF(oaracle managed file) location:=
@@ -68,30 +69,45 @@ alter system set DB_CREATE_FILE_DEST='/u01/tablespace' scope=both;
 DDL ON TABLESPACE:
 
 --Create TABLESPACE
-Create tablespace HRMS_TS datafile '/u01/app/oracle/oradata/ICICI/datafile/HRMS_001.dbf' size 5M autoextend on;
+Create tablespace HRMS_TS datafile '/u01/app/oracle/oradata/VAMDB/datafile/HRMS_001.dbf' size 5M autoextend on;
 
-create tablespace hrms_ts datafile '+DATA' size 20G;
+
+Create tablespace HDFC_TS datafile '/u01/app/oracle/oradata/VAMDB/datafile/HDFC_001.dbf' size 5M ;
+
+--ignore below till ASM is completed.
+create tablespace hrms_ts datafile '+DATA' size 20M;
 
 -- Add a datafile to a tablespace
-Alter tablespace HRMS_TS add datafile '/u01/app/oracle/oradata/ICICI/datafile/HRMS_002.dbf'  size 5M autoextend on;
+Alter tablespace HRMS_TS add datafile '/u01/app/oracle/oradata/VAMDB/datafile/HRMS_002.dbf'  size 5M autoextend on;
 
 -- Resize a datafile
-alter database datafile '/u01/app/oracle/oradata/ICICI/datafile/HRMS_001.dbf' resize 10M;
+alter database datafile '/u01/app/oracle/oradata/VAMDB/datafile/HRMS_001.dbf' resize 20000000M;
 
+--ignore below till ASM is completed.
 alter database datafile '+DATA/ORADB/DATAFILE/users.279.1102165131' resize 150M;
 
 -- Make a datafile offline/online
 
-Alter database datafile '/u01/app/oracle/oradata/ICICI/datafile/HRMS_002.dbf' offline;
+Alter database datafile '/u01/app/oracle/oradata/VAMDB/datafile/HRMS_002.dbf' offline;
 
-Alter database datafile '/u01/app/oracle/oradata/ICICI/datafile/HRMS_002.dbf' online;
+Alter database datafile '/u01/app/oracle/oradata/VAMDB/datafile/HRMS_002.dbf' online;
+
+
+if required do media recovery for this datafile.
+recover datafile 8;
+recover datafile '/u01/app/oracle/oradata/VAMDB/datafile/HRMS_002.dbf';
 
 -- Drop a datafile:
 
+Alter tablespace HRMS_TS drop datafile '/u01/app/oracle/oradata/VAMDB/datafile/HRMS_002.dbf' ;
+--ignore below till ASM is completed.
 Alter tablespace USERS drop datafile '+DATA/ORADB/DATAFILE/users.279.1102165131';
 
 -- Drop a tablespace without removing the physical database files.
 
+
+
+create tablespace testing;
 drop tablespace TESTING;
 Tablespace dropped.
 
@@ -104,7 +120,7 @@ no rows selected
 drop tablespace TESTING including contents and datafiles;
 Tablespace dropped.
 
-UNDO:
+-----############UNDO:
 KNOW YOUR DEFAULT UNDO TABLE SPACE;
 SHOW PARAMETER UNDO_TABLESPACE;
 select VALUE from v$parameter where NAME='undo_tablespace';
