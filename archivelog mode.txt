@@ -1,37 +1,5 @@
-configuring database in archivelog mode;
-
-shut immediate;
-startup mount;
-alter database archivelog;
-alter database open;
-archive log list;
-
-
-know your archive log destination
-
-archive log list;
-
-value at Archive destination is the archive log destination.
-It can be a mountpoint or asm diskgroup or USE_DB_RECOVERY_FILE_DEST
-
-if FRA is enable we will have that as USE_DB_RECOVERY_FILE_DEST.
-to find FRA location...
-show parameter DB_RECOVERY_FILE_DEST
-
-disable FRA:
-ALTER SYSTEM SET db_recovery_file_dest='' SCOPE=BOTH;
-ALTER SYSTEM SET db_recovery_file_dest_size=8192M scope=both;
-
-Enable FRA:
-
-change aarchive log path
-
-alter system set log_archive_dest_1='LOCATION=/u01' scope=both;
-
-ALTER SYSTEM SET db_recovery_file_dest='/u01/app/oracle/fast_recovery_area' SCOPE=BOTH;
-
-alter system set log_archive_dest_1='' scope=both;
-
+Enable flashback on the database.
+alter database flashback on;
 
 set linesize 200 pagesize 1000
 select * from v$recovery_area_usage;
@@ -49,9 +17,25 @@ from V$RECOVERY_FILE_DEST;
 
 select * from db_recovery_area_usage;
 
-archive destnation change;
-mkdir /u01/archive_log
-alter system set log_archive_dest_1='LOCATION=/u01/archive_log' scope=both;
+
+where CLEAN_DB is the name given to the guaranteed restore point.
+
+create restore point CLEAN_DB guarantee flashback database;
 
 
-alter system set log_archive_dest_1='LOCATION=USE_DB_RECOVERY_FILE_DEST' scope=both;
+set lines 200
+col NAME for a32
+col TIME for a32
+SELECT NAME, SCN, TIME, DATABASE_INCARNATION#,GUARANTEE_FLASHBACK_DATABASE,STORAGE_SIZE FROM V$RESTORE_POINT;
+
+create restore point clean_db guarantee flashback database;
+
+shut immediate;
+startup mount;
+flashback database to restore point clean_db;
+
+alter database open resetlogs;
+
+select INCARNATION# , RESETLOGS_TIME from V$DATABASE_INCARNATION;
+
+
