@@ -23,7 +23,18 @@ EOF
 
 
 nohup /u01/dir1/rman_FDB_bkp.sh &
+#########script to start instance####################
+[oracle@oraclept ~]$ cat startup.sh 
+#!/bin/bash
 
+export ORACLE_SID=proddb
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
+
+$ORACLE_HOME/bin/sqlplus / as sysdba   <<EOF
+startup;
+exit;
+EOF
+######################################################
 
 [oracle@oradbsrv ~]$ crontab -l
 @reboot /home/oracle/start_proddb.sh
