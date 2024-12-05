@@ -54,3 +54,7 @@ export TIMESTAMP=`date +%a%d%b%Y`
 $ORACLE_HOME/bin/expdp \'/ as sysdba\' directory=dp_pump dumpfile=expdp_tab_${TIMESTAMP}_%U.dmp logfile=expdp_log_${TIMESTAMP}.log full=y
 
 
+
+
+https://www.experts-exchange.com/questions/29254052/How-to-Auto-start-Oracle-19c-Database-when-Oracle-Linux-Server-Host-is-started-after-a-shudown-of-the-host.html
+
