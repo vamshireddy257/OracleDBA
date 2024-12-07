@@ -30,3 +30,54 @@ rman > recover datafile 36;
 
 6 ) online the datafile
 alter database datafile 36 online;
+
+
+
+
+
+loss of system datafile:
+
+shutdown abort;
+startup mount;
+select * from v$recover_file;
+restore datafile 1;
+recover datafile 1;
+alter database open;
+
+
+
+### controlfile
+shutdown abort;
+startup nomount 
+RESTORE CONTROL FROM 'BACK UP LOACTION'
+Startup mount; 
+recover database.
+alter database open resetlogs;
+
+
+
+SYSAUX/NON SYSTEM
+sql ‘alter database <datafile number offline>’;
+RMAN>restore datafile <datafile number>;
+RMAN>recover datafile <datafile number>;
+RMAN>sql ‘alter database <datafile number online>’;
+
+
+
+
+
+
+
+datafile without backup.
+
+	• Login to RMAN
+	• And offline that table space.
+	RMAN> alter tablespace <tablespace_name>  offline;
+	• Restore that table space
+	RMAN> restore tablespace <tablespace_name>
+	• Recover that table space.
+	RMAN> recover table space <table space name>
+	• And online that table space.
+	• RMAN> alter tablespace <tablespace_name>  online;
+
+
