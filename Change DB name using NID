@@ -1,0 +1,19 @@
+STARTUP MOUNT
+
+nid target=sys/oracle@P1D2ST DBNAME=P1D2ST
+
+shutdown immediate;
+
+startup nomount
+ 
+alter system set db_name=newdbname scope=spfile;
+
+shutdown immediate;
+ 
+ startup nomount
+ 
+ show parameter db_name
+ 
+ shutdown immediate;
+ 
+ cp spfileP2PRMD2.ora spfileP1D2ST.ora
