@@ -5,10 +5,10 @@ prepare environment with a gap.
 1: Stop MRP on standby
 alter database recover managed standby database cancel;
 
-2: generate 5 archive logs on primary.
+2: generate 10 archive logs on primary.
 
 begin
-for i in 1..5
+for i in 1..10
 loop
 execute immediate 'alter system switch logfile';
 end loop;
@@ -17,40 +17,12 @@ end;
 
 archive log list;
 
-3:delete latest 2 archive logs from standby and primary.
-rm o1_mf_1_199_m0l0f6kc_.arc  o1_mf_1_200_m0l0fcxp_.arc
-rm o1_mf_1_199_m0l0f6ps_.arc o1_mf_1_200_m0l0fd1x_.arc
-
-4: disable log shipping on primary
-alter system set log_archive_dest_state_2=DEFER scope=both sid='*';
-
-5:start MRP and monitor alert logs of primary.
-alter database recover managed standby database disconnect from session;
-
-##below is part of alert log.
-Error opening /u01/app/oracle/fast_recovery_area/PRODDBS/archivelog/2024_03_31/o1_mf_1_199_m0l0f6ps_.arc
-Attempting refetch
-PR00 (PID:15215): Media Recovery Waiting for T-1.S-199
-PR00 (PID:15215): Fetching gap from T-1.S-199 to T-1.S-199
-2024-03-31T12:01:48.353799+05:30
-Completed: alter database recover managed standby database disconnect from session
-2024-03-31T12:02:08.532703+05:30
-PR00 (PID:15215): Error 12154 received logging on to the standby
-PR00 (PID:15215): FAL: Error 12154 connecting to PRODDB for fetching gap sequence
+3: connect to rman and delete all arcive logs;
+   also connect to standby database and delete few logs from os level using rm .
 
 
-6: enable log shipping and switch 5 more logs check if the next logs are getting shipped.
 
-alter system set log_archive_dest_state_2=ENABLE scope=both sid='*';
-begin
-for i in 1..5
-loop
-execute immediate 'alter system switch logfile';
-end loop;
-end;
-/
-
-7: check if the gap can be resolved
+4: check if the gap can be resolved
 
 set lines 200
 col DESTINATION for a30
@@ -78,7 +50,7 @@ CURRENT_SCN
 -----------
     3327810
 	
-STEP 3.1:Collect redolog information of standby:
+STEP 3.1:Collect redolog information of standby database:
 		select member from v$logfile;	
 STEP 3.2: collect datafiles info;
 select name from v$datafile;
@@ -89,17 +61,19 @@ run
 {
 allocate channel t1 type disk;
 allocate channel t2 type disk;
-backup incremental from SCN 3374280 database tag='STANDBY_REFRESH_01_apr_24' format '/u01/rman_incr/database_%d_%u_%s';
+backup incremental from SCN 2755608 database tag='STANDBY_REFRESH_18_dec_24' format '/u01/rman_incr/database_%d_%u_%s';
 release channel t1;
 release channel t2;
 }
+
+sqlplus / as SYSDBA
 
 
 alter database create standby controlfile as '/u01/rman_incr/std_control.ctl';
 
 STEP 5 : SCP THE BACKUP AND STANDBY CONTROLFILE.
 
-scp * oracle@192.168.100.239:/u01/rman_incr/
+scp * oracle@192.168.0.223:/u01/rman_incr/
 
 STEP 6: SHUT DOWN STANDBY 
 shut immediate;
@@ -116,14 +90,21 @@ alter database mount;
 
 STEP 10: CATALOG INCREMENTAL BACKUP PIECES 
 
-catalog backuppiece '/u01/rman_incr/database_PRODDB_3c2n5ddm_108';
-catalog backuppiece '/u01/rman_incr/database_PRODDB_3d2n5ddm_109';
-catalog backuppiece '/u01/rman_incr/database_PRODDB_3e2n5ddq_110';
-catalog backuppiece '/u01/rman_incr/database_PRODDB_3h2n5ddq_113';
-catalog backuppiece '/u01/rman_incr/database_PRODDB_3i2n5ddr_114';
+catalog backuppiece '/u01/rman_incr/database_BANK_563cvv5i_166';
+catalog backuppiece '/u01/rman_incr/database_BANK_573cvv5i_167';
+catalog backuppiece '/u01/rman_incr/database_BANK_583cvv62_168';
+catalog backuppiece '/u01/rman_incr/database_BANK_5a3cvv64_170';
+catalog backuppiece '/u01/rman_incr/database_BANK_5b3cvv6c_171';
+catalog backuppiece '/u01/rman_incr/database_BANK_5c3cvv6d_172';
+catalog backuppiece '/u01/rman_incr/database_BANK_5d3cvv6h_173';
+catalog backuppiece '/u01/rman_incr/database_BANK_5f3cvv6k_175';
+catalog backuppiece '/u01/rman_incr/database_BANK_5g3cvv6l_176';
+catalog backuppiece '/u01/rman_incr/database_BANK_5h3cvv6o_177';
+catalog backuppiece '/u01/rman_incr/database_BANK_5i3cvv6p_178';
+
 
 STEP 11: IF THE DATABASE DIRECTORIES ARE NOT SAME THEN.(YES when prompted for input)
-catalog start with '/u01/app/oracle/oradata/PRODDBS/';
+catalog start with '/u01/app/oracle/oradata/BANKB/';
 
 STEP 11: SWITCH THE DATAFILE WHICH NEEDS TO BE COPIED.
 SWITCH database to copy;
