@@ -12,6 +12,11 @@ STEP 3: CANCEL RECOVERY ON STANDBY:
 SQL> select db_unique_name,OPEN_MODE,DATABASE_ROLE from v$database;
 SQL> recover managed standby database cancel;
 
+STEP 3.1: Collect redolog information of standby database:
+		select member from v$logfile;	
+STEP 3.2: collect datafiles info;
+select name from v$datafile;
+
 STEP 4: MAKE SURE YOUR STANDBY DB IN MOUNT STATE( NEED TO SHUTDOWN IF IT IS ACTIVE DATAGUARD):
 SQL> shutdown immediate;
 SQL> startup mount;
