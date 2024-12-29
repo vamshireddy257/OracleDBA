@@ -1,0 +1,426 @@
+CREATE VIRTUAL BOX.
+
+RAM : Minimum 4096mb.
+i have give 6144M and 2 cpus
+6144 is intentionally to make sure add node doest give any issues due to lack of ram
+
+HDD 120.
+Network:
+1 host only -- 192.168.56.71/72
+2 internal--10.10.100.11/12
+3 bridged network. -- automatic
+
+
+partitions:
+Mounted on			Size
+/swap 				double of ram.
+biosboot 			2048
+/boot				2.0G
+/					25G 
+/u02				46G 
+/u01				40G 
+
+Install guest additions.
+
+connect as root.
+#systemctl stop firewalld
+systemctl is-enabled firewalld
+systemctl disable firewalld --now
+
+disable enforcing
+vi /etc/selinux/config
+
+modify SELINUX=enforcing to SELINUX=disabled
+
+vi /etc/hosts
+
+#private
+10.10.100.11 rac1-priv.com rac1-priv
+10.10.100.12 rac2-priv.com rac2-priv
+
+#public
+192.168.56.71 rac1.com rac1
+192.168.56.72 rac2.com rac2
+
+#vip
+192.168.56.81 rac1-vip.com rac1-vip
+192.168.56.82 rac2-vip.com rac2-vip
+
+#SCAN 
+
+192.168.56.91 rac-scan.com rac-scan
+192.168.56.92 rac-scan.com rac-scan
+192.168.56.93 rac-scan.com rac-scan
+
+
+:wq!
+
+
+
+###############################
+Now actual intsllation starts
+###############################
+yum search oracle
+
+yum install oracle-database-preinstall-19c.x86_64 -y
+
+groupadd -g 54327 asmdba
+groupadd -g 54328 asmoper
+groupadd -g 54329 asmadmin
+
+
+usermod -a -G asmdba,asmoper,asmadmin oracle
+useradd -u 54323 -g oinstall -G asmdba,asmoper,asmadmin grid
+usermod -aG asmdba,asmoper,asmadmin oracle
+
+passwd oracle
+passwd grid
+
+yum search oracleasm
+
+yum install kmod-oracleasm.x86_64 -y
+yum install oracleasm-support.x86_64 -y
+rpm -qa |grep -i oracleasm
+
+download oracle asmlib for oracle linux 7
+
+yum install -y https://download.oracle.com/otn_software/asmlib/oracleasmlib-2.0.12-1.el7.x86_64.rpm
+
+rpm -qa |grep -i oracleasm
+
+****** hold on and configure 
+
+****** hold on and configure asm owner***
+
+
+
+
+oracleasm configure -i
+
+[root@rac1 ~]# oracleasm configure -i
+Configuring the Oracle ASM library driver.
+
+This will configure the on-boot properties of the Oracle ASM library
+driver.  The following questions will determine whether the driver is
+loaded on boot and what permissions it will have.  The current values
+will be shown in brackets ('[]').  Hitting <ENTER> without typing an
+answer will keep that current value.  Ctrl-C will abort.
+
+Default user to own the driver interface []: grid
+Default group to own the driver interface []: asmadmin
+Start Oracle ASM library driver on boot (y/n) [n]: y
+Scan for Oracle ASM disks on boot (y/n) [y]: y
+Writing Oracle ASM library driver configuration: done
+
+oracleasm init
+
+oracleasm configure
+
+#make required directories
+
+mkdir -p /u01/app/grid
+mkdir -p /u01/app/19.0.0/grid
+chown -R grid:oinstall /u01
+mkdir -p /u02/app/oracle
+mkdir -p /u02/app/oracle/product/19.0.0/db_1
+chown -R oracle:oinstall /u02/
+
+
+
+#setting up bash for grid 
+su - grid
+mv ~/.bash_profile ~/.bash_profile_bkp
+vi ~/.bash_profile
+
+# .bash_profile
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+. ~/.bashrc
+fi
+ORACLE_SID=+ASM1; export ORACLE_SID
+ORACLE_BASE=/u01/app/grid; export ORACLE_BASE
+ORACLE_HOME=/u01/app/19.0.0/grid; export ORACLE_HOME
+ORACLE_TERM=xterm; export ORACLE_TERM
+TNS_ADMIN=$ORACLE_HOME/network/admin; export TNS_ADMIN
+PATH=.:${JAVA_HOME}/bin:${PATH}:$HOME/bin:$ORACLE_HOME/bin
+PATH=${PATH}:/usr/bin:/bin:/usr/local/bin
+export PATH
+export TEMP=/tmp
+export TMPDIR=/tmp
+umask 022
+
+
+:wq!
+
+exit
+
+
+
+#setting bash for oracle user
+
+su - oracle
+mv ~/.bash_profile ~/.bash_profile_bkp
+
+vi ~/.bash_profile
+
+# .bash_profile
+# OS User: oracle
+# Application: Oracle Database Software Owner
+# Version: Oracle 19c
+# ---------------------------------------------------
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+. ~/.bashrc
+fi
+ORACLE_BASE=/u02/app/oracle; export ORACLE_BASE
+ORACLE_SID=oradb1; export ORACLE_SID
+ORACLE_HOME=$ORACLE_BASE/product/19.0.0/db_1; export ORACLE_HOME
+NLS_DATE_FORMAT="DD-MON-YYYY HH24:MI:SS"; export NLS_DATE_FORMAT
+TNS_ADMIN=$ORACLE_HOME/network/admin; export TNS_ADMIN
+PATH=$PATH:$HOME/.local/bin:$HOME/bin
+PATH=${PATH}:/usr/bin:/bin:/usr/local/bin
+PATH=.:${PATH}:$ORACLE_HOME/bin
+export PATH
+LD_LIBRARY_PATH=$ORACLE_HOME/lib
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$ORACLE_HOME/oracm/lib
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/lib:/usr/lib:/usr/local/lib
+export LD_LIBRARY_PATH
+CLASSPATH=$ORACLE_HOME/JRE
+CLASSPATH=${CLASSPATH}:$ORACLE_HOME/jlib
+CLASSPATH=${CLASSPATH}:$ORACLE_HOME/rdbms/jlib
+CLASSPATH=${CLASSPATH}:$ORACLE_HOME/network/jlib
+export CLASSPATH
+export TEMP=/tmp
+export TMPDIR=/tmp
+umask 022
+
+
+server is now completely ready.
+
+
+poweroff
+#clone
+#change hostname
+hostnamectl set-hostname rac2.com
+#change ip addrsses
+
+change oracle_sid in bash profile
+
+
+change host name 
+nmtui
+bash
+
+add 4 disks of 20GB each.
+>> vitrual media managers.
+
+
+oracleasm listdisks
+
+fdisk -l
+lsblk
+
+fdisk /dev/sdb
+n p enter enter enter w
+
+lsblk
+
+sdd           8:48   0   12G  0 disk 
+└─sdd1        8:49   0   12G  0 part 
+sdb           8:16   0   12G  0 disk 
+└─sdb1        8:17   0   12G  0 part 
+sr0          11:0    1 1024M  0 rom  
+sde           8:64   0   50G  0 disk 
+└─sde1        8:65   0   50G  0 part 
+sdc           8:32   0   40G  0 disk 
+└─sdc1        8:33   0   40G  0 part 
+
+ls -ltr /dev/oracleasm/disks
+
+oracleasm createdisk DISK1 /dev/sdb1
+oracleasm createdisk DISK2 /dev/sdc1
+oracleasm createdisk DISK3 /dev/sdd1
+oracleasm createdisk DISK4 /dev/sde1
+
+
+
+2nd node
+oracleasm listdisks
+oracleasm scandisks
+
+oracleasm configure
+
+run below from node1
+
+
+
+Configure ssh for oracle and grid user on both nodes
+
+ssh-keygen
+ssh-copy-id rac2
+
+
+oracleasm configure
+
+run below from node1
+xhost + 
+su - grid
+unzip the software to grid home
+unzip V982068-01.zip -d /u01/app/19.0.0/grid
+
+su - grid
+cd /u01/app/19.0.0/grid
+export DISPLAY=:0
+./gridSetup.sh
+
+/gridSetup.sh
+
+options
+
+Configure Oracle Grid Infrastructure for a New Cluster option.
+Configure an Oracle Standalone Cluster option by clicking the Next button.
+
+##Enter the 
+cluster name rac-cluster, 
+SCAN name rac-scan and 
+SCAN port 1521, then 
+click the Next button.
+
+
+##On the “Cluster Node Information” screen, click the Add button.
+Enter the details of the second node in the cluster, then click the OK button
+
+Check the public and private networks are specified correctly as ASM & Private. Click the Next button.
+
+public : only public
+private asm and private
+
+
+##Accept the Use Oracle Flex ASM for Storage option by clicking the Next button.
+
+Select the No option, as we don’t want to create a separate disk group for the GIMR in this case. 
+Click the Next button.
+
+change discovery path.
+
+/dev/oracleasm/disks*
+
+Set the redundancy to External, click the 1GB DISK for OCR configuration, then click the Next button.
+
+Enter the credentials and click the Next button
+same passwd gridasm.
+
+Accept the default IPMI option by clicking the Next button.
+
+Deselect EM. Click the Next button.
+
+Set the groups to oinstall and click the Next button. Accept the warnings on the subsequent dialog by clicking the Yes button.
+
+Click the Next button.
+
+Accept the default inventory directory by click the Next button
+
+Click the Next button.
+
+Check the Ignore All checkbox and click the Next button.
+
+Double check and click the Install button.
+
+
+##installing oracle_home 
+xhost +
+su - oracle
+export DISPLAY=:0
+go to software location
+unzip V982063-01.zip -d /u01/app/oracle/product/19.0.0/db_1/
+
+cd /u01/app/oracle/product/19.0.0/db_1/
+
+./runInstaller
+
+setup software only
+oracle rac application cluster database install.
+select all nodes
+and configure ssh
+enterprize edition.
+next
+next
+
+then connect with sqlplus / as sysasm
+and we need to create diskgroups:
+
+To know the diskgroup status:
+-----------------------------
+
+set lines 250 
+set pages 9999 
+column path format a35 
+ 
+select path, group_number group_#, disk_number disk_#, mount_status,      
+header_status, state, total_mb, free_mb 
+from v$asm_disk 
+order by group_number;
+
+CREATE DISKGROUP FRA EXTERNAL REDUNDANCY disk '/dev/oracleasm/disks/FRA_01' ATTRIBUTE 'compatible.asm' = '19.1';
+CREATE DISKGROUP DATA EXTERNAL REDUNDANCY disk '/dev/oracleasm/disks/DATA_01' ATTRIBUTE 'compatible.asm' = '19.1';
+ALTER DISKGROUP DATA ADD disk '/dev/oracleasm/disks/DATA_02' ;
+
+
+
+
+col PATH for a55
+select path, group_number group_#, disk_number disk_#, mount_status,header_status, state, total_mb, free_mb from v$asm_disk where header_status='CANDIDATE' or header_status='FORMER' order by 1 ;
+
+To know the all diskgroups information:
+--------------------------------------
+col PATH for a55
+col DG_NAME for a15
+col DG_STATE for a10
+col FAILGROUP for a20
+set lines 750 pages 9999
+
+select dg.name dg_name, dg.state dg_state, dg.type, d.disk_number dsk_no,
+d.path,d.total_mb,d.free_mb, d.mount_status, d.FAILGROUP, d.state 
+from v$asm_diskgroup dg, v$asm_disk d
+where dg.group_number=d.group_number
+order by dg_name, dsk_no;
+
+To know the diskgroup size:
+--------------------------
+select name, total_mb, free_mb, usable_file_mb,
+round(((total_mb-nvl(free_mb,0))/total_mb)*100,0) percent_used
+from V$ASM_DISKGROUP_STAT;
+
+incase we got the version error:
+ALTER DISKGROUP DATA SET ATTRIBUTE 'compatible.asm' = '12.1',
+
+
+
+col PATH for a55
+col DG_NAME for a15
+col DG_STATE for a10
+col FAILGROUP for a20
+set lines 750 pages 9999
+
+select dg.name dg_name, dg.state dg_state, dg.type, d.disk_number dsk_no,
+d.path,d.total_mb,d.free_mb, d.mount_status, d.FAILGROUP, d.state 
+from v$asm_diskgroup dg, v$asm_disk d
+where dg.group_number=d.group_number
+order by dg_name, dsk_no;
+
+dbca
+
+
+
+
+srvctl config all
+crsctl -help
+crsctl query -help
+
+olsnodes
+/u01/app/19.0.0/grid/bin/crsctl pin css -n rac1
+/u01/app/19.0.0/grid/bin/crsctl pin css -n rac2
+
+if unpinned and node down for week node cant come back to cluster with same node number number .
+
+/u01/app/19.0.0/grid/bin/olsnodes -t -n 
