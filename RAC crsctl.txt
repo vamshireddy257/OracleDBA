@@ -20,7 +20,7 @@ voting disk location
 Find OCR location:
 /u01/app/19.0.0/grid/bin/ocrcheck
 
-Find OCR location:
+Find OLR location:
 /u01/app/19.0.0/grid/bin/ocrcheck -local
 
 Find cluster interconnect details
@@ -75,11 +75,7 @@ disable autostart crs
 /u01/app/19.0.0/grid/bin/crsctl stop cluster -all
 
 to shutdown (in all 3 nodes)
-$ srvctl stop database -d <db_unique_name>
 $ crsctl stop cluster -all
-$ crsctl stop crs -all
 
 to startup (in all 3 nodes)
-$ crsctl start crs -all
 $ crsctl start cluster -all
-$ srvctl start database -d <db_unique_name>
