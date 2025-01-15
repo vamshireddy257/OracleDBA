@@ -1,0 +1,55 @@
+select distinct sid from v$mystat;
+select * from v$locked_object;
+
+select do.object_name,lo.* from dba_objects do , v$locked_object lo
+where do.OBJECT_ID = lo.OBJECT_ID;
+
+select 
+sid,serial#,program,SQL_ID,blocking_session,username,
+status,schemaname,osuser,machine,paddr 
+from v$session where type <> 'BACKGROUND';
+
+select 
+sid,serial#,program,SQL_ID,blocking_session,username,
+status,schemaname,osuser,machine,paddr 
+from v$session where type <> 'BACKGROUND' and blocking_session is not null;
+
+select * from v$locked_object;
+
+desc dba_objects;
+
+select do.object_name,lo.* from dba_objects do , v$locked_object lo
+where do.OBJECT_ID = lo.OBJECT_ID;
+
+
+select 
+sid,serial#,program,SQL_ID,blocking_session,username,
+status,schemaname,osuser,machine,paddr 
+from v$session where type <> 'BACKGROUND' and sid = 111;
+
+6266ky2uyw3vm
+select * from v$sql where sql_id = '6266ky2uyw3vm';
+select * from v$sqltext where sql_id = '6266ky2uyw3vm';
+
+after we get confirmation from application  team to kill the session.
+
+select 
+sid,serial#,program,SQL_ID,blocking_session,username,
+status,schemaname,osuser,machine,paddr 
+from v$session where type <> 'BACKGROUND' and sid = 100;
+
+alter system kill session 'SID,serial#,@instance_number' ;
+alter system kill session '100,58602,@1' ;
+
+
+select 
+sid,serial#,program,process,SQL_ID,blocking_session,username,
+status,schemaname,osuser,machine,paddr 
+from v$session where type <> 'BACKGROUND' ; --2382 pmon
+
+select s.sid,s.serial#,s.program,p.spid from v$session s ,v$process p
+where s.paddr = p.addr;
+
+select * from v$session where sid = 62 and serial#= 11998;
+
+show parameter processe;
