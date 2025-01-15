@@ -38,6 +38,10 @@ sid,serial#,program,SQL_ID,blocking_session,username,
 status,schemaname,osuser,machine,paddr 
 from v$session where type <> 'BACKGROUND' and sid = 100;
 
+select 'alter system kill session '||''''||sid||','||serial#||''''||'@1'';' 
+from v$session where type <> 'BACKGROUND' and status = 'INACTIVE';
+
+
 alter system kill session 'SID,serial#,@instance_number' ;
 alter system kill session '100,58602,@1' ;
 
