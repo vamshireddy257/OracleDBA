@@ -1,10 +1,10 @@
 sqlplus / as sysdba
 
-SELECT NUM_ROWS, BLOCKS, LAST_ANALYZED  FROM DBA_TAB_STATISTICS WHERE OWNER='SOE' AND TABLE_NAME='EMP';
+SELECT NUM_ROWS, BLOCKS, LAST_ANALYZED,stale_stats  FROM DBA_TAB_STATISTICS WHERE OWNER='SOE' AND TABLE_NAME='EMP';
 
-CREATE TABLE SOE.EMP3 NOLOGGING AS SELECT * FROM SOE.EMP;
+CREATE TABLE SOE.EMP3 AS SELECT * FROM SOE.EMP;
 
-SELECT NUM_ROWS, BLOCKS, LAST_ANALYZED FROM DBA_TAB_STATISTICS WHERE OWNER='SOE' AND TABLE_NAME='EMP3';
+SELECT NUM_ROWS, BLOCKS, LAST_ANALYZED,stale_stats FROM DBA_TAB_STATISTICS WHERE OWNER='SOE' AND TABLE_NAME='EMP3';
 --stats automatically gather when we create a table using create as select statement
 
 DROP TABLE SOE.EMP3 PURGE;
@@ -22,7 +22,7 @@ MGR_ID  NUMBER(4),
 TERMINATED  CHAR(1), 
 NOTES  VARCHAR2(1000));
 
-SELECT NUM_ROWS, BLOCKS, LAST_ANALYZED FROM DBA_TAB_STATISTICS WHERE OWNER='SOE' AND TABLE_NAME='EMP3';
+SELECT NUM_ROWS, BLOCKS, LAST_ANALYZED,stale_stats FROM DBA_TAB_STATISTICS WHERE OWNER='SOE' AND TABLE_NAME='EMP3';
 
 SET LINESIZE 180
 SET AUTOT TRACE EXP 
@@ -78,7 +78,7 @@ SELECT * FROM SOE.EMP WHERE ENAME BETWEEN 'AOZLA PACUS' AND 'BAFD PZLCL';
 SET AUTOT TRACE EXP; 
 SELECT * FROM SOE.EMP3 WHERE ENAME BETWEEN 'AOZLA PACUS' AND 'BAFD PZLCL';
 
---The table EMP3 has the same data as the original EMP table, but the index on EMP3 has a much lower clustering factor. This is because the data in the table is ordered by the ENAME.
+--The table EMP3 has the same data as the original EMP table, but the index on EMP3 has a much lower clustering factor. This is because, Data in the table is ordered by the ENAME.
 
 --The higher the Index Clustering Factor of an index, the more expensive it is for an optimizer to use the index
 
@@ -118,7 +118,7 @@ COMMIT;
 SELECT NUM_ROWS, BLOCKS,STALE_STATS, LAST_ANALYZED  FROM USER_TAB_STATISTICS WHERE TABLE_NAME='ORDERS2';
 
 
-set autot on;
+set autotrace traceonly;
 SELECT * FROM ORDERS2 WHERE ORDER_ID BETWEEN 60000 AND 80000; 
 
 -- diff between rows fetched and explain plan rows fetched
@@ -127,7 +127,7 @@ set autot off
 
 exec DBMS_STATS.GATHER_TABLE_STATS(OWNNAME=>'SOE', TABNAME=>'ORDERS2');
 
-SELECT NUM_ROWS, BLOCKS,STALE_STATS, LAST_ANALYZED  FROM USER_TAB_STATISTICS WHERE TABLE_NAME='ORDERS2';
+SELECT NUM_ROWS, BLOCKS,STALE_STATS, LAST_ANALYZED  FROM dba_TAB_STATISTICS WHERE TABLE_NAME='ORDERS2';
 
 
 set autot on 
@@ -145,7 +145,7 @@ CREATE INDEX ORDERS2_ORD_ID ON ORDERS2(ORDER_ID);
  
 SELECT LEAF_BLOCKS, BLEVEL, LEAF_BLOCKS, DISTINCT_KEYS, CLUSTERING_FACTOR, NUM_ROWS FROM USER_INDEXES WHERE INDEX_NAME='ORDERS2_ORD_ID';
 
---The clustering factor is very close to the number of rows cost is high
+--The clustering factor is very close to the number of rows which will result in high cost.
  
  
  set linesize 180
@@ -203,3 +203,12 @@ EXEC DBMS_STATS.gather_dictionary_stats;
 EXEC DBMS_STATS.gather_system_stats;
 
 EXEC DBMS_STATS.gather_fixed_objects_stats;
+
+DBMS_STATS.GATHER_TABLE_STATS
+(
+ownname => ‘PROD’, 
+tabname =>’&name’, 
+ESTIMATE_PERCENT => 100,
+METHOD_OPT => 'FOR ALL COLUMNS SIZE AUTO', 
+CASCADE => TRUE,
+DEGREE => 5);
