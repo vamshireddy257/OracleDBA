@@ -107,3 +107,25 @@ alter table STUDENT1 shrink SPACE COMPACT;
 expdp directory=datapump dumpfile=soe_student_030923.dmp logfile=soe_student_030923.log tables=soe.student 
 
 impdp  directory=datapump dumpfile=soe_student_030923.dmp logfile=soe_student_030923_imp.log table_exists_action=truncate
+
+
+
+
+
+
+
+
+
+for your practice:
+create table emp2 as select * from emp;
+run atleast 15 times.
+insert into emp2 as select * from emp2;
+fragmentation query ? -- no fragmentation
+delete from emp2 where deptno = 20;
+fragmentation query ? you will see fragmentation..
+alter table emp2 move;
+fragmentation query ? -- no fragmentation
+delete from emp2 where deptno = 30;
+fragmentation query ? you will see fragmentation..
+alter table tablename shrink ;
+fragmentation query ? -- no fragmentation
