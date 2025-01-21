@@ -3,6 +3,7 @@ select snap_interval, retention from dba_hist_wr_control;
 
 -- to modify existing values of retention and interval
 exec dbms_workload_repository.modify_snapshot_settings(interval => 15, retention => 44640) ;
+--44640 is in minutes which is 31 days
 
 --to get list of snapids available
 SELECT snap_id, begin_interval_time, end_interval_time FROM dba_hist_snapshot  ORDER BY snap_id;
@@ -19,3 +20,6 @@ $ORACLE_HOME/rdbms/admin/addmrpt.sql
 
 --to generate ASH report
 $ORACLE_HOME/rdbms/admin/ashrpt.sql
+
+-- to generate AWRdiff report
+$ORACLE_HOME/rdbms/admin/awrddrpt.sql
