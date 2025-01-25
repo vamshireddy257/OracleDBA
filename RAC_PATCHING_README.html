@@ -1,0 +1,2625 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+  <head>
+    <meta http-equiv="content-type" content="application/xhtml+xml; charset=us-ascii" />
+    <meta content="text/css" http-equiv="Content-Style-Type" />
+    <meta content="text/javascript" http-equiv="Content-Script-Type" />
+    <title>Oracle&reg; Database Patch 36582629 - GI Release Update 19.24.0.0.240716</title>
+    <meta content="Oracle Database Patch 36582629 - GI Release Update 19.24.0.0.240716"
+
+      name="doctitle" />
+    <meta content="" name="docid" />
+    <meta content="DARB" name="brand" />
+    <meta content="DITA Open Toolkit version 1.8.5 (Mode = doc)" name="generator" />
+    <meta content="Infodev XHTML plugin release 17.2.1" name="plugin" />
+    <meta content="2018-02-12T13:47:43Z" name="date" />
+    <meta content="noarchive" name="robots" />
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Styles begin here -->
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <style>
+body, p, table, td, th, ol, ul, a, dl, dt, dd, blockquote, caption {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.25;
+  color: black;
+  background-color: white;
+  /* Fahrner Method. See Zeldman. Working with Web Standards. pp. 323-5. */
+  font-size: x-small;
+  /* janis changed following */
+  voice-family: "\"}\"";
+  
+  voice-family: inherit;
+  font-size: small;
+}
+html > body {
+  font-size: small;
+}
+
+a {
+  text-decoration: underline;
+}
+
+a:link {
+  color: #630;
+  background-color: white;
+}
+
+a:visited {
+  color: #963;
+  background-color: white;
+}
+
+a:hover {
+  color: #f60;
+  background-color: white;
+}
+
+a:active {
+  color: #f60;
+  background-color: white;
+}
+
+a.glossary-link {
+  border-bottom: 1px dotted;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #369;
+  background-color: white;
+}
+
+h1 {
+  font-size: 1.6em;
+  font-weight: bold;
+  border: solid #cc9;
+  border-width: 0px 0px 1px 0px;
+  width: 100%;
+}
+
+h2 {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+pre, code {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1em;
+}
+
+code {
+  color: #369;
+  background-color: white;
+}
+
+code *.code-comment {
+  color: black;
+  background-color: white;
+}
+
+a:link code {
+  color: #630;
+  background-color: white;
+}
+
+a:visited code {
+  color: #963;
+  background-color: white;
+}
+
+a:hover code {
+  color: #f60;
+  background-color: white;
+}
+
+a:active code {
+  color: #f60;
+  background-color: white;
+}
+
+caption {
+  text-align: center;
+  font-weight: bold;
+  width: auto;
+}
+
+dt {
+  font-weight: bold;
+}
+
+td {
+  vertical-align: top;
+}
+
+th {
+  font-weight: bold;
+  text-align: left;
+  vertical-align: bottom;
+  color: #369;
+  background-color: white;
+}
+
+ol ol {
+    list-style-type: lower-alpha;
+}
+
+ol ol ol {
+    list-style-type: lower-roman;
+}
+
+table.table-border {
+  border: 1px solid #cc9;
+}
+
+table.table-border td,
+table.table-border th {
+  padding: 2px 4px 2px 4px;
+  color: black;
+  background-color: white;
+  border: 1px solid #cc9;
+}
+
+table.table-border th.table-header-border-left,
+table.table-border th.table-header-border-middle,
+table.table-border th.table-header-border-right {
+  color: #369;
+  background-color: #cc9;
+}
+
+table.table-border th.table-header-border-left {
+  border-left: 1px solid #cc9;
+  border-right: 1px solid white;
+  color: black;
+  background-color: #cc9;
+}
+
+table.table-border th.table-header-border-middle {
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+  color: black;
+  background-color: #cc9;
+}
+
+table.table-border th.table-header-border-right {
+  border-left: 1px solid white;
+  border-right: 1px solid #cc9;
+  color: black;
+  background-color: #cc9;
+}
+
+span.gui-object, span.gui-object-action {
+  font-weight: bold;
+}
+
+span.gui-object-title { }
+
+p.horizontal-rule {
+  width: 100%;
+  border: solid #cc9;
+  border-width: 0px 0px 1px 0px;
+  margin-bottom: 4ex;
+}
+
+p.booktitle {
+  font-weight: bold;
+  font-size: 125%;
+}
+
+div.zz-skip-header {
+  margin-bottom: 0px;
+  margin-top: -2px;
+  padding: 0px;
+  text-align: center;
+  line-height: 1px;
+}
+
+div.zz-skip-header a:link,
+div.zz-skip-header a:visited,
+div.zz-skip-header a:hover,
+div.zz-skip-header a:active {
+  color: white;
+  background-color: white;
+  text-decoration: none;
+  font-size: 0.2ex;
+  line-height: 1px;
+}
+
+td.zz-nav-header-cell {
+  text-align: left;
+  font-size: 0.95em;
+  width: 99%;
+  color: black;
+  background-color: white;
+  font-weight: normal;
+  vertical-align: top;
+  margin-top: 0ex;
+  padding-top: 0ex;
+}
+
+a.zz-nav-header-link {
+  font-size: 0.95em;
+}
+
+td.zz-nav-button-cell {
+  white-space: nowrap;
+  text-align: center;
+  width: 1%;
+  vertical-align: top;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-top: 0ex;
+  padding-top: 0ex;
+}
+
+a.zz-nav-button-link {
+  font-size: 0.9em;
+}
+
+div.zz-nav-footer-menu {
+  width: 100%;
+  text-align: center;
+  margin-top: 2ex;
+  margin-bottom: 4ex;
+}
+
+p.zz-legal-notice, a.zz-legal-notice-link {
+  font-size: 0.85em;
+  /* display: none; */  /* Uncomment to hide legal notice */
+}
+
+p.seghead {
+  font-weight: bold;
+  margin-left: -2pt;
+}
+
+ul {
+  margin: 0;
+}
+ul.dashed {
+  list-style-type: none;
+}
+ul.dashed > li {
+  text-indent: -5px;
+}
+ul.dashed > li:before {
+  content: "-";
+  text-indent: -5px;
+}
+
+/*************************************/
+/*  Begin DARB Formats          */
+/*************************************/
+
+h5, h6 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #369;
+  background-color: white;
+  font-size: 0.95em;
+  font-weight: bold;
+}
+
+h6 {
+  font-weight: normal;
+}
+
+td li p {
+  display: inline;
+}
+
+/* lose the h1 underscore */
+/*
+h1 {
+  border-width : 0px 0px 0px 0px;
+}
+*/
+
+/* Increase contrast between visited and unvisited links. */
+/*
+a:visited {
+  color: #a30;
+  background-color: white;
+}
+*/
+
+.bold, .codeinlinebold, .syntaxinlinebold, .term, .glossterm,
+.glossaryterm, .keyword, .msg, .msgexplankw, .msgactionkw, .notep1 {
+  font-weight: bold;
+}
+
+.italic, .codeinlineitalic, .syntaxinlineitalic, .variable {
+  font-style: italic;
+}
+
+.bolditalic, .codeinlineboldital, .syntaxinlineboldital,
+.titleinfigure, .titleinexample, .titleintable, .titleinequation {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.bridgehead, .titleinrefsubsect, .subhead1, .subhead2, .subhead3 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #369;
+  background-color: white;
+  font-weight: bold;
+}
+
+.titleinrefsubsect, .subhead1 {
+  font-size: 1.1em;
+}
+
+.subhead2 {
+  font-size: 1.0em;
+}
+
+.subhead3 {
+  font-size: 0.95em;
+  display: inline;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.superscript {
+  vertical-align: super;
+}
+
+.subscript {
+  vertical-align: sub;
+}
+
+.listofeft {
+  border: none;
+}
+
+.betadraft {
+  color: #f00;
+  background-color: white;
+}
+
+.betadraftsubtitle {
+  text-align: center;
+  font-weight: bold;
+  color: #f00;
+  background-color: white;
+}
+
+.comment {
+  color: #080;
+  background-color: white;
+  font-weight: bold;
+}
+
+.copyrightlogo {
+  text-align: center;
+  font-size: 0.85em;
+  border-style: none;
+}
+
+.tocsubheader {
+  list-style-type: none;
+}
+
+/*************************************/
+/*  End DARB Formats                 */
+/*************************************/
+
+ all {
+  * {
+    background-color: transparent;
+    line-height: 1.2;
+  }
+  body {
+    color: black;
+    background-color: white;
+  }
+/*
+  dd {
+    margin-bottom: 2ex;
+  }
+  dl:first-child {
+    margin-top: 2ex;
+  }
+*/
+}
+
+ print {
+  body, p, table, td, th, ol, ul, a, dl, dt, dd, blockquote, caption {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11pt;
+  }
+
+  h1, h2, h3, h4, h5, h6, th, thead td {
+    font-family: Arial, Helvetica, serif;
+    color: black;
+    background-color: white;
+  }
+
+  div.zz-skip-header {
+    display: none;
+  }
+
+  code, a:link, a:visited, a:hover, a:active {
+    color: black;
+    background-color: white;
+    text-decoration: none;
+  }
+}
+</style><!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Styles end here -->
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  </head>
+  <body>
+    <div class="header"><a name="top" id="top"></a>
+      <div class="zz-skip-header"><a href="#BEGIN">Skip Headers</a></div>
+      <table summary="" class="simple oac_no_warn" width="100%" cellspacing="0"
+
+        cellpadding="0">
+        <tbody>
+          <tr>
+            <td align="left" valign="bottom"> <b>Oracle&reg; Database Patch 36582629 - GI Release Update 19.24.0.0.240716</b><br />
+              <b> <span></span> </b><br />
+            </td>
+            <td align="right" valign="bottom">
+              <table summary="" class="simple oac_no_warn" width="225" cellspacing="0"
+
+                cellpadding="0">
+                <tbody>
+                  <tr>
+                    <td>&nbsp;</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr />
+      <table summary="" class="simple oac_no_warn" width="100" cellspacing="0" cellpadding="0">
+        <tbody>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+      <a id="BEGIN" name="BEGIN"></a> </div>
+    <!-- class="header" -->
+    <div class="ind"><!-- End Header -->
+      <div class="letterstyle">
+        <h1 class="docinfo">Oracle&reg; Database</h1>
+        <p class="booktitle">Patch 36582629 - GI Release Update 19.24.0.0.240716</p>
+        <p><span class="revnumber"></span> </p>
+        <p class="invpartnumber"></p>
+        <p class="date"> </p>
+        <div>
+          <div>
+            <p>In this document, Oracle Database home refers
+                to Oracle Database Enterprise Edition and Oracle Database Standard Edition.</p>
+				
+            <p>The GI Release Update 19.24.0.0.240716 includes updates for both the Oracle Grid Infrastructure
+              home and Oracle Database home that can be applied in a rolling fashion.</p>
+			  
+            <p>This patch is Oracle Data Guard Standby-First Installable. See <a href="#GUID-0FB0512B-0175-4BC2-9298-0F772ACDA329">Installing
+                Patch in Oracle Data Guard Standby-First Mode</a> for more information.</p>
+				
+			<p>The database subpatch includes the JDK fixes released in the prior cycle and will update the JDK in the Oracle 
+			home. For the most recent JDK fixes, a separate patch is available and needs to be installed in addition to this 
+			patch. Refer to My Oracle Support document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=888.1">888.1</a> 
+			<span class="italic"> Primary Note for Database Proactive Patch Program</span> for the JDK patch number.</p>
+				
+          <p>Beginning with 19.21 Oct2023 RU, <code class="codeph">UTL_URI.ESCAPE</code> function is now compliant with RFC 3896 and will 
+			treat "#" as a reserved character. See My Oracle Support Note 
+			<a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2981395.1">2981395.1</a> 
+			for more details.</p>
+			
+			<p>Beginning with 19.22 Jan2024 RU, the 19c database is now certified on Oracle Linux 9.<i>x</i> and RHEL9.<i>x</i>.</p>
+			
+			<p>For the latest Bundle Patch with security fixes that should be used on client-only installations, see 
+		  the "Oracle Database Client" row for your Database version in the "Oracle Database" section of the most recent 
+		  Critical Patch Update (CPU) Program Patch Availability Document (PAD).
+          </p></div>
+
+          <p>This document is accurate at the time of release. For any changes
+            and additional information regarding GI Release Update 19.24.0.0.240716, see this
+            related document that is available at My Oracle Support (<code dir="ltr"><a
+
+                href="http://support.oracle.com/">http://support.oracle.com/</a></code>):
+            <ul style="list-style-type: disc;">
+              <li>
+                <p>Document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=19202407.9"><span>19202407.9</span></a> <span class="italic">Oracle Database 19c RU/RUR Jul 2024 Known Issues</span></p>
+              </li>
+		  <li>
+		  <p>Document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=555.1">555.1</a>
+		  <span class="italic"> Oracle Database 19c Important Recommended One-off Patches</span>
+		  </p>
+		  </li>
+		  <li>
+		  <p>Document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=888.1">888.1</a>
+		  <span class="italic"> Primary Note for Database Proactive Patch Program</span>
+		  </p>
+		  </li>
+		  <li>
+		  <p>Document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1919.2">1919.2</a>
+		  <span class="italic"> 19c Database Self-Guided Upgrade with Best Practices</span>
+		  </p>
+		  </li>
+            </ul></p>
+            <p>This document includes the following sections:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p><a href="#GUID-E10A182E-57B1-4F38-829E-31F9A7827E69">1.1 Patch
+                    Information</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-E207ECE5-3722-4B36-A9DB-237C7247AB71">2.1 Patch
+                    Installation and Deinstallation</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-774FEA2B-9E36-4D19-989F-C42DE574915F">3.1 Known
+                    Issues</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-17E5B95F-E037-478F-A35C-C0A922DD9636">4.1 References</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-5A2693B4-C048-44B3-8A16-C7937C036E1E">5.1 Manual
+                    Steps for Applying or Rolling Back the Patch</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-A6805A6D-D6E2-4BE2-BD2F-5F24CBAE798A">6.1 Bugs
+                    Fixed by This Patch</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-E409CC44-9A8F-4043-82C8-6B95CD939296">7.1 Documentation
+                    Accessibility</a></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="sect2"><!-- infolevel="all" infotype="General" --><a id="GUID-E10A182E-57B1-4F38-829E-31F9A7827E69"
+
+            name="GUID-E10A182E-57B1-4F38-829E-31F9A7827E69"></a>
+          <h2 class="sect2"><span class="enumeration_section">1.1 </span>Patch
+            Information</h2>
+          <div>
+		  <ul>
+		  <li><p>The Oracle Grid Infrastructure patches are cumulative and include the
+              database CPU program security content.
+		  </p></li>
+		  <li><p>Any new or changed database initialization parameters that might be included into a 
+		  quarterly patch bundle would be documented in the Oracle Database Reference manual 
+		  section on initialization parameters. For Oracle Database 19c refer to 
+		  <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/refrn/release-changes.html#GUID-509A6343-5882-4260-BAD0-DC6B2BDC8301"><i> Oracle Database Reference</i></a>.
+		  </p></li>
+          <li><p>This GIRU contains the following CORE DST patches:</p>
+		  <ul>
+		  <li>28852325 - DSTV33 UPDATE - TZDATA2018G
+		  </li>
+		  <li>29997937 - DSTV34 UPDATE - TZDATA2019B
+		  </li>
+		  <li>31335037 - DSTV35 UPDATE - TZDATA2020A
+		  </li>
+		  <li>32327201 - DSTV36 UPDATE - TZDATA2020E
+		  </li>
+		  <li>33613829 - DSTV37 UPDATE - TZDATA2021E
+		  </li>
+		  <li>34006614 - DSTV38 UPDATE - TZDATA2022A
+		  </li>
+		  <li>34533061 - DSTV39 UPDATE - TZDATA2022C
+		  </li>
+		  <li>34698179 - DSTV40 UPDATE - TZDATA2022E
+		  </li>	
+		  <li>35099667 - DSTV41 UPDATE - TZDATA2022G
+		  </li>
+		  <li>35220732 - DSTV42 UPDATE - TZDATA2023C
+		  </li>
+		  <li>36260493 - DSTV43 UPDATE - TZDATA2024A
+		  </li>
+		  </ul>
+          </li>	</ul>	  
+			
+            <p><a title="The table below lists the various configurations and the applicable RU that should be used to patch that configuration."
+
+                href="#GUID-E10A182E-57B1-4F38-829E-31F9A7827E69__CIHGECDC">Table
+                1-1</a> lists the various configurations and the 
+              patch that should be used to patch that configuration.</p>
+            <div id="GUID-E10A182E-57B1-4F38-829E-31F9A7827E69__CIHGECDC" class="tblformal">
+              <p class="titleintable">Table 1-1 Configuration and Database Patch
+                Mapping</p>
+              <table rules="rows" frame="hsides" summary="The table below lists the various configurations and the applicable RU that should be used to patch that configuration."
+
+                title="Configuration and Database Patch Mapping" class="Formal"
+
+                width="100%" cellspacing="0" cellpadding="4" border="1">
+                <thead>
+                  <tr align="left" valign="top">
+                    <th id="d361e135" align="left" width="19%" valign="bottom">Configuration</th>
+                    <th id="d361e138" align="left" width="13%" valign="bottom">Grid
+                      Version</th>
+                    <th id="d361e141" align="left" width="15%" valign="bottom">Database
+                      Versions</th>
+                    <th id="d361e144" align="left" width="16%" valign="bottom">Patch
+                      </th> <th id="d361e147" align="left" width="16%" valign="bottom">OPatch
+                      Command(1)</th>
+                    <th id="d361e156" align="left" width="22%" valign="bottom">Comments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr align="left" valign="top">
+                    <td headers="d361e135 " id="d361e161" align="left" width="19%"
+
+                      valign="top">
+                      <p>Grid home in conjunction with Oracle RAC, Oracle RAC One Node, or single-instance home</p>
+                    </td>
+                    <td headers="d361e161 d361e138 " align="left" width="13%" valign="top">
+                      <p>19</p>
+                    </td>
+                    <td headers="d361e161 d361e141 " align="left" width="15%" valign="top">
+                      <p>19</p>
+                    </td>
+                    <td headers="d361e161 d361e144 " align="left" width="16%" valign="top">
+                      <p>Grid <span>RU/RUR</span></p>
+                    </td>
+                    <td headers="d361e161 d361e147 " align="left" width="16%" valign="top">
+                      <p>opatchauto</p>
+                    </td>
+                    <td headers="d361e161 d361e156 " align="left" width="22%" valign="top">
+                      <p>Grid home and all Oracle homes are patched.</p>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td headers="d361e135 " id="d361e182" align="left" width="19%"
+
+                      valign="top">
+                      <p>Grid home in conjunction with Oracle RAC, Oracle RAC One Node, or single-instance home</p>
+                    </td>
+                    <td headers="d361e182 d361e138 " align="left" width="13%" valign="top">
+                      <p>19</p>
+                    </td>
+                    <td headers="d361e182 d361e141 " align="left" width="15%" valign="top">
+                      <p>19 and prior versions</p>
+                    </td>
+                    <td headers="d361e182 d361e144 " align="left" width="16%" valign="top">
+                      <p>Grid <span>RU/RUR</span></p>
+                    </td>
+                    <td headers="d361e182 d361e147 " align="left" width="16%" valign="top">
+                      <p>opatchauto</p>
+                    </td>
+                    <td headers="d361e182 d361e156 " align="left" width="22%" valign="top">
+                      <p>Grid home and Oracle home at version 19 are
+                        patched.</p>
+                      <p>For Oracle home with a version other than 19, apply the
+                        appropriate database <span>RU</span> for that version.
+                        For example, apply 19.x <span>RU</span> to
+                        database version 19c.</p>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td headers="d361e135 " id="d361e211" align="left" width="19%"
+
+                      valign="top">
+                      <p>Grid home in conjunction with Oracle RAC, Oracle RAC One Node, or single-instance home</p>
+                    </td>
+                    <td headers="d361e211 d361e138 " align="left" width="13%" valign="top">
+                      <p>19</p>
+                    </td>
+                    <td headers="d361e211 d361e141 " align="left" width="15%" valign="top">
+                      <p>Versions prior to 19</p>
+                    </td>
+                    <td headers="d361e211 d361e144 " align="left" width="16%" valign="top">
+                      <p>Grid <span>RU/RUR</span></p>
+                    </td>
+                    <td headers="d361e211 d361e147 " align="left" width="16%" valign="top">
+                      <p>opatchauto</p>
+                    </td>
+                    <td headers="d361e211 d361e156 " align="left" width="22%" valign="top">
+                      <p>Grid home alone is patched.</p>
+                      <p>For Oracle home, apply the appropriate database <span>RU</span>
+                        for that version. For example, apply 19.x <span>RU</span>
+                        to database version 19c.</p>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td headers="d361e135 " id="d361e240" align="left" width="19%"
+
+                      valign="top">
+                      <p>Oracle Restart home</p>
+                    </td>
+                    <td headers="d361e240 d361e138 " align="left" width="13%" valign="top">
+                      <p>19</p>
+                    </td>
+                    <td headers="d361e240 d361e141 " align="left" width="15%" valign="top">
+                      <p>19</p>
+                    </td>
+                    <td headers="d361e240 d361e144 " align="left" width="16%" valign="top">
+                      <p>Grid <span>RU/RUR</span></p>
+                    </td>
+                    <td headers="d361e240 d361e147 " align="left" width="16%" valign="top">
+                      <p>opatchauto</p>
+                    </td>
+                    <td headers="d361e240 d361e156 " align="left" width="22%" valign="top">
+                      <p>Grid home and all the Oracle homes are patched.</p>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td headers="d361e135 " id="d361e261" align="left" width="19%"
+
+                      valign="top">
+                      <p>Database single-instance home</p>
+                    </td>
+                    <td headers="d361e261 d361e138 " align="left" width="13%" valign="top">
+                      <p>NA</p>
+                    </td>
+                    <td headers="d361e261 d361e141 " align="left" width="15%" valign="top">
+                      <p>19</p>
+                    </td>
+                    <td headers="d361e261 d361e144 " align="left" width="16%" valign="top">
+                      <p>Database <span>RU/RUR</span></p>
+                    </td>
+                    <td headers="d361e261 d361e147 " align="left" width="16%" valign="top">
+                      <p>opatch apply</p>
+                    </td>
+                    <td headers="d361e261 d361e156 " align="left" width="22%" valign="top">
+                      <p>None.</p>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td headers="d361e135 " id="d361e282" align="left" width="19%"
+
+                      valign="top">
+                      <p>Database client home</p>
+                    </td>
+                    <td headers="d361e282 d361e138 " align="left" width="13%" valign="top">
+                      <p>NA</p>
+                    </td>
+                    <td headers="d361e282 d361e141 " align="left" width="15%" valign="top">
+                      <p>19</p>
+                    </td>
+                    <td headers="d361e282 d361e144 " align="left" width="16%" valign="top">
+                      <p>Database <span>RU/RUR</span></p>
+                    </td>
+                    <td headers="d361e282 d361e147 " align="left" width="16%" valign="top">
+                      <p>opatch apply</p>
+                    </td>
+                    <td headers="d361e282 d361e156 " align="left" width="22%" valign="top">
+                      <p>None.</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- class="inftblhruleinformal" -->
+            <p class="tablefootnote"><sup class="tablefootnote">Footnote 1</sup> OPatchAuto
+              does not support patching in Oracle Data Guard environments. See <a href="#GUID-0FB0512B-0175-4BC2-9298-0F772ACDA329">Installing
+                Patch in Oracle Data Guard Standby-First Mode</a> for more information.</p>
+            <p><a title="Lists the patch numbers that are installed as part of the Grid RU patch"
+
+                href="#GUID-E10A182E-57B1-4F38-829E-31F9A7827E69__CHDIGCIA">Table
+                1-2</a> lists the various patches by patch number that are 
+              installed as part of this bundle patch.</p>
+            <div id="GUID-E10A182E-57B1-4F38-829E-31F9A7827E69__CHDIGCIA" class="tblformal">
+              <p class="titleintable">Table 1-2 Patch Numbers Installed
+                as Part of this Bundle Patch</p>
+              <table rules="rows" frame="hsides" summary="Lists the patch numbers that are installed as part of the Grid RU patch"
+
+                title=" Patch Numbers Getting Installed as Part of this Bundle Patch"
+
+                class="Formal" width="100%" cellspacing="0" cellpadding="4" border="1">
+                <thead>
+                  <tr align="left" valign="top">
+                    <th id="d361e325" align="left" width="20%" valign="bottom">Patch
+                      Number</th>
+                    <th id="d361e328" align="left" width="37%" valign="bottom">Description</th>
+                    <th id="d361e331" align="left" width="43%" valign="bottom">Applicable
+                      Homes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr align="left" valign="top">
+                    <td headers="d361e325 " id="d361e336" align="left" width="20%"
+
+                      valign="top">
+                      <p>36582781</p>
+                    </td>
+                    <td headers="d361e336 d361e328 " align="left" width="37%" valign="top">
+                      <p>Database Release Update 19.24.0.0.240716<span></span></p>
+                    </td>
+                    <td headers="d361e336 d361e331 " align="left" width="43%" valign="top">
+                      <p>Only Oracle home for non-Oracle RAC setup. Both Oracle home
+                        and Grid home for Oracle RAC setup.</p>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td headers="d361e325 " id="d361e352" align="left" width="20%"
+
+                      valign="top">
+                      <p>36587798</p>
+                    </td>
+                    <td headers="d361e352 d361e328 " align="left" width="37%" valign="top">
+                      <p>OCW Release Update 19.24.0.0.240716<span></span></p>
+                    </td>
+                    <td headers="d361e352 d361e331 " align="left" width="43%" valign="top">
+                      <p>Both Oracle home and Grid home.</p>
+                    </td>
+                  </tr>
+                  <tr align="left" valign="top">
+                    <td headers="d361e325 " id="d361e365" align="left" width="20%"
+
+                      valign="top">
+                      <p>36590554</p>
+                    </td>
+                    <td headers="d361e365 d361e328 " align="left" width="37%" valign="top">
+                      <p>ACFS Release Update 19.24.0.0.240716<span></span> <a onclick='footdisplay(2, "For ACFS 
+					  these subpatches are not applicable to the HP-UX Itanium and Linux on IBM System z platforms. ")'
+
+                          href="#fn_2" name="fn_2" id="fn_2"> <sup>Footnote 2</sup></a></p>
+                    </td>
+                    <td headers="d361e365 d361e331 " align="left" width="43%" valign="top">
+                      <p>Only Grid home.</p>
+                    </td>
+				  
+				  </tr>
+                  <tr align="left" valign="top">
+                    <td headers="d361e325 " id="d361e365" align="left" width="20%"
+
+                      valign="top">
+                      <p>36648174</p>
+                    </td>
+                    <td headers="d361e365 d361e328 " align="left" width="37%" valign="top">
+                      <p>Tomcat Release Update 19.0.0.0.0<span></span><a href="#fn_2"
+
+                          name="fn_2" id="fn_2"><sup>Footnote 2</sup></a></p>
+                    </td>
+                    <td headers="d361e365 d361e331 " align="left" width="43%" valign="top">
+                      <p>Only Grid home.</p>
+                    </td>
+                  </tr>
+				  <tr align="left" valign="top">
+                    <td headers="d361e325 " id="d361e365" align="left" width="20%"
+
+                      valign="top">
+                      <p>36758186</p>
+                    </td>
+                    <td headers="d361e365 d361e328 " align="left" width="37%" valign="top">
+                      <p>DBWLM Release Update 19.0.0.0.0<span></span><a href="#fn_2"
+
+                          name="fn_2" id="fn_2"><sup>Footnote 2</sup></a></p>
+                    </td>
+                    <td headers="d361e365 d361e331 " align="left" width="43%" valign="top">
+                      <p>Only Grid home.</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- class="inftblhruleinformal" -->
+            <p class="tablefootnote"><sup class="tablefootnote">Footnote 2</sup> Oracle Automatic Storage Management Cluster File System (Oracle ACFS), Apache Tomcat (TOMCAT), and Database Workload Management (DBWLM) subpatches are not applicable to the HP-UX
+              Itanium and Linux on IBM System z platforms.</p>
+            <p></p>
+            <p></p>
+          </div>
+        </div>
+        <div class="sect2"><!-- infolevel="all" infotype="General" --><a id="GUID-E207ECE5-3722-4B36-A9DB-237C7247AB71"
+
+            name="GUID-E207ECE5-3722-4B36-A9DB-237C7247AB71"></a>
+          <h2 class="sect2"><span class="enumeration_section">2.1 </span>Patch
+            Installation and Deinstallation</h2>
+          <div>
+            <p>This topic includes the following sections:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p><a href="#GUID-CCB84E28-C872-46F2-9246-A8FD82670AFE">2.1.1 Patch
+                    Installation Prerequisites</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-7EA5E77E-1938-4435-9346-C6139689A6F6">2.1.2 One-off
+                    Patch Conflict Detection and Resolution</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-7EA5E77E-2938-4435-9346-C6139689A6F6">2.1.3 Patch Installation Checks</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-7EA5E77E-2938-4435-9346-C6139689A5H5">2.1.4 OPatchAuto Out-of-Place Patching</a></p>
+              </li>
+			  <li>
+                <p><a href="#GUID-0A24FA89-C68B-4A03-B67C-19C3F8DFF3F5">2.1.5 OPatchAuto</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-F8E80702-38F1-47A0-8625-3D86FB329019">2.1.6 Patch
+                    Installation</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-0FB0512B-0175-4BC2-9298-0F772ACDA329">2.1.7 Installing
+                    Patch in Oracle Data Guard Standby-First Mode</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-4FEE1939-B889-467B-8F6A-3809CD88BE58">2.1.8 Patch
+                    Post Installation Instructions</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-94A38C51-CF4E-4F29-9E86-ED1D5B399D95">2.1.9 Patch
+                    Post Installation Instructions for Databases Created or
+                    Upgraded After Installation of Patch in the Oracle Home</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-B37B005F-2294-4E60-B2A7-F73282FB2273">2.1.10 Patch
+                    Deinstallation</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-E0625F95-5952-4EDF-8D87-280F4E7476BC">2.1.11 Patch
+                    Post Deinstallation Instructions</a></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-CCB84E28-C872-46F2-9246-A8FD82670AFE"
+
+            name="GUID-CCB84E28-C872-46F2-9246-A8FD82670AFE"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.1 </span>Patch
+            Installation Prerequisites</h3>
+          <div>
+		  <p>It is highly recommended to take a backup of the Oracle home binaries, the Grid home binaries, and Central Inventory 
+		  prior to applying patches. For further information, refer to My Oracle Support document 
+		  <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=565017.1" target="_blank">565017.1</a>
+		  <span class="italic"> How to Perform ORACLE_HOME Backup?</span>.</p>
+            <p>You must satisfy the conditions in the following sections before
+              applying the patch:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p><a href="#GUID-2A0C7B37-402F-4801-A465-0269C774FAC5">2.1.1.1 OPatch
+                    Utility Information</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-A9B0891E-B262-4A18-8AB2-D52EE99602A2">2.1.1.2 Validation
+                    of Oracle Inventory</a> </p>
+              </li>
+              <li>
+                <p><a href="#GUID-60E72928-47EC-48A5-959E-CBA5DA182397">2.1.1.3 Download
+                    and Unzip the Patch</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-CFCBC4CD-F873-498B-9E2D-31FB9233D9D4">2.1.1.4 Run
+                    OPatch Conflict Check</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-D4AB2B98-8A63-4CEF-8EC0-23E67AC85926">2.1.1.5 Run
+                    OPatch System Space Check</a></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a id="GUID-2A0C7B37-402F-4801-A465-0269C774FAC5"
+
+            name="GUID-2A0C7B37-402F-4801-A465-0269C774FAC5"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.1.1 </span>OPatch
+            Utility Information </h4>
+          <div>
+            <p>You must use the OPatch utility version 12.2.0.1.42 or later to apply this patch. Oracle
+              recommends that you use the latest released OPatch version for
+              12.2 which is available for download from My Oracle Support patch 
+			  <a href="http://updates.oracle.com/ARULink/PatchDetails/process_form?patch_num=6880880">6880880</a>
+              by selecting the ARU link for the 12.2.0.1.0 OPatch release. It is
+              recommended that you download the OPatch utility and the patch to 
+              a shared location in order to access them from any node in the
+              cluster for the patch application on each node. </p>
+            <p>When patching the Grid home, a shared location on Oracle ACFS only needs
+              to be unmounted on the node where the Grid home is being patched.</p>
+            <p>The new OPatch utility should be updated in all of the Oracle RAC
+              database homes and the Grid home that are being patched. </p>
+            <p>For each Oracle RAC database home and the Oracle Grid Infrastructure home that are being patched, as the respective home owner, extract the OPatch utility.</p>
+            <p>For exact instructions to install OPatch, follow the readme included with the tool download.</p>
+			<p>A new feature has been added to OPatch to increase performance by deleting inactive 
+			patches. See My Oracle Support document 
+			<a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2942102.1"
+
+                target="_blank">2942102.1 </a> <span class="italic">OPatch 12.2.0.1.37+ Introduces a New 
+			Feature to Delete Inactive Patches </span>in the <code>ORACLE_HOME/.patch_storage</code> directory.</p>
+            <p>For information about OPatch documentation, including any known
+              issues, see My Oracle Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=293369.1">293369.1</a>
+              <span class="italic">Primary Note For OPatch</span>.</p>
+          </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a id="GUID-A9B0891E-B262-4A18-8AB2-D52EE99602A2"
+
+            name="GUID-A9B0891E-B262-4A18-8AB2-D52EE99602A2"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.1.2 </span>Validation
+            of Oracle Inventory</h4>
+          <div>
+            <p>Before beginning patch application, check the consistency of
+              inventory information for Grid home and each Oracle home to be
+              patched. Run this command as the respective Oracle home owner
+              to check the consistency: </p>
+            <pre dir="ltr" class="oac_no_warn">$ &lt;ORACLE_HOME&gt;/OPatch/opatch lsinventory -detail -oh &lt;ORACLE_HOME&gt;
+</pre>
+            <p>If this command succeeds, it lists the Oracle components that are
+              installed in the home. Save the output so that you have the status
+              prior to the patch application.</p>
+            <p>If this command fails, contact Oracle Support for
+              assistance.</p>
+          </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a id="GUID-60E72928-47EC-48A5-959E-CBA5DA182397"
+
+            name="GUID-60E72928-47EC-48A5-959E-CBA5DA182397"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.1.3 </span>Download
+            and Unzip the Patch</h4>
+          <div>
+            <p>To apply the patch, it must be accessible from all nodes in the
+              Oracle cluster. Download the patch and unzip it to a shared
+              location called the <code class="codeph">&lt;UNZIPPED_PATCH_LOCATION&gt;</code>.
+              This directory must be empty and cannot be <code class="codeph">/tmp</code>.
+              Additionally, the directory should have read permission for the <code
+
+                class="codeph">ORA_INSTALL</code> group: </p>
+            <pre dir="ltr" class="oac_no_warn">$ cd &lt;UNZIPPED_PATCH_LOCATION&gt;
+</pre>
+            <p>Ensure that the directory is empty:</p>
+            <pre dir="ltr" class="oac_no_warn">$ ls
+</pre>
+            <p>Unzip the patch as the Grid home owner except for installations that
+              do not have any Grid homes. For installations where this patch
+              is applied to the Oracle home only, the patch must be
+              unzipped as the Oracle home owner:</p>
+            <pre dir="ltr" class="oac_no_warn">$ unzip p<span>36582629</span>_190000_&lt;platform&gt;.zip
+</pre> </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a id="GUID-CFCBC4CD-F873-498B-9E2D-31FB9233D9D4"
+
+            name="GUID-CFCBC4CD-F873-498B-9E2D-31FB9233D9D4"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.1.4 </span>Run
+            OPatch Conflict Check</h4>
+          <div>
+            <p>Determine whether any currently installed one-off patches
+              conflict with this patch <span>36582629</span> as
+              follows:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p>As the Grid home user:</p>
+                <p><pre dir="ltr" class="oac_no_warn">% $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir &lt;UNZIPPED_PATCH_LOCATION&gt;/36582629/36582781<br>
+% $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir &lt;UNZIPPED_PATCH_LOCATION&gt;/36582629/36587798<br>
+% $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir &lt;UNZIPPED_PATCH_LOCATION&gt;/36582629/36590554<br>
+% $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir &lt;UNZIPPED_PATCH_LOCATION&gt;/36582629/36648174<br>
+% $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir &lt;UNZIPPED_PATCH_LOCATION&gt;/36582629/36758186<br>
+				</pre></p>              
+              <p class="notep1">Note:</p>
+              <p>For HP-UX Itanium and Linux on IBM System z platforms, the last two checks in the previous example do not need to be done.</p> 
+			  </li>
+              <li>
+                <p>For Oracle home, as home user:</p>
+                <pre dir="ltr" class="oac_no_warn">% $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36582781
+% $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36587798
+</pre> </li>
+            </ul>
+            <p>The report will indicate the interim patches that conflict with
+              the patch <span>36582629</span> and the interim
+              patches for which patch <span>36582629</span> is a
+              superset.</p>
+            <div id="GUID-CFCBC4CD-F873-498B-9E2D-31FB9233D9D4__GUID-0E9FACF1-D896-4645-98CF-893556CCA034"
+
+              class="infoboxnote">
+              <p class="notep1">Note:</p>
+              <p>When OPatch starts, it validates the patch and ensures that
+                there are no conflicts with the software already installed in
+                the <code class="codeph">ORACLE_HOME</code>. OPatch categorizes
+                conflicts into the following types:</p>
+              <ul style="list-style-type: disc;">
+                <li>
+                  <p>Conflicts with a patch already applied to the <code class="codeph">ORACLE_HOME</code>.</p>
+                  <p>In this case, stop the patch installation and contact
+                    Oracle Support Services.</p>
+                </li>
+                <li>
+                  <p>Conflicts with subset patch already applied to the <code class="codeph">ORACLE_HOME</code>.</p>
+                  <p>In this case, continue with the patch installation because
+                    as the new patch contains all the fixes from the existing
+                    patch in the <code class="codeph">ORACLE_HOME</code>. And,
+                    in any case, the subset patch will automatically be rolled
+                    back prior to the installation of the new patch.</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a id="GUID-D4AB2B98-8A63-4CEF-8EC0-23E67AC85926"
+
+            name="GUID-D4AB2B98-8A63-4CEF-8EC0-23E67AC85926"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.1.5 </span>Run
+            OPatch System Space Check</h4>
+          <div>
+            <p>Check if enough free space is available on the <code class="codeph">ORACLE_HOME</code>
+              filesystem for the patches to be applied as given below:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p>For Grid Infrastructure home, as home user:</p>
+                <ol>
+                  <li>
+                    <p>Create file <code class="codeph">/tmp/patch_list_gihome.txt</code>
+                      with the following content:</p>
+                    <pre dir="ltr" class="oac_no_warn">% cat /tmp/patch_list_gihome.txt
+
+&lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36582781
+&lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36587798
+&lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36590554
+&lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36648174
+&lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36758186
+</pre>
+               <class="infoboxnote">
+              <p class="notep1">Note:</p>
+              <p>For HP-UX Itanium and Linux on IBM System z platforms, the last two rows in the previous example should not be added to the <code class="codeph">patch_list_gihome.txt</code> file.</p>
+</li>
+                  <li>
+                    <p>Run the OPatch command to check if enough free space is
+                      available in the Grid Infrastructure home:</p>
+                    <pre dir="ltr" class="oac_no_warn">% $ORACLE_HOME/OPatch/opatch prereq CheckSystemSpace -phBaseFile /tmp/patch_list_gihome.txt
+</pre> </li>
+                </ol>
+              </li>
+              <li>
+                <p>For Oracle home, as home user:</p>
+                <ol>
+                  <li>
+                    <p>Create file <code class="codeph">/tmp/patch_list_dbhome.txt</code>
+                      with the following content:</p>
+                    <pre dir="ltr" class="oac_no_warn">% cat /tmp/patch_list_dbhome.txt
+&lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36582781
+&lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36587798
+</pre> </li>
+                  <li>
+                    <p>Run OPatch command to check if enough free space is
+                      available in the Oracle home:</p>
+                    <pre dir="ltr" class="oac_no_warn">% $ORACLE_HOME/OPatch/opatch prereq CheckSystemSpace -phBaseFile /tmp/patch_list_dbhome.txt
+</pre> </li>
+                </ol>
+              </li>
+            </ul>
+            <p>The command output reports pass and fail messages as per the
+              system space availability:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p>If OPatch reports <code class="codeph">Prereq
+                    "checkSystemSpace" failed.</code>, then cleanup the system
+                  space as the required amount of space is not available.</p>
+              </li>
+              <li>
+                <p>If OPatch reports <code class="codeph">Prereq
+                    "checkSystemSpace" passed.</code>, then no action is needed.
+                  Proceed with patch installation.</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-7EA5E77E-1938-4435-9346-C6139689A6F6"
+
+            name="GUID-7EA5E77E-1938-4435-9346-C6139689A6F6"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.2 </span>One-off
+            Patch Conflict Detection and Resolution</h3>
+          <div>
+            <p>The fastest and easiest way to determine whether you have one-off
+              patches in the Oracle home that conflict with the patch, and to
+              get the necessary conflict resolution patches, is as follows:</p>
+			<ul class="dashed">
+				<li> If you are using the My Oracle Support Patch Plan, then use the <span class="bold">Patch Recommendations</span> and <span class="bold">Patch
+                Plans</span> features on the <span class="bold">Patches &amp;
+                Updates</span> tab in My Oracle Support. These features work in
+              conjunction with the My Oracle Support Configuration Manager.
+              Recorded training sessions on these features can be found in My Oracle Support document 
+			  <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=603505.2">603505.2</a> 
+				<span class="italic"> My Oracle Support How-to Video Training Series</span>.
+				</li> 
+				<li> If you are not using My Oracle Support Patch Plans, the
+              My Oracle Support Conflict Checker tool enables you to upload an
+              OPatch inventory and check the patches that you want to apply to
+              your environment for conflicts.
+				</li>
+            </ul>	
+            
+            <p>If no conflicts are found, you can download the patches. If
+              conflicts are found, the tool finds an existing resolution to
+              download. If no resolution is found, it will automatically request
+              a resolution, which you can monitor in the <span class="bold">Plans
+                and Patch Requests</span> region of the <span class="bold">Patches
+                &amp; Updates</span> tab.</p>
+            <p>For more information, see Knowledge Document <a target="_blank"
+
+                href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1091294.1">1091294.1</a>,
+              <span class="italic">How to use My Oracle Support Conflict
+                Checker Tool for Patches Installed with OPatch</span>.</p>
+            
+            <p>Note that Oracle proactively generates interim patches for common
+              conflicts.</p>
+            <p>See My Oracle Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1061295.1">1061295.1</a>
+              <span class="italic">Patch Set Updates - One-off Patch Conflict
+                Resolution</span> to determine, for each conflicting patch,
+              whether a conflict resolution patch is already available, and if
+              you need to request a new conflict resolution patch or if the
+              conflict may be ignored.</p>
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-7EA5E77E-2938-4435-9346-C6139689A6F6"
+
+            name="GUID-7EA5E77E-2938-4435-9346-C6139689A6F6"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.3 </span>Patch Installation Checks</h3>
+          <div>
+            <p>The Cluster Verification Utility (CVU) command line interface (CLUVFY) may be used to 
+			verify the readiness of the Grid_Home to apply the patch. The CLUVFY command 
+			may be issued from the configured Grid_Home or from the downloaded latest version 
+			of the CVU standalone release (preferred) from My Oracle Support patch
+			<a target="_blank" href="https://updates.oracle.com/ARULink/PatchDetails/process_form?patch_num=30839369">30839369</a></p>
+			
+            <p>Before applying the patch, the readiness of the Grid_Home can be verified by issuing the 
+			<code class="codeph">cluvfy stage -pre patch</code> command from any one of the cluster nodes. This command reports 
+			issues, if any are detected, in the Grid_Home which may affect the patching process.</p>
+			
+            <p>After applying the patch, the sanity of the patching operation can be verified by issuing the 
+			<code class="codeph">cluvfy stage -post patch</code> command from any of the cluster nodes upon completion of the patch 
+			application process.</p>
+			
+            <p>The CLUVFY command line for patching ensures that the Grid_Home can 
+			receive the new patch and also ensures that the patch application process completed successfully 
+			leaving the home in the correct state.</p>            
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-7EA5E77E-2938-4435-9346-C6139689A5H5"
+
+            name="GUID-7EA5E77E-2938-4435-9346-C6139689A5H5"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.4 </span>OPatchAuto Out-of-Place Patching</h3>
+          <div>
+            <p>Out-of-place patching is a mechanism where patching is done by creating a clone of the Oracle home, applying patches on the cloned home, and switching services to the newly created cloned home. This approach to patching reduces unavailability or downtime of the service by separating the step to create the patched clone home from the step of switching services when they must be restarted.</p>
+			<p>Out-of-place patching documentation can be found at this link:</p>
+			<a target="_blank" href="https://docs.oracle.com/en/enterprise-manager/cloud-control/enterprise-manager-cloud-control/13.4/optch/place-patching.html#GUID-10EF5AF2-BB81-488B-8F5A-362C04E4E6BE"><i>Oracle OPatch User's Guide</i></a></p>
+			<p>Note: Users can check OPatchAuto help for syntax and examples to execute out-of-place patching.</p>
+          </div>
+        </div>
+		<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-0A24FA89-C68B-4A03-B67C-19C3F8DFF3F5"
+
+            name="GUID-0A24FA89-C68B-4A03-B67C-19C3F8DFF3F5"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.5 </span>OPatchAuto</h3>
+          <div>
+            <p>The OPatch utility has automated the patch application for the
+              Oracle Grid Infrastructure (Grid) home and the Oracle RAC database
+              homes. It operates by querying existing configurations and
+              automating the steps required for patching each Oracle RAC
+              database home of same version and the Grid home. </p>
+            <p>The utility must be executed by an operating system (OS) user
+              with <code class="codeph">root</code> privileges, and it must be
+              executed on each node in the cluster if the Grid home or Oracle RAC
+              database home is in non-shared storage. The utility can be run in
+			  parallel on the cluster nodes except for the first (any) node.</p>
+            <p>Depending on command line options specified, one invocation of
+              OPatchAuto can patch the Grid home, Oracle RAC database homes, or
+              both Grid and Oracle RAC database homes of the same Oracle release
+              version as the patch. You can also roll back the patch with the
+              same selectivity.</p>
+            <p>Add the directory containing the OPatchAuto to the $PATH
+              environment variable. For example:</p>
+            <pre dir="ltr" class="oac_no_warn"># export PATH=$PATH:&lt;GI_HOME&gt;/OPatch<br># cd &lt;UNZIPPED_PATCH_LOCATION&gt;
+</pre>
+<p>Or, when using <code class="codeph">-oh</code> flag:</p>
+<pre dir="ltr" class="oac_no_warn"># export PATH=$PATH:&lt;oracle_home_path&gt;/OPatch<br># cd &lt;UNZIPPED_PATCH_LOCATION&gt;
+</pre>
+      
+
+            <p>To patch the Grid home and all Oracle RAC database homes of the
+              same version:</p>
+            <pre dir="ltr" class="oac_no_warn"># opatchauto apply &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>
+</pre>
+            <p>To patch only the Grid home:</p>
+            <pre dir="ltr" class="oac_no_warn"># opatchauto apply &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> -oh &lt;GI_HOME&gt;
+</pre>
+            <p>To patch one or more Oracle RAC database homes:</p>
+            <pre dir="ltr" class="oac_no_warn"># opatchauto apply &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> -oh &lt;oracle_home1_path&gt;,&lt;oracle_home2_path&gt;
+</pre>
+            <p>To roll back the patch from the Grid home and each Oracle RAC
+              database home:</p>
+            <pre dir="ltr" class="oac_no_warn"># opatchauto rollback &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> 
+</pre>
+            <p>To roll back the patch from the Grid home:</p>
+            <pre dir="ltr" class="oac_no_warn"># opatchauto rollback &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> -oh &lt;path to GI home&gt;  
+</pre>
+            <p>To roll back the patch from the Oracle RAC database home:</p>
+            <pre dir="ltr" class="oac_no_warn"># opatchauto rollback &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> -oh &lt;oracle_home1_path&gt;,&lt;oracle_home2_path&gt; 
+</pre>
+            <p>For more information about <code class="codeph">opatchauto</code>,
+              see <a target="_blank" href="http://docs.oracle.com/cd/cloud-control-13.3/OPTCH/toc.htm">
+			  <span class="italic">Oracle&reg; OPatch User's Guide</span></a>.</p>
+            <p>For detailed patch installation instructions, see <a href="#GUID-F8E80702-38F1-47A0-8625-3D86FB329019">Patch
+                Installation</a>.</p>
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-F8E80702-38F1-47A0-8625-3D86FB329019"
+
+            name="GUID-F8E80702-38F1-47A0-8625-3D86FB329019"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.6 </span>Patch
+            Installation</h3>
+
+            <p>The patch instructions will differ based on the configuration of
+              the Grid infrastructure and the Oracle RAC database homes.
+              Patching instructions for Oracle RAC database homes and Grid
+              together are listed below. </p>
+			  
+			  <p>The most common configurations are listed as follows:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p><a href="#GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHEHFHE">Case
+                    1: Oracle RAC, where the Grid home and the Oracle homes are
+                    not shared and Oracle ACFS file system is not configured</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHDHEAF">Case
+                    2: Oracle RAC, where the Grid home is not shared, Oracle 
+                    home is shared, and Oracle ACFS may be used</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHEGDHE">Case
+                    3: Single-instance homes not managed by Oracle Grid Infrastructure</a></p>
+              </li>
+            </ul>
+			<p>For other configurations listed below, see My Oracle Support
+              document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2246888.1">2246888.1</a> 
+			  <span class="italic"> Supplemental Readme - Grid Infrastructure Release Update 12.2.0.1.x / 18c / 19c</span>:</p>
+
+            <ul style="list-style-type: disc;">
+              <li>
+                <p>Grid home is not shared, the Oracle home is not shared, Oracle ACFS
+                  may be used.</p>
+              </li>
+              <li>
+                <p>Patching Oracle RAC database homes.</p>
+              </li>
+              <li>
+                <p>Patching Grid home alone.</p>
+              </li>
+			  <li>
+			  <p>Patching Grid home together with Oracle RAC One Node and clusterware-managed single-instance databases.</p></li>
+              <li>
+                <p>Patching Oracle Restart home.</p>
+              </li>
+              <li>
+                <p>Patching a software only Grid home installation or before the
+                  Grid home is configured.</p>
+              </li>
+            </ul>
+			
+            <div class="sect4"><!-- class="section" --><a name="GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHEHFHE"
+            id="GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHEHFHE"></a>
+          <h4 class="sect4"><span class="enumeration_section">Case 1: </span>Oracle RAC, where the Grid home and
+                    the Oracle homes are not shared and Oracle ACFS file system is
+                    not configured</h4>
+                <p>As root user, execute the following command on each node of
+                  the cluster:</p>
+                <pre class="oac_no_warn" dir="ltr"># &lt;GI_HOME&gt;/OPatch/opatchauto apply &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span><br># cd &lt;UNZIPPED_PATCH_LOCATION&gt;</pre>
+			</div>
+
+			<div class="sect4"><!-- class="section" --><a name="GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHDHEAF"
+            id="GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHDHEAF"></a>
+          <h4 class="sect4"><span class="enumeration_section">Case 2: </span>Oracle RAC, where the Grid home is
+                    not shared, Oracle home is shared, and Oracle ACFS may be used</h4>
+                <p>Patching instructions:</p>
+                <ol>
+                  <li id="GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHHDAFI">
+                    <p>From the Oracle home, make sure to stop the
+                      Oracle RAC databases running on all nodes. As
+                        the Oracle home owner execute:</p>
+                    <pre dir="ltr" class="oac_no_warn">$ &lt;ORACLE_HOME&gt;/bin/srvctl stop database &#150;d &lt;db-unique-name&gt;
+</pre> </li>
+                  <li>
+                    <p>On the first node, unmount the Oracle ACFS file systems. See My
+                      Oracle Support document 
+					  <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                      <span class="italic"> How to Mount or Unmount ACFS File System While Applying GI Patches?</span> for unmounting Oracle 
+					  ACFS file systems.</p>
+                  </li>
+                  <li>
+                    <p>On the first node, apply the patch to the Grid home using the
+                      <code class="codeph">opatchauto</code> command. As
+                        root user, execute the following command:</p>
+                    <pre dir="ltr" class="oac_no_warn"># &lt;GI_HOME&gt;/OPatch/opatchauto apply &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> -oh &lt;GI_HOME&gt;<br># cd &lt;UNZIPPED_PATCH_LOCATION&gt;
+</pre> </li>
+                  <li>
+                    <p>If the message, "A system reboot is recommended before
+                      using ACFS" is shown, then a reboot must be issued before
+                      continuing. Failure to do so will result in running with
+                      an unpatched ACFS\ADVM\OKS driver.</p>
+                  </li>
+                  <li>
+                    <p>On the first node, remount Oracle ACFS file systems. See My Oracle
+                      Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                      <span class="italic"> How to Mount or Unmount ACFS File System While Applying GI Patches?</span> for mounting Oracle ACFS file systems.</p>
+                  </li>
+                  <li>
+                    <p>On the first node, apply the patch to the Oracle home
+                      using the <code class="codeph">opatchauto</code> command.
+                      Since the Oracle home is shared, this operation will
+                      patch the Oracle home across the cluster. Note that a
+                      USM only patch cannot be applied to a Oracle home. As root user, execute the following
+                        command:</p>
+                    <pre dir="ltr" class="oac_no_warn"># &lt;GI_HOME&gt;/OPatch/opatchauto apply &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> -oh &lt;ORACLE_HOME&gt;<br># cd &lt;UNZIPPED_PATCH_LOCATION&gt;
+</pre> </li>
+                  <li>
+                    <p>On the first node only, restart the Oracle instance, which
+                      you have previously stopped in Step <a href="#GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHCJAEF">1</a>.
+                      As the Oracle home owner execute:</p>
+                    <pre dir="ltr" class="oac_no_warn">$ &lt;ORACLE_HOME&gt;/bin/srvctl start instance &#150;d &lt;db-unique-name&gt; -n &lt;nodename&gt;
+</pre> </li>
+                  <li id="GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHHAGHJ">
+                    <p>On the second (next) node, unmount the Oracle ACFS file systems.
+                      See My Oracle Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                      for unmounting Oracle ACFS file systems.</p>
+                  </li>
+                  <li id="GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHDDCGD">
+                    <p>On the second node, apply the patch to Grid home using the <code
+
+                        class="codeph">opatchauto</code> command. As
+                        root user, execute the following command:</p>
+                    <pre dir="ltr" class="oac_no_warn"># &lt;GI_HOME&gt;/OPatch/opatchauto apply &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> -oh &lt;GI_HOME&gt;<br># cd &lt;UNZIPPED_PATCH_LOCATION&gt;
+</pre> </li>
+                  <li>
+                    <p>If the message, "A system reboot is recommended before
+                      using ACFS" is shown, then a reboot must be issued before
+                      continuing. Failure to do so will result in running with
+                      an unpatched ACFS\ADVM\OKS driver.</p>
+                  </li>
+                  <li>
+                    <p>On the second node, running the <code class="codeph">opatchauto</code>
+                      command in Step <a href="#GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHDDCGD">9</a>
+                      will restart the stack.</p>
+                  </li>
+                  <li>
+                    <p>On the second node, remount Oracle ACFS file systems. See My Oracle
+                      Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                      for mounting Oracle ACFS file systems.</p>
+                  </li>
+                  <li id="GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHCHHGF">
+                    <p>On the second node only, restart the Oracle instance, which
+                      you have previously stopped in Step <a href="#GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHHDAFI">1</a>.
+                      As the Oracle home owner execute:</p>
+                    <pre dir="ltr" class="oac_no_warn">$ &lt;ORACLE_HOME&gt;/bin/srvctl start instance &#150;d &lt;db-unique-name&gt; -n &lt;nodename&gt;
+</pre> </li>
+                  <li>
+                    <p>Repeat steps <a href="#GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHHAGHJ">8</a>
+                      through <a href="#GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHCHHGF">13</a>
+                      for all remaining nodes of the cluster.</p>
+                  </li>
+                </ol>
+				</div>
+				
+			<div class="sect4"><!-- class="section" --><a name="GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHEGDHE"
+            id="GUID-22071B2A-9882-4B82-94D3-08002F63A823__CIHEGDHE"></a>
+          <h4 class="sect4"><span class="enumeration_section">Case 3: </span>Single-instance homes not managed by Oracle Grid Infrastructure</h4>
+                <p>Follow these steps:</p>
+                <ol>
+                  <li>
+                    <p>If you are using a Data Guard Physical Standby database,
+                      you must install this patch on both the primary database
+                      and the physical standby database, as described by My
+                      Oracle Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=278641.1">278641.1</a>
+					  <span class="italic"> How do you apply a Patchset, PSU or CPU in a Data Guard Physical Standby configuration</span>.</p>
+                  </li>
+                  <li>
+                    <p>Shut down all instances and listeners associated with the Oracle home
+                      that you are updating. For more information, see <span class="italic">Oracle Database Administrator's Guide</span>.</p>
+                  </li>
+                  <li>
+                    <p>Set your current directory to the directory where the
+                      patch is located and then run the OPatch utility by
+                      entering the following commands:</p>
+                    <pre dir="ltr" class="oac_no_warn">cd &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>/36582781
+opatch apply
+</pre> </li>
+                  <li>
+                    <p>If there are errors, refer to <a href="#GUID-774FEA2B-9E36-4D19-989F-C42DE574915F">Known Issues</a>.</p>
+                  </li>
+                </ol>
+			  </div>
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-0FB0512B-0175-4BC2-9298-0F772ACDA329"
+
+            name="GUID-0FB0512B-0175-4BC2-9298-0F772ACDA329"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.7 </span>Installing
+            Patch in Oracle Data Guard Standby-First Mode</h3>
+          <div>
+            <p>For Data Guard Standby-First patching, see My Oracle Support
+              document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1265700.1">1265700.1</a>.
+              For Standby-First patching for Oracle database <span>RU</span>
+              12.2 and higher, the following points need to be considered:</p>
+            <ol>
+              <li>
+                <p>The database <span>RU</span> subpatch 36582781 must be applied to the Data
+                  Guard standby using OPatch.</p>
+              </li>
+              <li>
+                <p>Datapatch must not be invoked on the Data Guard standby
+                  environment to apply post patch SQL actions for the database <span>RU</span>.
+                  If datapatch is run on a standby, it will error while trying
+                  to call the <code class="codeph">SYS.DBMS_QOPATCH</code>
+                  interface. For more details about this error, see My Oracle
+                  Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1599479.1">1599479.1</a>.</p>
+              </li>
+              <li>
+                <p>Datapatch must be invoked on the primary database after all
+                  the databases, that is primary and Data Guard, are patched and
+                  patch deployment of the database <span>RU</span> is complete
+                  for the setup.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-4FEE1939-B889-467B-8F6A-3809CD88BE58"
+
+            name="GUID-4FEE1939-B889-467B-8F6A-3809CD88BE58"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.8 </span>Patch
+            Post Installation Instructions</h3>
+          <div>
+            <p>After installing the patch, perform the following actions:</p>
+            <ol>
+              <li>
+                <p>Apply conflict resolution patches as explained in <a href="#GUID-EF9F3E01-8FBB-4ECE-BFFC-048EF4133C42">Section 2.1.8.1
+                    </a>.</p>
+              </li>
+              <li>
+                <p>If you are not using OPatchAuto, then load modified SQL files
+                  into the database, as explained in <a href="#GUID-05300C80-F0AB-4F7D-9F28-37738DDE3D50">Section 2.1.8.2
+                    </a>.</p>
+              </li>
+              <li>
+                <p>Upgrade Oracle Recovery Manager Catalog, as explained in <a
+
+                    href="#UPOARENC">Section 2.1.8.3</a>.</p>
+              </li>
+			  <li>
+			  <p>Bug fixes that may change an existing optimizer execution plan, as explained in <a href="#GUID-FFC472EE-C1F5-4C00-83CE-CBF1A04F6718">Section 2.1.8.4
+			  </a>.</p>
+			  </li>
+            </ol>
+          </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a id="GUID-EF9F3E01-8FBB-4ECE-BFFC-048EF4133C42"
+
+            name="GUID-EF9F3E01-8FBB-4ECE-BFFC-048EF4133C42"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.8.1 </span>Applying
+            Conflict Resolution Patches</h4>
+          <div>
+            <p>Apply the patch conflict resolution interim patches that were
+              determined to be needed when you performed the steps in <a href="#GUID-7EA5E77E-1938-4435-9346-C6139689A6F6">One-off
+                Patch Conflict Detection and Resolution</a>.</p>
+          </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a id="GUID-05300C80-F0AB-4F7D-9F28-37738DDE3D50"
+
+            name="GUID-05300C80-F0AB-4F7D-9F28-37738DDE3D50"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.8.2 </span>Load
+            Modified SQL Files into the Database</h4>
+          <div>
+            <p>The following steps load modified SQL files into the database.
+              For an Oracle RAC environment, perform these steps on <span class="italic">only
+                one node</span>.</p>
+            <p>Datapatch is run to complete the post-install SQL deployment for
+              the PSU. For further details about Datapatch, including Known 
+              Issues and workarounds to common problems, see My Oracle Support document 
+			  <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1585822.1">1585822.1</a> <span class="italic">Datapatch: Database 12c
+              or later Post Patch SQL Automation</span> and My Oracle Support document 
+			  <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2680521.1">2680521.1</a> <span class="italic">Datapatch User Guide</span>.</p>
+            <ol>
+              <li>
+                <p>For each separate database running on the same shared Oracle
+                  home being patched, run the <code class="codeph">datapatch</code>
+                  utility as described in <a title="Steps to run datapatch script for single tenant versus multitenant (CDB/PDB)."
+
+                    href="#GUID-05300C80-F0AB-4F7D-9F28-37738DDE3D50__CIHCFCAB">Table 1-3</a>.</p>
+                <div id="GUID-05300C80-F0AB-4F7D-9F28-37738DDE3D50__CIHCFCAB" class="tblformal">
+                  <p class="titleintable">Table 1-3 Steps to Run the Datapatch
+                    Utility for Non-CDB or Non-PDB Database Versus Multitenant (CDB/PDB) Oracle Database</p>
+                  <table rules="rows" frame="hsides" summary="Steps to run datapatch script for Non-CDB or Non-PDB Database versus multitenant (CDB/PDB)."
+
+                    title="Steps to Run the Datapatch Utility for Non-CDB or Non-PDB Database Versus Multitenant (CDB/PDB) Oracle Database"
+
+                    class="Formal" width="90%" cellspacing="0" cellpadding="4" border="1">
+                    <thead>
+                      <tr align="left" valign="top">
+                        <th id="d3336e49" align="left" width="9%" valign="bottom">Steps</th>
+                        <th id="d3336e52" align="left" width="40%" valign="bottom">Non-CDB or Non-PDB Database</th>
+                        <th id="d3336e55" align="left" width="9%" valign="bottom">Steps</th>
+                        <th id="d3336e58" align="left" width="42%" valign="bottom">Multitenant (CDB/PDB) Oracle Database</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr align="left" valign="top">
+                        <td headers="d3336e49 " id="d3336e63" align="left" width="9%"
+
+                          valign="top">
+                          <p>1</p>
+                        </td>
+                        <td headers="d3336e63 d3336e52 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">sqlplus /nolog</code></p>
+                        </td>
+                        <td headers="d3336e63 d3336e55 " align="left" width="9%"
+
+                          valign="top">
+                          <p>1</p>
+                        </td>
+                        <td headers="d3336e63 d3336e58 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">sqlplus /nolog</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d3336e49 " id="d3336e78" align="left" width="9%"
+
+                          valign="top">
+                          <p>2</p>
+                        </td>
+                        <td headers="d3336e78 d3336e52 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; Connect / as sysdba</code></p>
+                        </td>
+                        <td headers="d3336e78 d3336e55 " align="left" width="9%"
+
+                          valign="top">
+                          <p>2</p>
+                        </td>
+                        <td headers="d3336e78 d3336e58 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; Connect / as sysdba</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d3336e49 " id="d3336e93" align="left" width="9%"
+
+                          valign="top">
+                          <p>3</p>
+                        </td>
+                        <td headers="d3336e93 d3336e52 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; startup</code></p>
+                        </td>
+                        <td headers="d3336e93 d3336e55 " align="left" width="9%"
+
+                          valign="top">
+                          <p>3</p>
+                        </td>
+                        <td headers="d3336e93 d3336e58 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; startup</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d3336e49 " id="d3336e108" align="left" width="9%"
+
+                          valign="top">
+                          <p>4</p>
+                        </td>
+                        <td headers="d3336e108 d3336e52 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; quit</code></p>
+                        </td>
+                        <td headers="d3336e108 d3336e55 " align="left" width="9%"
+
+                          valign="top">
+                          <p>4</p>
+                        </td>
+                        <td headers="d3336e108 d3336e58 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; alter pluggable
+                              database all open;</code>
+							  <a id="sthref3" name="sthref3" href="#sthref3" onclick="footdisplay(1,&quot;It 
+								is recommended the Post Install step be run on all pluggable databases; 
+								however, the following command 
+								(\u003ccode dir=\&quot;ltr\&quot;\u003eSQL\u003e alter pluggable 
+								database\u003c/code\u003e \u003ccode dir=\&quot;ltr\&quot;\u003e\u003cspan 
+								class=\&quot;codeinlineitalic\&quot;\u003ePDB_NAME\u003c/span\u003e\u003c/code\u003e 
+								\u003ccode dir=\&quot;ltr\&quot;\u003eopen\u003c/code\u003e) could be substituted 
+								to only open certain PDBs in the single/multitenant database. Doing so will result 
+								in the Post Install step only being run on the CDB and opened PDB's. To update a 
+								pluggable database at a later date (skipped or newly plugged in), open the database 
+								using the \u003ccode dir=\&quot;ltr\&quot;\u003ealter pluggable database\u003c/code\u003e 
+								command mentioned previously and rerun the datapatch utility. See My Oracle Support document 
+								\u003ca target=\&quot;toc\&quot; 
+								href=\&quot;https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1935365.1\&quot;\u003e1935365.1\u003c/a\u003e 
+								\u003cspan class=\&quot;italic\&quot;\u003eMultitenant Unplug/Plug Best Practices\u003c/span\u003e for 
+								more information about the procedure for unplugging/plugging with different patch releases 
+								(in both directions).&quot;)"><sup class="tablefootnote">Foot 1</sup></a></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d3336e49 " id="d3336e152" align="left" width="9%"
+
+                          valign="top">
+                          <p>5</p>
+                        </td>
+                        <td headers="d3336e152 d3336e52 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">cd $ORACLE_HOME/OPatch</code></p>
+                        </td>
+                        <td headers="d3336e152 d3336e55 " align="left" width="9%"
+
+                          valign="top">
+                          <p>5</p>
+                        </td>
+                        <td headers="d3336e152 d3336e58 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; quit</code></p>
+                        </td>
+                      </tr>
+					  <tr align="left" valign="top">
+                        <td headers="d3336e49 " id="d3336e167" align="left" width="9%"
+
+                          valign="top">
+                          <p>6</p>
+                        </td>
+                        <td headers="d3336e167 d3336e52 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">./datapatch -sanity_checks (optional)</code></p>
+                        </td>
+                        <td headers="d3336e167 d3336e55 " align="left" width="9%"
+
+                          valign="top">
+                          <p>6</p>
+                        </td>
+                        <td headers="d3336e167 d3336e58 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">cd $ORACLE_HOME/OPatch</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d3336e49 " id="d3336e170" align="left" width="9%"
+
+                          valign="top">
+                          <p>7</p>
+                        </td>
+                        <td headers="d3336e170 d3336e52 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">./datapatch -verbose</code></p>
+                        </td>
+                        <td headers="d3336e170 d3336e55 " align="left" width="9%"
+
+                          valign="top">
+                          <p>7</p>
+                        </td>
+                        <td headers="d3336e170 d3336e58 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">./datapatch -sanity_checks (optional)</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d3336e49 " id="d3336e182" align="left" width="9%"
+
+                          valign="top"> <br />
+                        </td>
+                        <td headers="d3336e182 d3336e52 " align="left" width="40%"
+
+                          valign="top"> <br />
+                        </td>
+                        <td headers="d3336e182 d3336e55 " align="left" width="9%"
+
+                          valign="top">
+                          <p>8</p>
+                        </td>
+                        <td headers="d3336e182 d3336e58 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">./datapatch -verbose</code></p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- class="inftblhruleinformal" -->
+                
+				  <ul>
+                      <li><p class="tablefootnote"><sup class="tablefootnote">Footnote 1</sup> It is recommended the Post Install step be run on all
+                  pluggable databases; however, the following command (<code class="codeph">SQL&gt;
+                  alter pluggable database</code> <code><span class="codeinlineitalic">PDB_NAME</span></code>
+                  <code class="codeph">open</code>) could be substituted to
+                  only open certain PDBs in the single/multitenant database.
+                  Doing so will result in the Post Install step only being run
+                  on the CDB and opened PDB's. To update a pluggable database at
+                  a later date (skipped or newly plugged in), open the database
+                  using the <code class="codeph">alter pluggable database</code>
+                  command mentioned previously and rerun the datapatch utility.
+                  </p>
+                       <ul> 
+				 		<li> See My Oracle Support document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1935365.1">1935365.1</a>
+                    <span class="italic">Multitenant Unplug/Plug Best
+                      Practices</span> for more information about the procedure
+                    for unplugging/plugging with different patch releases (in
+                    both directions).</li>
+                       </ul>					 
+                      </li>
+                  </ul>
+				  <p></p>
+				    <ul>
+                      <li><p>Recommended: The <code dir="ltr">datapatch -sanity_checks</code> optional step runs a series of environment and database
+				     checks to validate if conditions are optimal for patching. Results are shown on screen with
+					 severity and potential actions to take.
+                          </p>
+                       <ul> 
+						<li> For more information, refer to My Oracle Support document 
+					 <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2680521.1">2680521.1</a> 
+					 <span class="italic">Datapatch User Guide</span> for additional information and actions. Oracle 
+					 highly recommends that you perform this step.
+						</li>
+                       </ul>					 
+                      </li>
+                    </ul>
+                <p></p>
+				  <ul>
+                      <li><p>The <code class="codeph">datapatch</code> utility will then
+                  run the necessary apply scripts to load the modified SQL files
+                  into the database. An entry will be added to the <code class="codeph">dba_registry_sqlpatch</code>
+                  view reflecting the patch application. In the <code class="codeph">dba_registry_sqlpatch</code>
+                  view, verify the Status for the <code dir="ltr">APPLY</code> is <code dir="ltr">SUCCESS</code>.
+                          </p>
+                       <ul> 
+                         <li> For any other status, refer to My Oracle Support document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2335899.2">2335899.2</a>
+                    <span class="italic"> Troubleshooting Assistant: 12c Datapatch Issues</span> for additional information and actions.
+						 </li>
+                       </ul>					 
+                      </li>
+                  </ul>
+              </li>
+              <li>
+                <p>Check the following log files in <code class="codeph">$ORACLE_BASE/cfgtoollogs/sqlpatch/<span>36582781</span>/&lt;unique patch
+                    ID&gt;</code> for errors:</p>
+                <pre dir="ltr" class="oac_no_warn"><span>36582781</span>_apply_&lt;database SID&gt;_&lt;CDB name&gt;_&lt;timestamp&gt;.log
+</pre>
+                <p>where <code><span class="codeinlineitalic">database SID</span></code>
+                  is the database SID, <code><span class="codeinlineitalic">CDB
+                      name</span></code> is the name of the multitenant
+                  container database, and <code><span class="codeinlineitalic">timestamp</span></code>
+                  is of the form <code dir="ltr">YYYYMMMDD_HH_MM_SS</code>.</p>
+              </li>
+              <li>
+                <p>Any (pluggable) database that has invalid objects after the execution
+                  of datapatch should have <code dir="ltr">catcon.pl</code> run to revalidate those
+                  objects. For example:</p>
+                <pre dir="ltr" class="oac_no_warn">export PATH=$PATH:$ORACLE_HOME/bin
+cd $ORACLE_HOME/rdbms/admin
+$ORACLE_HOME/perl/bin/perl $ORACLE_HOME/rdbms/admin/catcon.pl -n 1 -e -b utlrp -d $ORACLE_HOME/rdbms/admin utlrp.sql
+</pre> </li>
+            </ol>
+          </div>
+        </div>
+        <a id="UPOARENC" name="UPOARENC"></a>
+        <div class="sect4">
+          <h4 class="sect4"><span class="enumeration_section">2.1.8.3</span>
+            Upgrade Oracle Recovery Manager Catalog</h4>
+          <div>
+            <p>If you are using the Oracle Recovery Manager, the catalog needs
+              to be upgraded. Enter the following command to upgrade it. The
+              <code dir="ltr">UPGRADE CATALOG</code> command must be entered twice to confirm the
+              upgrade.</p>
+            <pre class="oac_no_warn" dir="ltr">$ rman catalog username/password@alias
+RMAN&gt; UPGRADE CATALOG;
+RMAN&gt; UPGRADE CATALOG;
+RMAN&gt; EXIT;
+</pre> </div>
+        </div>
+		<div class="sect4"><!-- infolevel="all" infotype="General" --><a name="GUID-FFC472EE-C1F5-4C00-83CE-CBF1A04F6718"
+
+            id="GUID-FFC472EE-C1F5-4C00-83CE-CBF1A04F6718"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.8.4 </span>Bug Fixes That May Change
+            an Existing Optimizer Execution Plan</h4>
+          <div>
+            <p>At the successful conclusion of the patching event, none of the database bug fixes 
+			that may change an existing optimizer execution plan are delivered with the bug 
+			fix disabled by default. The status of any module bug fixes (which cause an execution 
+			plan change) that were in an enabled state prior to starting the patching event are 
+			preserved, but no new module bug fixes (which cause an execution plan change) are  
+			activated automatically.</p>
+			<p>Details on this, including the commands to explicitly enable such bug fixes are 
+			present in My Oracle Support document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2147007.1">2147007.1</a>.</p>
+             </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-94A38C51-CF4E-4F29-9E86-ED1D5B399D95"
+
+            name="GUID-94A38C51-CF4E-4F29-9E86-ED1D5B399D95"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.9 </span>Patch
+            Post Installation Instructions for Databases Created or Upgraded
+            After Installation of Patch in the Oracle Home</h3>
+          <div>
+            <p>You must execute the steps in <a href="#GUID-05300C80-F0AB-4F7D-9F28-37738DDE3D50">Load 
+                Modified SQL Files into the Database</a> for any new or upgraded
+              database.</p>
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-B37B005F-2294-4E60-B2A7-F73282FB2273"
+
+            name="GUID-B37B005F-2294-4E60-B2A7-F73282FB2273"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.10 </span>Patch
+            Deinstallation</h3>
+          <div>
+            <p>Datapatch is run to complete the post-deinstall SQL deployment
+              for the database subpatch. For further details about Datapatch,
+              including Known Issues and workarounds to common problems, see My Oracle Support 
+			  document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1585822.1">1585822.1</a> 
+			  <span class="italic"> Database 12c Post Patch SQL Automation</span>.</p>
+            <p>The patch rollback instructions will differ based on the
+              configuration of the Grid infrastructure and the Oracle RAC
+              database homes. Roll Back instructions for Oracle RAC database
+              homes and Grid are listed below.</p>
+            <p>The most common configurations are listed as follows:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p>Case 1: Oracle RAC, where the Grid home and Oracle homes are
+                  not shared and Oracle ACFS file system is not configured</p>
+              </li>
+              <li>
+                <p>Case 2: Oracle RAC, where the Grid home is not shared, Oracle
+                  home is shared and Oracle ACFS may be used </p>
+              </li>
+              <li>
+                <p>Case 3: Single-instance homes not managed by Oracle Grid Infrastructure</p>
+              </li>
+            </ul>
+            <p>For other configurations listed below, see My Oracle Support
+              document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2246888.1">2246888.1</a>:</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p>Grid home is not shared, the Oracle home is not shared, Oracle ACFS
+                  may be used.</p>
+              </li>
+              <li>
+                <p>Rolling back from Oracle RAC database homes.</p>
+              </li>
+              <li>
+                <p>Rolling back from Grid home alone.</p>
+              </li>
+			  <li>
+			  <p>Rolling back from Grid home together with Oracle RAC One Node and clusterware-managed single-instance databases.</p></li>
+              <li>
+                <p>Rolling back the patch from Oracle Restart home.</p>
+              </li>
+              <li>
+                <p>Rolling back the patch from a software only Grid home
+                  installation or before the Grid home is configured.</p>
+              </li>
+            </ul>
+            <div class="section">
+              <p class="subhead1">Roll Back the Oracle RAC Database Homes and Grid
+                Together</p>
+            </div>
+            <!-- class="section" -->
+            <ul style="list-style-type: disc;">
+              <li>
+                <p><span class="bold">Case 1: Oracle RAC, where the Grid home and
+                    Oracle homes are not shared and Oracle ACFS file system is not
+                    configured.</span></p>
+                <p>As root user, execute the following command on each node of
+                  the cluster.</p>
+                <pre dir="ltr" class="oac_no_warn"># &lt;GI_HOME&gt;/OPatch/opatchauto rollback &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>
+</pre>
+                <p>If the message, "A system reboot is recommended before using
+                  ACFS" is shown, then a reboot must be issued before
+                  continuing. Failure to do so will result in running with an
+                  unpatched ACFS\ADVM\OKS driver.</p>
+              </li>
+              <li>
+                <p><span class="bold">Case 2: Oracle RAC, where the Grid home is
+                    not shared, Oracle home is shared and Oracle ACFS may be used.</span>
+                </p>
+                <ol>
+                  <li id="GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHCJAEF">
+                    <p>From the Oracle Oracle home, make sure to stop the
+                      Oracle RAC databases running on all nodes. As
+                        the Oracle home owner execute:</p>
+                    <pre dir="ltr" class="oac_no_warn">$ &lt;ORACLE_HOME&gt;/bin/srvctl stop database &#150;d &lt;db-unique-name&gt;
+</pre> </li>
+                  <li>
+                    <p>On the first node, unmount the Oracle ACFS file systems. See My
+                      Oracle Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                      for unmounting Oracle ACFS file systems.</p>
+                  </li>
+                  <li>
+                    <p>On the first node, roll back the patch from the Grid home
+                      using the <code class="codeph">opatchauto</code> command.
+                      As root user, execute the following
+                        command:</p>
+                    <pre dir="ltr" class="oac_no_warn"># &lt;GI_HOME&gt;/OPatch/opatchauto rollback &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span> -oh &lt;GI_HOME&gt;
+</pre> </li>
+                  <li>
+                    <p>If the message, "A system reboot is recommended before
+                      using ACFS" is shown, then a reboot must be issued before
+                      continuing. Failure to do so will result in running with
+                      an unpatched ACFS\ADVM\OKS driver.</p>
+                  </li>
+                  <li>
+                    <p>On the first node, remount Oracle ACFS file systems. See My Oracle
+                      Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                      for mounting Oracle ACFS file systems.</p>
+                  </li>
+                  <li>
+                    <p>On the first node, roll back the patch to the Oracle home
+                      using the <code class="codeph">opatchauto</code> command.
+                      This operation will rollback the patch to the Oracle
+                      home across the cluster given that it is a shared Oracle ACFS
+                      home. Note that a USM only patch cannot be applied to a
+                      Oracle home. As root user, execute
+                        the following command:</p>
+                    <pre dir="ltr" class="oac_no_warn"># &lt;GI_HOME&gt;/OPatch/opatchauto rollback &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>
+</pre> </li>
+                  <li>
+                    <p>On the first node only, restart the Oracle instance, which
+                      you have previously stopped in Step <a href="#GUID-F8E80702-38F1-47A0-8625-3D86FB329019__CIHHDAFI">1</a>.
+                      As the Oracle home owner execute:</p>
+                    <pre dir="ltr" class="oac_no_warn">$ &lt;ORACLE_HOME&gt;/bin/srvctl start instance &#150;d &lt;db-unique-name&gt; -n &lt;nodename&gt;
+</pre> </li>
+                  <li id="GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHBJCFI">
+                    <p>On the second (next) node, unmount the Oracle ACFS file systems.
+                      See My Oracle Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                      for unmounting Oracle ACFS file systems.</p>
+                  </li>
+                  <li id="GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHCIGEG">
+                    <p>On the second node, roll back the patch to Grid home using the
+                      <code class="codeph">opatchauto</code> command. As
+                        root user, execute the following command:</p>
+                    <pre dir="ltr" class="oac_no_warn"># &lt;GI_HOME&gt;/OPatch/opatchauto rollback &lt;UNZIPPED_PATCH_LOCATION&gt;/<span>36582629</span>
+</pre> </li>
+                  <li>
+                    <p>If the message, "A system reboot is recommended before
+                      using ACFS" is shown, then a reboot must be issued before
+                      continuing. Failure to do so will result in running with
+                      an unpatched ACFS\ADVM\OKS driver.</p>
+                  </li>
+                  <li>
+                    <p>On the second node, running the <code class="codeph">opatchauto</code>
+                      command in Step <a href="#GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHCIGEG">9</a>
+                      will restart the stack.</p>
+                  </li>
+                  <li>
+                    <p>On the second node, remount Oracle ACFS file systems. See My Oracle
+                      Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                      for mounting Oracle ACFS file systems.</p>
+                  </li>
+                  <li id="GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHBIDHH">
+                    <p>On the second node only, restart the Oracle instance, which
+                      you have previously stopped in Step <a href="#GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHCJAEF">1</a>.
+                      As the Oracle home owner execute:</p>
+                    <pre dir="ltr" class="oac_no_warn">$ &lt;ORACLE_HOME&gt;/bin/srvctl start instance &#150;d &lt;db-unique-name&gt; -n &lt;nodename&gt;
+</pre> </li>
+                  <li>
+                    <p>Repeat Steps <a href="#GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHBJCFI">8</a>
+                      through <a href="#GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHBIDHH">13</a>
+                      for all remaining nodes of the cluster.</p>
+                  </li>
+                </ol>
+              </li>
+              <li id="GUID-B37B005F-2294-4E60-B2A7-F73282FB2273__CIHFFFGJ">
+                <p><span class="bold">Case 3: Single-instance homes not managed by Oracle Grid Infrastructure</span></p>
+                <p>Follow these steps:</p>
+                <ol>
+                  <li>
+                    <p>Shut down all instances and listeners associated with the
+                      Oracle home that you are updating. For more information,
+                      see <span class="italic">Oracle Database Administrator's
+                        Guide</span>.</p>
+                  </li>
+                  <li>
+                    <p>Run the OPatch utility specifying the <code class="codeph">rollback</code>
+                      argument as follows.</p>
+                    <pre dir="ltr" class="oac_no_warn">opatch rollback -id <span>36582781</span>
+</pre> </li>
+                  <li>
+                    <p>If there are errors, refer to <a href="#GUID-774FEA2B-9E36-4D19-989F-C42DE574915F">Known 
+                        Issues</a>.</p>
+                  </li>
+                </ol>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="sect3"><!-- infolevel="all" infotype="General" --><a id="GUID-E0625F95-5952-4EDF-8D87-280F4E7476BC"
+
+            name="GUID-E0625F95-5952-4EDF-8D87-280F4E7476BC"></a>
+          <h3 class="sect3"><span class="enumeration_section">2.1.11 </span>Patch
+            Post Deinstallation Instructions</h3>
+          <div>
+            <p>After deinstalling the patch, perform the following actions.</p>
+            <ul style="list-style-type: disc;">
+              <li>
+                <p><a href="#GUID-682E2CCD-61C5-41F6-AA62-ED4314EE57DD">2.1.11.1 Run the
+                    Datapatch Utility</a></p>
+              </li>
+              <li>
+                <p><a href="#GUID-68C41B01-99CC-4A92-9631-87CEED9418A0">2.1.11.2 Upgrade
+                    Oracle Recovery Manager Catalog</a></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a id="GUID-682E2CCD-61C5-41F6-AA62-ED4314EE57DD"
+
+            name="GUID-682E2CCD-61C5-41F6-AA62-ED4314EE57DD"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.11.1 </span>Run
+            the Datapatch Utility</h4>
+          <div>
+            <p>Perform the following steps:</p>
+            <ol>
+              <li>
+                <p>For each separate Oracle running on the Oracle home being
+                  patched, run the <code class="codeph">datapatch</code>
+                  utility as described in <a title="Steps to run datapatch script for single tenant versus multitenant (CDB/PDB)."
+
+                    href="#GUID-682E2CCD-61C5-41F6-AA62-ED4314EE57DD__CIHJCEJE">Table 1-4</a>. 
+					If this is Oracle RAC, run datapatch on only one instance.</p>
+                <div id="GUID-682E2CCD-61C5-41F6-AA62-ED4314EE57DD__CIHJCEJE" class="tblformal">
+                  <p class="titleintable">Table 1-4 Steps to Run the datapatch
+                    Utility for Non-CDB or Non-PDB Database Versus Multitenant (CDB/PDB) Oracle Database</p>
+                  <table rules="rows" frame="hsides" summary="Steps to run datapatch script for Non-CDB or Non-PDB Database versus multitenant (CDB/PDB)."
+
+                    title="Steps to Run the datapatch Utility for Non-CDB or Non-PDB Database Versus Multitenant (CDB/PDB) Oracle Database"
+
+                    class="Formal" width="90%" cellspacing="0" cellpadding="4" border="1">
+                    <thead>
+                      <tr align="left" valign="top">
+                        <th id="d4591e37" align="left" width="9%" valign="bottom">Steps</th>
+                        <th id="d4591e40" align="left" width="40%" valign="bottom">Non-CDB or Non-PDB Database</th>
+                        <th id="d4591e43" align="left" width="9%" valign="bottom">Steps</th>
+                        <th id="d4591e46" align="left" width="42%" valign="bottom">Multitenant (CDB/PDB) Oracle Database</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr align="left" valign="top">
+                        <td headers="d4591e37 " id="d4591e51" align="left" width="9%"
+
+                          valign="top">
+                          <p>1</p>
+                        </td>
+                        <td headers="d4591e51 d4591e40 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">sqlplus /nolog</code></p>
+                        </td>
+                        <td headers="d4591e51 d4591e43 " align="left" width="9%"
+
+                          valign="top">
+                          <p>1</p>
+                        </td>
+                        <td headers="d4591e51 d4591e46 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">sqlplus /nolog</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d4591e37 " id="d4591e66" align="left" width="9%"
+
+                          valign="top">
+                          <p>2</p>
+                        </td>
+                        <td headers="d4591e66 d4591e40 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; Connect / as sysdba</code></p>
+                        </td>
+                        <td headers="d4591e66 d4591e43 " align="left" width="9%"
+
+                          valign="top">
+                          <p>2</p>
+                        </td>
+                        <td headers="d4591e66 d4591e46 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; Connect / as sysdba</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d4591e37 " id="d4591e81" align="left" width="9%"
+
+                          valign="top">
+                          <p>3</p>
+                        </td>
+                        <td headers="d4591e81 d4591e40 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; startup</code></p>
+                        </td>
+                        <td headers="d4591e81 d4591e43 " align="left" width="9%"
+
+                          valign="top">
+                          <p>3</p>
+                        </td>
+                        <td headers="d4591e81 d4591e46 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; startup</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d4591e37 " id="d4591e96" align="left" width="9%"
+
+                          valign="top">
+                          <p>4</p>
+                        </td>
+                        <td headers="d4591e96 d4591e40 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; quit</code></p>
+                        </td>
+                        <td headers="d4591e96 d4591e43 " align="left" width="9%"
+
+                          valign="top">
+                          <p>4</p>
+                        </td>
+                        <td headers="d4591e96 d4591e46 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; alter pluggable
+                              database all open;</code><a
+                                id="sthref3" name="sthref3" href="#sthref3" onclick="footdisplay(1,&quot;It 
+								is recommended the Post Install step be run on all pluggable databases; 
+								however, the following command 
+								(\u003ccode dir=\&quot;ltr\&quot;\u003eSQL\u003e alter pluggable 
+								database\u003c/code\u003e \u003ccode dir=\&quot;ltr\&quot;\u003e\u003cspan 
+								class=\&quot;codeinlineitalic\&quot;\u003ePDB_NAME\u003c/span\u003e\u003c/code\u003e 
+								\u003ccode dir=\&quot;ltr\&quot;\u003eopen\u003c/code\u003e) could be substituted 
+								to only open certain PDBs in the single/multitenant database. Doing so will result 
+								in the Post Install step only being run on the CDB and opened PDB's. To update a 
+								pluggable database at a later date (skipped or newly plugged in), open the database 
+								using the \u003ccode dir=\&quot;ltr\&quot;\u003ealter pluggable database\u003c/code\u003e 
+								command mentioned previously and rerun the datapatch utility. See My Oracle Support document 
+								\u003ca target=\&quot;toc\&quot; 
+								href=\&quot;https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1935365.1\&quot;\u003e1935365.1\u003c/a\u003e 
+								\u003cspan class=\&quot;italic\&quot;\u003eMultitenant Unplug/Plug Best Practices\u003c/span\u003e for 
+								more information about the procedure for unplugging/plugging with different patch releases 
+								(in both directions).&quot;)"><sup class="tablefootnote">Foot 1</sup></a></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d4591e37 " id="d4591e140" align="left" width="9%"
+
+                          valign="top">
+                          <p>5</p>
+                        </td>
+                        <td headers="d4591e140 d4591e40 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">cd $ORACLE_HOME/OPatch</code></p>
+                        </td>
+                        <td headers="d4591e140 d4591e43 " align="left" width="9%"
+
+                          valign="top">
+                          <p>5</p>
+                        </td>
+                        <td headers="d4591e140 d4591e46 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">SQL&gt; quit</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d4591e37 " id="d4591e155" align="left" width="9%"
+
+                          valign="top">
+                          <p>6</p>
+                        </td>
+                        <td headers="d4591e155 d4591e40 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">./datapatch -sanity_checks (optional)</code></p>
+                        </td>
+                        <td headers="d4591e155 d4591e43 " align="left" width="9%"
+
+                          valign="top">
+                          <p>6</p>
+                        </td>
+                        <td headers="d4591e155 d4591e46 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">cd $ORACLE_HOME/OPatch</code></p>
+                        </td>
+                      </tr>
+					  <tr align="left" valign="top">
+                        <td headers="d4591e37 " id="d4591e160" align="left" width="9%"
+
+                          valign="top">
+                          <p>7</p>
+                        </td>
+                        <td headers="d4591e160 d4591e40 " align="left" width="40%"
+
+                          valign="top">
+                          <p><code class="codeph">./datapatch -verbose</code></p>
+                        </td>
+                        <td headers="d4591e160 d4591e43 " align="left" width="9%"
+
+                          valign="top">
+                          <p>7</p>
+                        </td>
+                        <td headers="d4591e160 d4591e46 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">./datapatch -sanity_checks (optional)</code></p>
+                        </td>
+                      </tr>
+                      <tr align="left" valign="top">
+                        <td headers="d4591e37 " id="d4591e170" align="left" width="9%"
+
+                          valign="top"> <br />
+                        </td>
+                        <td headers="d4591e170 d4591e40 " align="left" width="40%"
+
+                          valign="top"> <br />
+                        </td>
+                        <td headers="d4591e170 d4591e43 " align="left" width="9%"
+
+                          valign="top">
+                          <p>8</p>
+                        </td>
+                        <td headers="d4591e170 d4591e46 " align="left" width="42%"
+
+                          valign="top">
+                          <p><code class="codeph">./datapatch -verbose</code></p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- class="inftblhruleinformal" -->
+                
+				  <ul>
+                      <li><p class="tablefootnote"><sup class="tablefootnote">Footnote 1</sup> It is recommended the Post Install step be run on all
+                  pluggable databases; however, the following command (<code class="codeph">SQL&gt;
+                  alter pluggable database</code> <code><span class="codeinlineitalic">PDB_NAME</span></code>
+                  <code class="codeph">open</code> ) could be substituted to
+                  only open certain PDBs in the single/multitenant database.
+                  Doing so will result in the Post Install step only being run
+                  on the CDB and opened PDB's. To update a pluggable database at
+                  a later date (skipped or newly plugged in), open the database
+                  using the <code class="codeph">alter pluggable database</code>
+                  command mentioned previously and rerun the datapatch utility.
+                  </p>
+                       <ul> 
+					    <li> See My Oracle Support document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1935365.1">1935365.1</a>
+                    <span class="italic">Multitenant Unplug/Plug Best Practices</span>
+                    for more information about the procedure for
+                    unplugging/plugging with different patch releases (in both
+                    directions).
+					   </li>
+                       </ul>					 
+                      </li>
+				  </ul>
+					<p></p>
+					 <ul>
+                      <li><p>Recommended: The <code dir="ltr">datapatch -sanity_checks</code> optional step runs a series of environment and database
+				     checks to validate if conditions are optimal for patching. Results are shown on screen with
+					 severity and potential actions to take.
+                          </p>
+                       <ul> 
+						<li> For more information, refer to the My Oracle Support document 
+					 <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2680521.1">2680521.1</a> 
+					 <span class="italic">Datapatch User Guide</span> for additional information and actions. Oracle 
+					 highly recommends that you perform this step.
+					    </li>
+                       </ul>					 
+                      </li>
+					</ul>
+                <p></p>
+					<ul>
+                      <li><p>The <code dir="ltr">datapatch</code> utility runs the
+                    necessary rollback scripts. An entry is added to the <code
+                      dir="ltr">dba_registry_sqlpatch</code> view reflecting the
+                    patch application. In the <code dir="ltr">dba_registry_sqlpatch</code>
+                    view, verify the Status for the <code dir="ltr">ROLLBACK</code> is <code dir="ltr">SUCCESS</code>.
+                          </p>
+                       <ul> 
+						<li> For any other status, refer to My Oracle Support document
+                    <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2335899.2">2335899.2</a>
+					<span class="italic"> Troubleshooting Assistant: 12c Datapatch Issues</span> for additional information and actions.
+					    </li>
+                       </ul>					 
+                      </li>
+					</ul>
+              </li>
+              <li>
+                <p>Check the following log files in <code class="codeph">$ORACLE_HOME/sqlpatch/<span>36582781</span>/</code> for
+                  errors:</p>
+                <pre dir="ltr" class="oac_no_warn"><span>36582781</span>_rollback_&lt;database SID&gt;_&lt;CDB name&gt;_&lt;timestamp&gt;.log
+</pre>
+                <p>where <code><span class="codeinlineitalic">database SID</span></code>
+                  is the database SID, <code><span class="codeinlineitalic">CDB
+                      name</span></code> is the name of the multitenant
+                  container database, and <code><span class="codeinlineitalic">timestamp</span></code>
+                  is of the form <code dir="ltr">YYYYMMMDD_HH_MM_SS</code>.</p>
+              </li>
+              <li>Any (pluggable) database that has invalid objects after the execution of
+                datapatch should have <code dir="ltr">catcon.pl</code> run to revalidate those objects.
+                <pre dir="ltr" class="oac_no_warn">For example:
+export PATH=$PATH:$ORACLE_HOME/bin
+cd $ORACLE_HOME/rdbms/admin
+$ORACLE_HOME/perl/bin/perl $ORACLE_HOME/rdbms/admin/catcon.pl -n 1 -e -b utlrp -d $ORACLE_HOME/rdbms/admin utlrp.sql</pre>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="sect4"><!-- infolevel="all" infotype="General" --><a name="GUID-68C41B01-99CC-4A92-9631-87CEED9418A0"
+
+            id="GUID-68C41B01-99CC-4A92-9631-87CEED9418A0"></a>
+          <h4 class="sect4"><span class="enumeration_section">2.1.11.2 </span>Upgrade
+            Oracle Recovery Manager Catalog</h4>
+          <div>
+            <p>If you are using the Oracle Recovery Manager, the catalog needs
+              to be upgraded. Enter the following command to upgrade it. The
+              <code dir="ltr">UPGRADE CATALOG</code> command must be entered twice to confirm the
+              upgrade.</p>
+            <pre class="oac_no_warn" dir="ltr">$ rman catalog username/password@alias
+RMAN&gt; UPGRADE CATALOG;
+RMAN&gt; UPGRADE CATALOG;
+RMAN&gt; EXIT;
+</pre> </div>
+          <div class="sect2"><!-- infolevel="all" infotype="General" --><a id="GUID-774FEA2B-9E36-4D19-989F-C42DE574915F"
+
+              name="GUID-774FEA2B-9E36-4D19-989F-C42DE574915F"></a>
+            <h2 class="sect2"><span class="enumeration_section">3.1 </span>Known
+              Issues</h2>
+            <div>
+              <p>For issues documented after the release of this patch, see My
+                Oracle Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=19202407.9"><span>19202407.9</span></a> <span class="italic">Oracle Database 19c RU/RUR Jul 2024 Known Issues</span>.</p>
+              
+          <div class="sect2"><!-- infolevel="all" infotype="General" --><a id="GUID-17E5B95F-E037-478F-A35C-C0A922DD9636"
+
+              name="GUID-17E5B95F-E037-478F-A35C-C0A922DD9636"></a>
+            <h2 class="sect2"><span class="enumeration_section">4.1 </span>References</h2>
+            <div>
+              <p>The following documents are references for this patch: </p>
+			  
+              <p>Document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=19202407.9"><span>19202407.9</span></a> <span class="italic">Oracle Database 19c RU/RUR Jul 2024 Known Issues</span></p>
+				  
+			  <p>Document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1919.2">1919.2</a>
+                 <span class="italic"> 19c Database Upgrade - Self Guided Assistance with Best Practices</span></p>
+				  
+              <p>Document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2246888.1">2246888.1</a>
+                <span class="italic">Supplemental Readme - Grid Infrastructure
+                  Release Update 12.2.0.1.x / 18c / 19c</span></p>
+				  
+              <p>Document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1494652.1">1494652.1</a>
+                <span class="italic">How to Mount or Unmount ACFS While Applying GI Patches?</span></p>
+				  
+              <p>Document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1585822.1">1585822.1</a>
+                <span class="italic">Datapatch: Database 12c or later Post Patch SQL Automation</span></p>
+				
+              <p>Document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=360870.1">360870.1</a>
+                <span class="italic">Impact of Java SE Security Vulnerabilities on
+                  Oracle Database and Fusion Middleware Products</span></p>
+				  
+			  <p>Document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2523221.1">2523221.1</a>
+                <span class="italic">Grid Infrastructure 19 Release Updates and Revisions Bugs Fixed Lists</span></p>
+				  
+              <p>Document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=340978.1">340978.1</a>
+                <span class="italic">genclntsh: Could not locate
+                  $ORACLE_HOME/network/admin/shrept.lst</span></p>
+				  
+              <p>Document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=468959.1">468959.1</a>
+                <span class="italic">Enterprise Manager Grid Control 10.1 and 10.2 Known Issues</span></p>
+				  
+              <p><a target="_blank" href="http://docs.oracle.com/cd/cloud-control-13.3/OPTCH/toc.htm"><span
+
+                  class="italic">Oracle&reg; OPatch User's Guide</span></a></p>
+            </div>
+          </div>
+          <div class="sect2"><!-- infolevel="all" infotype="General" --><a id="GUID-5A2693B4-C048-44B3-8A16-C7937C036E1E"
+
+              name="GUID-5A2693B4-C048-44B3-8A16-C7937C036E1E"></a>
+            <h2 class="sect2"><span class="enumeration_section">5.1 </span>Manual
+              Steps for Applying or Rolling Back the Patch</h2>
+            <div>
+              <p>See My Oracle Support document <a target="_blank" href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2246888.1">2246888.1</a>
+                for cases where <code class="codeph">opatchauto</code> cannot
+                be used.</p>
+            </div>
+          </div>
+          <div class="sect2"><!-- infolevel="all" infotype="General" --><a id="GUID-A6805A6D-D6E2-4BE2-BD2F-5F24CBAE798A"
+
+              name="GUID-A6805A6D-D6E2-4BE2-BD2F-5F24CBAE798A"></a>
+            <h2 class="sect2"><span class="enumeration_section">6.1 </span>Bugs
+              Fixed by This Patch</h2>
+            <div>
+              <p>See My Oracle Support document <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=2523221.1">2523221.1</a>
+                for the list of bugs fixed in this patch.</p>
+            </div>
+          </div>
+<div class="sect1"><!-- infolevel="all" infotype="General" --><a name="GUID-E409CC44-9A8F-4043-82C8-6B95CD939296" id="GUID-E409CC44-9A8F-4043-82C8-6B95CD939296"></a><h2 id="null-GUID-E409CC44-9A8F-4043-82C8-6B95CD939296" class="sect1"><span class="enumeration_section">7.1 </span>Documentation Accessibility</h2>
+        <p>For information about Oracle's commitment to accessibility, visit the Oracle Accessibility Program website 
+		at <code><a href="http://www.oracle.com/pls/topic/lookup?ctx=acc&id=docacc" target="_blank">http://www.oracle.com/pls/topic/lookup?ctx=acc&id-docacc</a></code>.</p>
+        <a id="sthref43" name="sthref43"></a>
+        <p class="subhead2">Access to Oracle Support</p>
+        <p>Oracle customers that have purchased support have access to electronic support through My Oracle Support. For information, 
+		visit <code><a href="http://www.oracle.com/pls/topic/lookup?ctx=acc&id=info" target="_blank">http://www.oracle.com/pls/topic/lookup?ctx=acc&id=info</a></code>
+          or visit <code><a href="http://www.oracle.com/pls/topic/lookup?ctx=acc&id=trs" target="_blank">http://www.oracle.com/pls/topic/lookup?ctx=acc&id=trs</a></code>
+          if you are hearing impaired.</p>
+      </div>
+              <!-- class="section" --> </div>
+          </div>
+        </div>
+        <hr />
+        <div class="notices">
+          <p>Oracle Database Patch 36582629 - GI Release Update 19.24.0.0.240716<span></span>
+          </p>
+          <p></p>
+        <p>Copyright &#169; 2024,&#160;Oracle and/or its affiliates.</p>
+		
+      <p>This software and related documentation are provided under a license agreement containing restrictions 
+	  on use and disclosure and are protected by intellectual property laws. Except as expressly permitted in 
+	  your license agreement or allowed by law, you may not use, copy, reproduce, translate, broadcast, modify, 
+	  license, transmit, distribute, exhibit, perform, publish, or display any part, in any form, or by any means. 
+	  Reverse engineering, disassembly, or decompilation of this software, unless required by law for 
+	  interoperability, is prohibited.</p>
+	  
+      <p>The information contained herein is subject to change without notice and is not warranted to be error-free. 
+	  If you find any errors, please report them to us in writing.</p>
+	  
+      <p>If this is software, software documentation, data (as defined in the Federal Acquisition Regulation), or 
+	  related documentation that is delivered to the U.S. Government or anyone licensing it on behalf of the 
+	  U.S. Government, then the following notice is applicable:</p>
+	  
+      <p>U.S. GOVERNMENT END USERS: Oracle programs (including any operating system, integrated software, any 
+	  programs embedded, installed, or activated on delivered hardware, and modifications of such programs) 
+	  and Oracle computer documentation or other Oracle data delivered to or accessed by U.S. Government end 
+	  users are "commercial computer software," "commercial computer software documentation," or "limited 
+	  rights data" pursuant to the applicable Federal Acquisition Regulation and agency-specific supplemental 
+	  regulations. As such, the use, reproduction, duplication, release, display, disclosure, modification, 
+	  preparation of derivative works, and/or adaptation of i) Oracle programs (including any operating 
+	  system, integrated software, any programs embedded, installed, or activated on delivered hardware, 
+	  and modifications of such programs), ii) Oracle computer documentation and/or iii) other Oracle data, 
+	  is subject to the rights and limitations specified in the license contained in the applicable contract. 
+	  The terms governing the U.S. Government's use of Oracle cloud services are defined by the applicable 
+	  contract for such services. No other rights are granted to the U.S. Government.</p>
+	  
+      <p>This software or hardware is developed for general use in a variety of information management 
+	  applications. It is not developed or intended for use in any inherently dangerous applications, 
+	  including applications that may create a risk of personal injury. If you use this software or hardware 
+	  in dangerous applications, then you shall be responsible to take all appropriate fail-safe, backup, 
+	  redundancy, and other measures to ensure its safe use. Oracle Corporation and its affiliates disclaim any 
+	  liability for any damages caused by use of this software or hardware in dangerous applications.</p>
+	  
+      <p>Oracle&reg;, Java, MySQL, and NetSuite are registered trademarks of Oracle and/or its affiliates. Other 
+	  names may be trademarks of their respective owners.</p>
+	  
+      <p>Intel and Intel Inside are trademarks or registered trademarks of Intel Corporation. All SPARC 
+	  trademarks are used under license and are trademarks or registered trademarks of SPARC 
+	  International, Inc. AMD, Epyc, and the AMD logo are trademarks or registered trademarks of Advanced 
+	  Micro Devices. UNIX is a registered trademark of The Open Group.</p>
+	  
+	  <p>This software or hardware and documentation may provide access to or information about content, 
+	  products, and services from third parties. Oracle Corporation and its affiliates are not responsible 
+	  for and expressly disclaim all warranties of any kind with respect to third-party content, products, 
+	  and services unless otherwise set forth in an applicable agreement between you and Oracle. Oracle 
+	  Corporation and its affiliates will not be responsible for any loss, costs, or damages incurred due 
+	  to your access to or use of third-party content, products, or services, except as set forth in an 
+	  applicable agreement between you and Oracle.</p>
+</div>
+      <!-- class="letterstyle" --></div>
+    <!-- class="ind" -->
+    <!-- Start Footer -->
+    <div class="footer">
+      <hr />
+      <div align="center" width="34%"> <font size="-2"> Copyright&#160;&#169;&#160;2024,&#160;Oracle and/or its affiliates.</font> </div>
+      <!-- class="footer" --> </div>
+  </body>
+</html>
+
