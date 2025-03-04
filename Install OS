@@ -1,0 +1,94 @@
+
+internal storage.
+total 40GB >> only OS.
+swap 8192
+/boot 2048
+/bios boot
+/ ALL
+
+External Storage.
+30GB /u01
+30GB /database
+10G  /reco
+
+create above virtual harddisks.
+virtualbox>> tools >> virtual media manager.
+
+Create disk1,disk2,disk3.
+hard disk file type = virtual harddisk.
+preallocate.
+
+power off server.
+attach these three disks to server.
+settings >> storage >> Adds harddisk
+
+Power on server.
+login using root.
+
+lsblk
+
+Now format using fdisk
+disk1
+fdisk /dev/sdb
+n
+p
+enter
+enter 
+enter 
+w
+
+disk2
+fdisk /dev/sdc
+n
+p
+enter
+enter 
+enter 
+w
+
+disk3
+fdisk /dev/sdd
+n
+p
+enter
+enter 
+enter 
+w
+
+mount the three disks.
+
+partprobe
+
+mkfs.xfs /dev/sdb1
+mkfs.xfs /dev/sdc1
+mkfs.xfs /dev/sdd1
+
+mkdir /u01
+mkdir /database
+mkdir /reco
+
+mount /dev/sdb1 /u01
+mount /dev/sdc1 /database
+mount /dev/sdd1 /reco
+
+#verify
+df -h
+lsblk
+mount -a
+lsblk
+
+#Update /etc/fstab file 
+(so that we mount points are ready after every restart.)
+
+ls -lrt /dev/disk/by-uuid
+
+lrwxrwxrwx. 1 root root 10 Mar  4 09:11 5e930313-4c55-4a8a-acc9-9d95c3249e55 -> ../../sdb1
+lrwxrwxrwx. 1 root root 10 Mar  4 09:11 759118c6-9dd5-4a73-85b5-11456da279b6 -> ../../sdc1
+lrwxrwxrwx. 1 root root 10 Mar  4 09:11 86f1fbca-1edf-4829-b7ff-7d294e1aebfe -> ../../sdd1
+
+
+UUID=5e930313-4c55-4a8a-acc9-9d95c3249e55 /u01 xfs defaults 0 0
+UUID=759118c6-9dd5-4a73-85b5-11456da279b6 /database xfs defaults 0 0
+UUID=86f1fbca-1edf-4829-b7ff-7d294e1aebfe /reco xfs defaults 0 0
+
+vi /etc/fstab
