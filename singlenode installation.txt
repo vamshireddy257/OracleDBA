@@ -9,15 +9,34 @@ useradd -g oinstall -d /home/oracle -s /bin/bash -c "oracle DB Owner" oracle
 usermod -a -G dba oracle
 
 passwd oracle
+
+yum install ksh* -y
+yum install libaio* -y
+
+
 mkdir -p /u01/app/oracle/product/19.0.0.0/dbhome_1
 chmod -R 755 /u01
 chown -R oracle:oinstall /u01
 
+chmod -R 755 /database
+chmod -R 755 /reco
+chown -R oracle:oinstall /database
+chown -R oracle:oinstall /reco
+
+
+
 ls -ld /u01/app/oracle/product/19.0.0.0/dbhome_1
 
 
-init 6
-login as oracle
+from root user 
+xhost +
+
+su - oracle
+
+export DISPLAY=:0
+
+NOTE : power off internet to make things work faster.
+
 
 install winscp on host machine
 check ip on guest machine
@@ -52,6 +71,15 @@ create database
 create database
 cat /etc/oratab
 
+
+cd /u01/app/oracle/product/19.0.0.0/dbhome_1
+cd bin
+./dbca
+
+GUI Options
+create Database
+
+
 export ORACLE_BASE=/u01/app/oracle
 export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
 export ORACLE_SID=vamdb
@@ -65,5 +93,4 @@ select name,open_mode from v$database;
 shut immediate;
 
 startup;
-
 
