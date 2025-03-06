@@ -94,3 +94,10 @@ shut immediate;
 
 startup;
 
+
+
+cat /etc/oraInst.loc
+go to inventory location.
+
+cd ContentsXML
+cat inventory.xml
