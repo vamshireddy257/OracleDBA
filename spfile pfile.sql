@@ -9,7 +9,7 @@ CREATE SPFILE FROM PFILE='Location of the PFILE';
 
 Alter system set db_recovery_file_dest_size=20g scope = memory;
 
-alter system set db_recovery_file_dest_size=10g scope = spfile;
+alter system set db_recovery_file_dest_size=12g scope = spfile;
 Alter system set db_recovery_file_dest_size=8256M scope = both;
 alter system set db_recovery_file_dest_size=10g scope = memory;
 STARTUP PFILE=singleline_init.ora
@@ -22,6 +22,7 @@ SQL> startup nomount pfile='/scratch/u01/app/oracle/product/12.1.0/dbhome_1/dbs/
 CREATE SPFILE='/u01/oracle/dbs/spfile.ora' FROM PFILE='/u01/oracle/dbs/init.ora';
 
 check if parameter is modifiable:
+col name for a30;
 SELECT  name,issys_modifiable m_INSTANCE, isses_modifiable m_SESSION  FROM V$parameter WHERE name = 'shared_pool_size';
 
 
