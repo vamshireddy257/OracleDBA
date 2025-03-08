@@ -1,0 +1,9 @@
+set serverout on;
+
+BEGIN
+for i in 1..1000
+loop
+DBMS_OUTPUT.PUT_LINE(SQLERRM(-i));
+end loop;
+end;
+/
