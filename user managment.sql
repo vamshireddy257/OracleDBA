@@ -1,3 +1,4 @@
+
 set lines 200 pages 200;
 col username for a25;
 col profile for a20;
@@ -23,7 +24,7 @@ col limit for a50;
 
 select distinct profile from dba_profiles ;
 
-select profile,resource_name, limit from dba_profiles where profile = 'APP_PROFILE';
+select profile,resource_name, limit from dba_profiles where profile = 'DEFAULT';
 
 CREATE PROFILE:
 
@@ -46,6 +47,10 @@ PASSWORD_VERIFY_FUNCTION NULL
 PASSWORD_LOCK_TIME UNLIMITED
 PASSWORD_GRACE_TIME UNLIMITED;
 
+
+select profile,resource_name, limit from dba_profiles where profile = 'APP_PROFILE';
+
+
 alter profile:
 
 ALTER PROFILE APP_PROFILE LIMIT SESSIONS_PER_USER 1;
@@ -60,30 +65,38 @@ select distinct ROLE  from role_role_privs ;
 
 ---to check grants of a ROLES
 
-select ROLE,GRANTED_ROLE  from role_role_privs where role='CONNECT';
+select ROLE,GRANTED_ROLE  from role_role_privs where role='DBA';
 
 -- ALL System privileges  
 
 SELECT distinct PRIVILEGE FROM DBA_SYS_PRIVS order by 1;
 -- System privileges granted to an user ( scott)
 
-SELECT * FROM DBA_SYS_PRIVS where grantee='BATCH8';
+
+
+SELECT * FROM DBA_SYS_PRIVS where grantee='SCOTT';
 
 -- Roles granted to an user ( scott)
 col grantee for a20;
 col GRANTED_ROLE for a20;
-SELECT * FROM DBA_ROLE_PRIVS where grantee='BATCH8';
+SELECT * FROM DBA_ROLE_PRIVS where grantee='SCOTT';
+
+grant dba to scott;
+
+col grantee for a20;
+col GRANTED_ROLE for a20;
+SELECT * FROM DBA_ROLE_PRIVS where grantee='SCOTT';
 
 -- Object privileges granted to an user ( SCOTT)
 col owner for a20;
 col grantee for a20;
 col GRANTOR for a20;
 col table_name for a20;
-select GRANTEE,OWNER,TABLE_NAME,GRANTOR,PRIVILEGE from DBA_TAB_PRIVS WHERE GRANTEE='BATCH8';
+select GRANTEE,OWNER,TABLE_NAME,GRANTOR,PRIVILEGE from DBA_TAB_PRIVS WHERE GRANTEE='SCOTT';
 
 -- Column specific privileges granted
 
-SELECT * FROM DBA_COL_PRIVS WHERE GRANTEE='BATCH8';
+SELECT * FROM DBA_COL_PRIVS WHERE GRANTEE='SCOTT';
 
 -- Table privileges
 
@@ -100,8 +113,11 @@ GRANT ALL ON TESTUSER1.EMPTABL on SCOTT;
 --GRANT insert (emp_id) ON TESTUSER1.EMPTABL TO SCOTT;
 --GRANT UPDATE(emp_id) ON TESTUSER1.EMPTABL TO SCOTT;
 
-USER
-create user identified by password default tablespace users  temporary tablespace temp;
+USER MANAGEMENT STATS
+
+create user <username> identified by password <desired password> default tablespace users  temporary tablespace temp;
+
+
 
 select dbms_metadata.get_ddl('USER', u.username) AS ddl from dba_users u where u.username = 'USER1';
 
@@ -130,14 +146,14 @@ ALTER USER SCOTT identified by NEW_PWD;
 
 -- Change user profile;
 
-ALTER USER SCOTT PROFILE SIEBEL_PROFILE;
+ALTER USER SCOTT PROFILE APP_PROFILE;
 
 -- Unlock/lock a user
 
 ALTER USER SCOTT account unlock;
 ALTER USER SCOTT account lock;
 
--- Make sure account expiry, so upon login, it will ask for new one
+-- 	 sure account expiry, so upon login, it will ask for new one
 
 ALTER USER a124 password expire;
 
@@ -181,7 +197,7 @@ ALTER USER SCOTT QUOTA UNLIMITED ON USERS;
 --- Suppose a user TEST1 wants to connect to TEST2 user and create a table and we don’t know the password of TEST2.
 
 Conn / as sysdba
-SQL >alter user TEST2 grant connect through TEST1;
+SQL >alter user SCOTT grant connect through supriya;
 
 User altered.
 
@@ -270,6 +286,6 @@ GROUP BY
 replicat user grants:
 set long 9999;
 set pages 1000;
-SELECT DBMS_METADATA.GET_GRANTED_DDL('ROLE_GRANT','SOE') FROM DUAL;
-SELECT DBMS_METADATA.GET_GRANTED_DDL('SYSTEM_GRANT','SOE')  FROM DUAL;
-SELECT DBMS_METADATA.GET_GRANTED_DDL('OBJECT_GRANT','SOE') FROM DUAL;
+SELECT DBMS_METADATA.GET_GRANTED_DDL('ROLE_GRANT','SCOTT') FROM DUAL;
+SELECT DBMS_METADATA.GET_GRANTED_DDL('SYSTEM_GRANT','SCOTT')  FROM DUAL;
+SELECT DBMS_METADATA.GET_GRANTED_DDL('OBJECT_GRANT','SCOTT') FROM DUAL;
