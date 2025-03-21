@@ -1,6 +1,6 @@
 where CLEAN_DB is the name given to the guaranteed restore point.
 
-create restore point CLEAN_DB guarantee flashback database;
+create restore point CLEAN_DB ;
 
 
 set lines 200
@@ -15,5 +15,4 @@ startup mount;
 flashback database to restore point clean_db_g;
 
 alter database open resetlogs;
-
 
