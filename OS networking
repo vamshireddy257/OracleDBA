@@ -1,0 +1,38 @@
+#install putty
+add in .bash_profile
+
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0.0/dbhome_1
+export ORACLE_SID=vamdb
+
+export PATH=$PATH:$ORACLE_HOME/bin
+
+#taking ssh of remote server
+ssh oracle@192.168.0.13
+
+#setting up alias name for ip address
+add below entry in the /etc/hosts file
+192.168.0.13 prasad.com prasad
+
+#know if a server is accessable or not
+ping ipaddress
+ping hostname
+
+##push a file into the server
+
+scp vamshi_server_file01 oracle@192.168.0.13:/home/oracle
+scp vamshi_server_file01 oracle@prasad.com:/home/oracle
+
+##pull a file from the server
+scp oracle@192.168.0.22:/home/oracle/vamshi_server_file02 /home/oracle
+
+#making an ip permanent
+Applications>> system tools >> settings
+Network
+settings symbol
+make sure connect automatically is ticked.
+
+Go to ipv4
+address = 192.168.0.22 (check ifconfig before you do this)
+subnet mask : 255.255.255.0
+default gateway: 192.168.0.1
+DNS : 192.168.0.1
