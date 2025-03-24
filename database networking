@@ -1,0 +1,71 @@
+DB networking
+
+#creating a listener. 1521
+
+Use netmgr
+expand on local
+expand on listeners
+click + symbol which is in green color.
+
+enter name of listener
+listener
+click on OK 
+click on add address
+in the host you can give hostname or ipaddress.
+
+in the drop down above switch it from listening locations to database services.
+click on add database.
+
+Global db name : vamdb
+SID : vamdb
+file save network configuration
+file exit.
+
+# where is your listener file
+$ORACLE_HOME/network/admin
+ 
+#how to start you listener?
+
+lsnrctl start listener_name
+lsnrctl start listener
+lsnrctl stop listener
+lsnrctl reload listener
+lsnrctl status listener
+
+#at OS level
+ps -ef|grep tns
+
+#from root user execute below to disable fire.
+systemctl stop firewalld
+systemctl disable firewalld
+
+#connect to vamdb from other server
+sqlplus username/password@ip/hostname:port/services
+port you can get from listener.
+service : yopu have to login to the database and check from show parameter service.
+
+We need 3 
+hostname
+port
+service.
+
+sqlplus vamshi/vamshi@192.168.0.22:1521/vamdb
+
+# create tnsnames 
+use netmgr
+expand local
+expand service name
+click on + button.
+give any name 
+to_vamdb
+next and next
+hostname : 192.168.0.22
+port : 1521 (what ever port running on listener)
+service name from : show parameter service
+file save network configuration
+file exit
+
+#even this is been created in $ORACLE_HOME/network/admin
+with name tnsnames.ora 
+
+tnsping to_vamdb
