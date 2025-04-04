@@ -240,3 +240,14 @@ Worker 1 Status:
 
 Export> kill
 Are you sure you wish to stop this job ([yes]/no): yes
+
+
+
+impdp directory=expdp_dir dumpfile=proddb_full_020425.dmp logfile=import_proddb_full_020425_table.log tables=scott.emp  remap_schema=scott:scott_test remap_table=emp:emp_test
+
+
+impdp directory=expdp_dir dumpfile=proddb_full_020425.dmp logfile=import_soe_schema.log schemas=soe remap_tablespace=soetbs:users
+
+
+impdp directory=expdp_dir dumpfile=proddb_full_020425.dmp logfile=import_soe_schema.log tables=soe.ORDERS table_exists_action=append
+
