@@ -1,38 +1,20 @@
-  #recover a datafile which is not in rman backup;
+loss of full database:
+
+select 'rm '||name from v$datafile
+union 
+select 'rm '||name from v$CONTROLFILE
+union
+select 'rm '||member from v$logfile;
 
 
-1) Know the defination of that datafile like location of that datafile.
-select name from v$datafile where file# = 36;
-
-2)connect to rman (make sure you connect to the specific pdb incase the datafile belongs to a pdb)
-list backup of datafile 36;
-
-
-##########################
-if datafile exists the
-rman > restore datafile 36;
-recover datafile 36;
-
-stop;
-######################
-if the datafile is not in rman backup
-######################
-
-3) offline the datafile;
-
-alter database datafile 'path' offline;
-
-4) recreate datafile using alter database ;
-alter database create datafile '<path>' as '<path> size 32G reuse;
-
-5 ) recover the datafile , as you have the datafile in existance
-rman > recover datafile 36;
-
-6 ) online the datafile
-alter database datafile 36 online;
-
-
-
+shut abort ;
+startup nomount;
+connect RMAN
+restore controlfile;
+alter database mount;
+restore database;
+recover database;
+alter database open resetlogs;
 
 
 loss of system datafile:
@@ -57,10 +39,10 @@ alter database open resetlogs;
 
 
 SYSAUX/NON SYSTEM
-sql ‘alter database <datafile number offline>’;
+sql 'alter database <datafile number offline>';
 RMAN>restore datafile <datafile number>;
 RMAN>recover datafile <datafile number>;
-RMAN>sql ‘alter database <datafile number online>’;
+RMAN>sql 'alter database <datafile number online>';
 
 
 
@@ -79,5 +61,33 @@ datafile without backup.
 	RMAN> recover table space <table space name>
 	• And online that table space.
 	• RMAN> alter tablespace <tablespace_name>  online;
+	
 
+#recover a datafile which is not in rman backup;
+1) Know the defination of that datafile like location of that datafile.
+select name from v$datafile where file# = 36;
 
+2)connect to rman (make sure you connect to the specific pdb incase the datafile belongs to a pdb)
+list backup of datafile 36;	
+##########################
+if datafile exists the
+rman > restore datafile 36;
+recover datafile 36;
+
+stop;
+######################
+if the datafile is not in rman backup
+######################
+
+3) offline the datafile;
+
+alter database datafile 'path' offline;
+
+4) recreate datafile using alter database ;
+alter database create datafile '<path>' as '<path> size 32G reuse;
+
+5 ) recover the datafile , as you have the datafile in existance
+rman > recover datafile 36;
+
+6 ) online the datafile
+alter database datafile 36 online;
