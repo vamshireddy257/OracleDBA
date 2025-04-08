@@ -1,6 +1,20 @@
 https://doyensys.com/blogs/rman-backup-based-cloning-database-using-oracle-12c/
 
 
+HIGH LEVEL STEPS.
+1 : take backup including archivelogs.
+2 : create pfile .
+3 : scp pfile,pwdfile and rman backup to target server.
+4 : modify pfile accoring to new database name.
+5 : change the namings of pfile and pwdfile.
+6 : create required directories.
+7 : startup nomount;
+8 : connect rman auxiliary.
+9 : database to 'testdb' backup location '/u01/rman' nofilenamecheck;
+
+
+
+
 orapwd file=$ORACLE_HOME/dbs/orapwpr password=prodDB_789 entries=3;
 
 edit parameter file
