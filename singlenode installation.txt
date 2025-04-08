@@ -1,3 +1,13 @@
+install OS
+
+120 GB
+/ 10000
+swap 8192
+/boot 2048
+/biosbott 2048
+/u01 ALL
+
+
 https://www.oracle.com/database/technologies/oracle-database-software-downloads.html
 Oracle Database 19c for Linux x86-64
 
