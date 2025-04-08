@@ -10,7 +10,7 @@ HIGH LEVEL STEPS.
 6 : create required directories.
 7 : startup nomount;
 8 : connect rman auxiliary.
-9 : database to 'testdb' backup location '/u01/rman' nofilenamecheck;
+9 : duplicate database to 'testdb' backup location '/u01/rman' nofilenamecheck;
 
 
 
