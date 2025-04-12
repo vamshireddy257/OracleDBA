@@ -14,6 +14,10 @@ set lines 300 pages 300;
 col DB_UNIQUE_NAME for a10;
 select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
 
+
+
+#make sure you standby is in mount state.
+if it is already in mount state skip below two steps.
 SYS@STANDBY> 
 shut immediate
 
