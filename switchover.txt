@@ -1,6 +1,4 @@
 switchover:
-
-
 on primary:
 first we should know the database name, role,db unique name,mode.
 
@@ -15,8 +13,16 @@ to know the gap status.
 primary>
 select STATUS, GAP_STATUS from V$ARCHIVE_DEST_STATUS where DEST_ID = 2;
 
+set lines 300 pages 300;
+SELECT sequence#, first_time, next_time, applied FROM v$archived_log ORDER BY sequence#; 
+
+
 standby>
 select NAME, VALUE, DATUM_TIME from V$DATAGUARD_STATS;
+
+set lines 300 pages 300;
+SELECT sequence#, first_time, next_time, applied FROM v$archived_log ORDER BY sequence#;
+
 
 to know the switch over status.
 primary>
@@ -45,9 +51,7 @@ new primary>alter database open;
 
 stand by> alter database open;
 enable MRP :
-alter database recover managed standby database using current logfile disconnect;
-
-
+alter database recover managed standby database disconnect from session;
 
 failover:
 
@@ -60,3 +64,23 @@ startup;
 set lines 300 pages 300;
 col DB_UNIQUE_NAME for a10;
 select name,db_unique_name,open_mode,DATABASE_ROLE,PROTECTION_MODE,SWITCHOVER#,SWITCHOVER_status,current_scn from v$database;
+
+
+
+
+reinstate lost primary:
+
+New primary : select to_char(standby_became_primary_scn) from v$database;
+
+OLD STANDBY : startup mount;
+
+flashback database;
+
+Flashback Database To Scn 2569953;
+
+Alter Database Convert To Physical Standby;
+ 
+shutdown immediate;
+startup mount;
+ 
+select name,open_mode,database_role from v$database;
