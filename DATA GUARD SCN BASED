@@ -1,3 +1,21 @@
+The below script has some issues .
+directly practise service based recovery.
+
+But remember the steps.
+1)disable log shipping.
+2) stop mrp.
+3) get scn from standby.
+4) get incremental backup using SCN which we got from staqndby.
+5)create standby control file.
+6) scp standby controlfile and rman incr backup to standby.
+7)shut down standby.
+8) startup nopmount.
+9) restore controil file which we got from primary.
+10)alter database mount;
+11)recover database using incremental backup.
+12) start mrp.
+13 ) enable log shipping on primary.
+
 SCN_BASED
 
 prepare environment with a gap.
