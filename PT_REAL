@@ -1,0 +1,281 @@
+---TEMP error failed queries
+alter session set nls_date_format='DD-MON-YYYY HH24:MI:SS';
+set lines 300
+col USERNAME format a30
+col SQL_TEXT format a80
+col error_message format a40
+select  USERNAME,sid,sql_id ,SQL_TEXt ,error_message,LAST_REFRESH_TIME from gv$sql_monitor where error_message like '%1652%' order by LAST_REFRESH_TIME ;
+
+---SGA USAGE
+
+select round(used.bytes /1024/1024 ,2) used_mb
+, round(free.bytes /1024/1024 ,2) free_mb
+, round(tot.bytes /1024/1024 ,2) total_mb
+from (select sum(bytes) bytes
+from v$sgastat
+where name != 'free memory') used
+, (select sum(bytes) bytes
+from v$sgastat
+where name = 'free memory') free
+, (select sum(bytes) bytes
+from v$sgastat) tot ;
+
+--get sid from pid
+col sid format 999999
+col username format a20
+col osuser format a15
+select b.spid,a.sid, a.serial#,a.username, a.osuser
+from v$session a, v$process b
+where a.paddr= b.addr
+and b.spid='&spid'
+order by b.spid;
+
+---Plan change
+WITH
+p AS (
+SELECT plan_hash_value
+  FROM gv$sql_plan
+WHERE sql_id = TRIM('&&sql_id.')
+   AND other_xml IS NOT NULL
+UNION
+SELECT plan_hash_value
+  FROM dba_hist_sql_plan
+WHERE sql_id = TRIM('&&sql_id.')
+   AND other_xml IS NOT NULL ),
+m AS (
+SELECT plan_hash_value,
+       SUM(elapsed_time)/SUM(executions) avg_et_secs
+  FROM gv$sql
+WHERE sql_id = TRIM('&&sql_id.')
+   AND executions > 0
+GROUP BY
+       plan_hash_value ),
+a AS (
+SELECT plan_hash_value,
+       SUM(elapsed_time_total)/SUM(executions_total) avg_et_secs
+  FROM dba_hist_sqlstat
+WHERE sql_id = TRIM('&&sql_id.')
+   AND executions_total > 0
+GROUP BY
+       plan_hash_value )
+SELECT p.plan_hash_value,
+       ROUND(NVL(m.avg_et_secs, a.avg_et_secs)/1e6, 3) avg_et_secs
+  FROM p, m, a
+WHERE p.plan_hash_value = m.plan_hash_value(+)
+   AND p.plan_hash_value = a.plan_hash_value(+)
+ORDER BY
+       avg_et_secs NULLS LAST;
+
+
+---Locks
+
+connect / as sysdba
+set lines 200 pages 999
+col username       format a20
+col sess_idformat a10
+col object  format a35
+col object_type  format a20 
+col mode_held     format a10
+col "Blocking?" format a15
+
+prompt  DML Locks on the system
+prompt  ==========================
+prompt  ==========================
+
+
+SELECT  USERNAME || ' (' || s.osuser || ')' username,
+        s.sid || ',' || s.serial# sess_id ,
+        owner || '.' || object_name  object,
+       object_type ,
+       decode(v.locked_mode
+    ,   0, 'None'
+    ,   1, 'Null'
+    ,   2, 'Row-S (SS)'
+    ,   3, 'Row-X (SX)'
+    ,   4, 'Share'
+    ,   5, 'S/Row-X (SSX)'
+    ,   6, 'Exclusive', TO_CHAR(l.MODE_HELD)) mode_held,
+       SUBSTR(l.blocking_others,1,15) "Blocking?"
+FROM 
+dba_locks l ,  v\$session s, v\$locked_object v , dba_objects d
+where SUBSTR(l.blocking_others,1,15) ='Blocking'
+and l.session_id=s.sid
+and v.session_id = s.sid
+and v.object_id = d.object_id
+/
+			
+			
+			
+-- DDL Locks :
+-- =========================
+prompt DDL Locks in the system
+prompt ===========================
+prompt ===========================
+select     decode(lob.kglobtyp,
+        0, 'NEXT OBJECT', 1, 'INDEX', 2, 'TABLE', 3, 'CLUSTER',
+        4, 'VIEW', 5, 'SYNONYM', 6, 'SEQUENCE',
+        7, 'PROCEDURE', 8, 'FUNCTION', 9, 'PACKAGE',
+        11, 'PACKAGE BODY', 12, 'TRIGGER',
+        13, 'TYPE', 14, 'TYPE BODY',
+        19, 'TABLE PARTITION', 20, 'INDEX PARTITION', 21, 'LOB',
+        22, 'LIBRARY', 23, 'DIRECTORY', 24, 'QUEUE',
+        28, 'JAVA SOURCE', 29, 'JAVA CLASS', 30, 'JAVA RESOURCE',
+        32, 'INDEXTYPE', 33, 'OPERATOR',
+        34, 'TABLE SUBPARTITION', 35, 'INDEX SUBPARTITION',
+        40, 'LOB PARTITION', 41, 'LOB SUBPARTITION',
+        42, 'MATERIALIZED VIEW',
+        43, 'DIMENSION',
+        44, 'CONTEXT', 46, 'RULE SET', 47, 'RESOURCE PLAN',
+        48, 'CONSUMER GROUP',
+        51, 'SUBSCRIPTION', 52, 'LOCATION',
+        55, 'XML SCHEMA', 56, 'JAVA DATA',
+        57, 'SECURITY PROFILE', 59, 'RULE',
+        62, 'EVALUATION CONTEXT','UNDEFINED'
+    ) object_type
+,   lob.kglnaobj object_name
+,   pn.kglpnmod lock_mode_held
+,   pn.kglpnreq lock_mode_requested
+,   ses.sid
+,   ses.serial#
+,   ses.username
+from       v\$session_wait   vsw
+,   x\$kglob      lob
+,   x\$kglpn      pn
+,   v\$session  ses
+where    vsw.event = 'library cache lock'
+and         vsw.p1raw = lob.kglhdadr
+and         lob.kglhdadr = pn.kglpnhdl
+and         pn.kglpnmod != 0
+and         pn.kglpnuse = ses.saddr
+/
+
+
+
+set feedback on
+set linesize 700;
+set serveroutput on size 100000
+column sid format 99999
+column serial# format 9999999
+column username format a12
+column spid format 99999999
+column status format a10
+column "LOGON TIME" format a15
+column program format a20
+column module format a20
+column action format a20
+column event format a30
+column "Wait in Seconds" format 99999999
+set linesize 250
+set pagesize 100
+prompt Session Holding/waiting on library cach lock
+prompt  ===========================================
+prompt  ===========================================
+
+select w.kgllktype "LockType",w.kgllkhdl "ObjectHandle",
+q.sql_text "ObjectName",h1.sid "HoldingSID",
+decode(h.kgllkmod,0,'None',1,'Null',2,'Share',3,'Exclusive','Unknown') "Held",
+w1.sid "WaitingSID",decode(w.kgllkreq,0,'None',1,'Null',2,'Share',3,'Exclusive','Unknown') "Request"
+from dba_kgllock w, dba_kgllock h, v\$session w1, v\$session h1, v\$sql q, v\$session_wait vw
+where(((h.kgllkmod != 0) and (h.kgllkmod != 1) and ((h.kgllkreq = 0) or (h.kgllkreq = 1)))
+and (((w.kgllkmod = 0) or (w.kgllkmod= 1))
+and ((w.kgllkreq != 0) and (w.kgllkreq != 1))))
+and w.kgllkhdl = q.address(+)
+and w.kgllktype = h.kgllktype
+and w.kgllkhdl = h.kgllkhdl
+and w.kgllkuse = w1.saddr
+and h.kgllkuse = h1.saddr
+and vw.sid= h1.sid
+and vw.seconds_in_wait >= 60
+/
+---agent home
+
+Cat /etc/oragchomelist
+ps -ef | grep emwd.pl
+
+
+--To Enable MIRA:
+
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE DISCONNECT FROM SESSION INSTANCES 3;
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE DISCONNECT FROM SESSION INSTANCES ALL;
+
+EDIT DATABASE ‘<standby db_unique_name>’ SET STATE=’APPLY-ON’ WITH APPLY INSTANCE = <instance-name>;
+ 
+EDIT DATABASE gsmdr_x9m SET STATE='APPLY-OFF';
+
+To check if MIRA is enabled:
+SET LINES 150
+SELECT NAME,INSTANCE,PID,TYPE,ROLE,ACTION,THREAD#,SEQUENCE#, BLOCK# FROM GV$DATAGUARD_PROCESS WHERE ACTION='APPLYING_LOG';
+
+SELECT PROCESS,STATUS FROM GV$MANAGED_STANDBY WHERE PROCESS LIKE '%MRP%';
+
+SELECT MESSAGE FROM V$DATAGUARD_STATUS;
+
+To check received and applied difference in standby:
+SELECT A.*,(RECEIVED-APPLIED) DIFF FROM 
+(SELECT ARCH.THREAD# "THREAD", ARCH.SEQUENCE# RECEIVED, APPL.SEQUENCE# APPLIED FROM 
+(SELECT THREAD# ,SEQUENCE# FROM V$ARCHIVED_LOG WHERE (THREAD#,FIRST_TIME ) IN (SELECT THREAD#,MAX(FIRST_TIME) FROM V$ARCHIVED_LOG GROUP BY THREAD#)) ARCH, 
+(SELECT THREAD# ,SEQUENCE# FROM V$LOG_HISTORY WHERE (THREAD#,FIRST_TIME ) IN (SELECT THREAD#,MAX(FIRST_TIME) FROM V$LOG_HISTORY GROUP BY THREAD#)) APPL WHERE ARCH.THREAD# = APPL.THREAD# ORDER BY 1) A;
+
+To check generated sequence in primary:
+SELECT THREAD#, MAX(SEQUENCE#) "LAST PRIMARY SEQ GENERATED" FROM GV$ARCHIVED_LOG VAL, GV$DATABASE VDB WHERE VAL.RESETLOGS_CHANGE# = VDB.RESETLOGS_CHANGE# GROUP BY THREAD# ORDER BY 1;
+
+
+
+set pages 50000 lines 32767
+select sample_time,session_id,session_serial#,sql_id,MACHINE,PROGRAM from gv$active_session_history
+where inst_id=2 and sql_id is not null and sql_id='aqys00nbn52m2' and trunc(sample_time)=trunc(systimestamp)
+order by 1 desc
+
+
+
+SET LONG 1000000
+SET LONGCHUNKSIZE 1000000
+SET LINESIZE 1000
+SET PAGESIZE 0
+SET TRIM ON
+SET TRIMSPOOL ON
+SET ECHO OFF
+SET FEEDBACK OFF
+SELECT DBMS_SQLTUNE.report_sql_monitor(
+  sql_id       => '&sqlid',
+  type         => 'text',
+  report_level => 'ALL') AS report 
+FROM dual;
+
+
+
+WITH
+p AS (
+SELECT plan_hash_value
+  FROM gv$sql_plan
+WHERE sql_id = TRIM('&&sql_id.')
+   AND other_xml IS NOT NULL
+UNION
+SELECT plan_hash_value
+  FROM dba_hist_sql_plan
+WHERE sql_id = TRIM('&&sql_id.')
+   AND other_xml IS NOT NULL ),
+m AS (
+SELECT plan_hash_value,
+       SUM(elapsed_time)/SUM(executions) avg_et_secs
+  FROM gv$sql
+WHERE sql_id = TRIM('&&sql_id.')
+   AND executions > 0
+GROUP BY
+       plan_hash_value ),
+a AS (
+SELECT plan_hash_value,
+       SUM(elapsed_time_total)/SUM(executions_total) avg_et_secs
+  FROM dba_hist_sqlstat
+WHERE sql_id = TRIM('&&sql_id.')
+   AND executions_total > 0
+GROUP BY
+       plan_hash_value )
+SELECT p.plan_hash_value,
+       ROUND(NVL(m.avg_et_secs, a.avg_et_secs)/1e6, 3) avg_et_secs
+  FROM p, m, a
+WHERE p.plan_hash_value = m.plan_hash_value(+)
+   AND p.plan_hash_value = a.plan_hash_value(+)
+ORDER BY
+       avg_et_secs NULLS LAST;
+
