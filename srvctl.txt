@@ -3,8 +3,7 @@ srvctl stop database -d PRODB -o immediate
 srvctl stop database -d PRODB -o transactional
 srvctl stop database -d PRODB -o abort
 
-srvctl config scan_listener
-
+srvctl config database -d oradb
 
 srvctl start database -d PRODB -o nomount
 srvctl start database -d PRODB -o mount
