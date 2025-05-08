@@ -1,16 +1,17 @@
 SELECT 
+  inst_id,
   blocking_session "BLOCKING_SESSION",
   sid "BLOCKED_SESSION",
   serial# "BLOCKED_SERIAL#", 
   seconds_in_wait/60 "WAIT_TIME(MINUTES)"
-FROM v$session
+FROM gv$session
 WHERE blocking_session is not NULL
 ORDER BY blocking_session;
 
 
-select * from v$session where sid = 182;
+select sid,serial#,sql_id from gv$session where sid = 64 and inst_id = 1;
 
-select * from v$sql where sql_id ='caty2h7pjtgcn';
+select sql_text from v$sql where sql_id ='ajsyw8q24uc6q';
 
 SELECT 
   blocking_session "BLOCKING_SESSION",
@@ -23,12 +24,20 @@ ORDER BY blocking_session;
 
 select * from v$locked_object;
 
-select * from dba_objects where object_id = '80271';
+
+col owner for a25;
+col object_name for a30;
+select owner,object_name from dba_objects where object_id in ( '73528',73526);
 
 select * from dba_objects where object_id in 
-(select object_id from v$locked_object where session_id = 250);
+(select object_id from v$locked_object where session_id = 37);
 
 
 
 select sid,serial# from v$session where sid = 250;
 alter system kill session '250,30467,@1' IMMEDIATE;
+
+here 
+250 is SID
+30467 is serial#
+@1 means instance_ID(instance number)
