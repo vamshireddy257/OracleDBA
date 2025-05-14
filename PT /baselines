@@ -1,10 +1,28 @@
+-- check if there are any baselines on emp2 and drop those.
+
+select SQL_HANDLE,SQL_TEXT,PLAN_NAME from DBA_SQL_PLAN_BASELINES;
+
+
+--to drop 
+
+declare
+drop_result pls_integer;
+begin
+drop_result := DBMS_SPM.DROP_SQL_PLAN_BASELINE(
+sql_handle => 'SQL_447e9dac99226fff',
+plan_name => 'SQL_PLAN_48znxpkck4vzz8b8002e4');
+dbms_output.put_line(drop_result);
+end;
+/
+
 create table emp2 as select * from emp;
 
 set autotrace traceonly
 
 select * from emp2 where emp_no = 445;
 
-select * from v$sql where sql_text like '%emp2%'; -- 6vnbwu8j9wvnj
+select sql_id,sql_text from v$sql where sql_text like '%emp2%445%'; -- 6vnbwu8j9wvnj
+
 
 select SQL_ID,HASH_VALUE,CHILD_NUMBER,PLAN_HASH_VALUE,
 EXECUTIONS,ELAPSED_TIME/EXECUTIONS/1000000 Sec_per_exec 
@@ -35,13 +53,15 @@ select address, hash_value,PLAN_HASH_VALUE, executions, loads, version_count, in
 
 select address, hash_value,PLAN_HASH_VALUE, executions, loads, version_count, invalidations, parse_calls from v$sqlarea where sql_id='6vnbwu8j9wvnj';
 
+select SQL_HANDLE,SQL_TEXT,PLAN_NAME from DBA_SQL_PLAN_BASELINES;
+
 
 SET LONG 10000 
 SET LINES 200 
 SET PAGES 300 
 SELECT * 
 FROM TABLE(DBMS_XPLAN.display_sql_plan_baseline(sql_handle=>
-'SQL_447e9dac99226fff'));
+'SQL_48znxpkck4vzz8b8002e4'));
 
 
 declare
