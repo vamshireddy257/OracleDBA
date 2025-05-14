@@ -1,3 +1,4 @@
+IN SOE SCHEMA
 drop table emp2 purge;
 CREATE TABLE EMP2 AS SELECT * FROM EMP;
 
