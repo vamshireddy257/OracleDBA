@@ -88,6 +88,7 @@ ANALYZE TABLE DEPT2 COMPUTE STATISTICS;
 
 
 ---- USING MANUAL CREATION
+---- in general we dont create profile manually.
 
 create table TEST1(id number(10), text varchar2(100));
 create table TEST2(id number(10), text2 varchar2(100));
